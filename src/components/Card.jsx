@@ -1,12 +1,21 @@
 import React from 'react';
 import InfoCon from './InfoCon';
+import styled from 'styled-components';
+
+const FamilyMemberColor = styled.div`
+  border-radius: 100%;
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+  background-color: ${(props) => (props.bg != '' ? props.bg : `black`)};
+`;
 
 function Card(props) {
   return (
     <div>
       <div className="card">
         <div className="top">
-          <div className="circle"></div>
+          <FamilyMemberColor bg={props.color} />
           <h2 className="name">{props.name}</h2>
         </div>
         <div className="bottom">

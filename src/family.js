@@ -25,7 +25,7 @@ const family = [
   },
 ];
 
-const colors = ['#314e52', '#f2a154', '#f7f6e7', '#e7e6e1'];
+const colors = ['#314e52', '#f2a154', '#f76b8a', '#e7e6e1'];
 
 export default family;
 export { colors };
