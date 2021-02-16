@@ -12,7 +12,7 @@ const FamilyMemberColor = styled.div`
 
 function Card(props) {
   return (
-    <div>
+    <div className="con-card">
       <div className="card">
         <div className="top">
           <FamilyMemberColor bg={props.color} />
