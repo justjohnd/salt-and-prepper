@@ -17,10 +17,14 @@ function createFamily(family) {
   );
 }
 
-function Family() {
+function Family(props) {
   return (
     <div>
-      <div className="container">{family.map(createFamily)};</div>
+      {props.submitted ? (
+        <div>
+          <div className="container">{family.map(createFamily)};</div>
+        </div>
+      ) : null}
     </div>
   );
 }

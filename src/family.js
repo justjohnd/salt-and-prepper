@@ -27,5 +27,23 @@ const family = [
 
 const colors = ['#314e52', '#f2a154', '#f76b8a', '#e7e6e1'];
 
+function addFamilyMember(name, birthday, gender, calories) {
+  const maximum = Math.max.apply(
+    null,
+    family.map((x) => x.id)
+  );
+
+  let newMember = {
+    name: name,
+    age: birthday,
+    gender: gender,
+    calTarget: calories,
+    color: '',
+    id: maximum + 1,
+  };
+  family.push(newMember);
+}
+
 export default family;
 export { colors };
+export { addFamilyMember };
