@@ -1,7 +1,7 @@
 const family = [
   {
     id: '1',
-    name: 'John',
+    fullName: 'John',
     color: '',
     age: '42',
     gender: 'Male',
@@ -9,7 +9,7 @@ const family = [
   },
   {
     id: '2',
-    name: 'Miho',
+    fullName: 'Miho',
     color: '',
     age: '33',
     gender: 'Female',
@@ -17,7 +17,7 @@ const family = [
   },
   {
     id: '3',
-    name: 'Kai',
+    fullName: 'Kai',
     color: '',
     age: '2',
     gender: 'male',
@@ -27,17 +27,14 @@ const family = [
 
 const colors = ['#314e52', '#f2a154', '#f76b8a', '#e7e6e1'];
 
-function addFamilyMember(name, birthday, gender, calories) {
+function addFamilyMember(memberData) {
   const maximum = Math.max.apply(
     null,
     family.map((x) => x.id)
   );
 
   let newMember = {
-    name: name,
-    age: birthday,
-    gender: gender,
-    calTarget: calories,
+    ...memberData,
     color: '',
     id: maximum + 1,
   };

@@ -1,73 +1,85 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Input from './Input';
 import Family from './Family';
-import family, { addFamilyMember } from '../family';
+import { addFamilyMember } from '../family';
 
 function Form() {
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState(
+    'Please let us know a little information in order to calculate your daily nutritional needs'
+  );
   const [submitted, setSubmitted] = useState(false);
-  const [name, setName] = useState('');
-  const [birthday, setBirthday] = useState('');
-  const [gender, setGender] = useState('');
-  const [calories, setCalories] = useState('');
+  const [memberData, setMemberData] = useState({
+    fullName: '',
+    age: '',
+    gender: '',
+    calTarget: '',
+  });
+  const DEFAULT_STATE = {
+    fullName: '',
+    age: '',
+    gender: '',
+    calTarget: '',
+  };
 
-  function handleName(event) {
-    setName(event.target.value);
-  }
+  function handleData(event) {
+    const { name, value } = event.target;
 
-  function handleBirthday(event) {
-    setBirthday(event.target.value);
-  }
-
-  function handleGender(event) {
-    setGender(event.target.value);
-  }
-
-  function handleCalories(event) {
-    setCalories(event.target.value);
+    setMemberData((prevValue) => ({
+      ...prevValue,
+      [name]: value,
+    }));
   }
 
   function handleSubmit(event) {
-    setMessage('Thanks for filling out the form!');
+    setMessage(
+      'Cooking for anyone else? Enter friends or family information below or click Finish to continue'
+    );
     setSubmitted(true);
-    addFamilyMember(name, birthday, gender, calories);
-    console.log(family);
+    addFamilyMember(memberData);
+    setMemberData(DEFAULT_STATE);
     event.preventDefault();
   }
 
   return (
     <div>
-      <form onSubmit={handleSubmit} className="form">
+      <form onSubmit={handleSubmit} className="form align-left">
+        <h1>{message}</h1>
         <Input
-          onChange={handleName}
-          value={name}
+          onChange={handleData}
+          name="fullName"
+          value={memberData.fullName}
           label="Name"
           type="text"
           placeholder="Your Name"
         />
         <Input
-          onChange={handleBirthday}
-          value={birthday}
+          onChange={handleData}
+          name="birthday"
+          value={memberData.birthday}
           label="Birthday"
           type="date"
           placeholder=""
         />
         <Input
-          onChange={handleGender}
-          value={gender}
+          onChange={handleData}
+          value={memberData.gender}
+          name="gender"
           label="Gender"
           type="text"
           placeholder="Gender"
         />
         <Input
-          onChange={handleCalories}
-          value={calories}
+          onChange={handleData}
+          value={memberData.calories}
+          name="calories"
           label="Daily Caloric Requirement"
           type="number"
           placeholder="Calorie Target"
         />
-        <button type="submit">Submit</button>
-        <h1>{message}</h1>
+        <div>
+          <button type="submit">Submit</button>
+          {submitted && <button type="submit">Submit</button>}
+        </div>
       </form>
       <Family submitted={submitted} />
     </div>

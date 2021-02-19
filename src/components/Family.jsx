@@ -9,7 +9,7 @@ function createFamily(family) {
     <Card
       key={family.id}
       color={family.color}
-      name={family.name}
+      name={family.fullName}
       age={family.age}
       gender={family.gender}
       calTarget={family.calTarget}
