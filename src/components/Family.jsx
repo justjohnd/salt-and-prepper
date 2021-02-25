@@ -5,6 +5,15 @@ import family, { colors } from '../family';
 function createFamily(family) {
   family.color = colors[family.id - 1];
 
+  let today = new Date();
+  let birthDate = new Date(family.birthday);
+  let age = today.getFullYear() - birthDate.getFullYear();
+  let m = today.getMonth() - birthDate.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+  family.age = age;
+
   return (
     <Card
       key={family.id}
@@ -20,11 +29,9 @@ function createFamily(family) {
 function Family(props) {
   return (
     <div>
-      {props.submitted ? (
-        <div>
-          <div className="container">{family.map(createFamily)};</div>
-        </div>
-      ) : null}
+      <div>
+        <div className="container">{family.map(createFamily)};</div>
+      </div>
     </div>
   );
 }

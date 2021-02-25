@@ -1,19 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import Input from './Input';
 import Family from './Family';
+import H2 from './H2';
 import { addFamilyMember } from '../family';
+import FormSecMealPlan from './FormSecMealPlan';
 
 function Form() {
   const [message, setMessage] = useState(
     'Please let us know a little information in order to calculate your daily nutritional needs'
   );
-  const [submitted, setSubmitted] = useState(false);
+  const [submitMember, setSubmitMember] = useState(false);
+  const [submitNext, setSubmitNext] = useState(false);
+
   const [memberData, setMemberData] = useState({
     fullName: '',
     age: '',
     gender: '',
     calTarget: '',
   });
+
   const DEFAULT_STATE = {
     fullName: '',
     age: '',
@@ -32,25 +37,30 @@ function Form() {
 
   function handleSubmit(event) {
     setMessage(
-      'Cooking for anyone else? Enter friends or family information below or click Finish to continue'
+      'Cooking for anyone else? Enter friends or family information below or click Next to continue'
     );
-    setSubmitted(true);
+    setSubmitMember(true);
     addFamilyMember(memberData);
     setMemberData(DEFAULT_STATE);
     event.preventDefault();
   }
 
+  function handleNextSection(event) {
+    setSubmitNext(true);
+    event.preventDefault();
+  }
+
   return (
     <div>
-      <form onSubmit={handleSubmit} className="form align-left">
-        <h1>{message}</h1>
+      <form className="form align-left">
+        <H2 message={message} />
         <Input
           onChange={handleData}
           name="fullName"
           value={memberData.fullName}
           label="Name"
           type="text"
-          placeholder="Your Name"
+          placeholder="Name"
         />
         <Input
           onChange={handleData}
@@ -76,12 +86,17 @@ function Form() {
           type="number"
           placeholder="Calorie Target"
         />
-        <div>
-          <button type="submit">Submit</button>
-          {submitted && <button type="submit">Submit</button>}
-        </div>
+        <button onClick={handleSubmit} type="submit">
+          Add Person
+        </button>
+        {submitMember && (
+          <button onClick={handleNextSection} type="submit">
+            Next Section
+          </button>
+        )}
+        <Family />
+        {submitNext && <FormSecMealPlan />}
       </form>
-      <Family submitted={submitted} />
     </div>
   );
 }

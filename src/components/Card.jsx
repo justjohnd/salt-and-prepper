@@ -12,7 +12,7 @@ const FamilyMemberColor = styled.div`
 
 function Card(props) {
   return (
-    <div className="con-card">
+    <section className="con-card">
       <div className="card">
         <div className="top">
           <FamilyMemberColor bg={props.color} />
@@ -24,7 +24,7 @@ function Card(props) {
           <InfoCon title="Daily Calories" info={props.calTarget} />
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 

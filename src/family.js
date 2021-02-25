@@ -1,9 +1,12 @@
+import getCal from './calCalc';
+
 const family = [
   {
     id: '1',
     fullName: 'John',
     color: '',
-    age: '42',
+    birthday: '1978/06/13',
+    age: '',
     gender: 'Male',
     calTarget: '2000',
   },
@@ -11,7 +14,8 @@ const family = [
     id: '2',
     fullName: 'Miho',
     color: '',
-    age: '33',
+    birthday: '1987/06/04',
+    age: '',
     gender: 'Female',
     calTarget: '2000',
   },
@@ -19,7 +23,8 @@ const family = [
     id: '3',
     fullName: 'Kai',
     color: '',
-    age: '2',
+    birthday: '2019/06/14',
+    age: '',
     gender: 'male',
     calTarget: '1000',
   },

@@ -89,6 +89,10 @@ body {
   position: relative;
 }
 
+label {
+  display: inline-block;
+}
+
 .form input {
   border: 1px solid rgba(252, 252, 252, 0.4);
   color: #2d3436;
@@ -102,7 +106,6 @@ body {
   display: block;
   font-size: 18px;
   font-weight: 300;
-  display: inline;
 }
 
 .form input:focus {
@@ -120,5 +123,5 @@ body {
   width: 250px;
   font-size: 18px;
   text-align: center;
-  margin-top: 15px;
+  margin: 15px 15px 0 0;
 }
