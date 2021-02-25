@@ -1,5 +1,3 @@
-import getCal from './calCalc';
-
 const family = [
   {
     id: '1',
@@ -8,7 +6,7 @@ const family = [
     birthday: '1978/06/13',
     age: '',
     gender: 'Male',
-    calTarget: '2000',
+    calTarget: 'normal',
   },
   {
     id: '2',
@@ -17,16 +15,16 @@ const family = [
     birthday: '1987/06/04',
     age: '',
     gender: 'Female',
-    calTarget: '2000',
+    calTarget: 'normal',
   },
   {
     id: '3',
     fullName: 'Kai',
     color: '',
-    birthday: '2019/06/14',
+    birthday: '1978/06/13',
     age: '',
-    gender: 'male',
-    calTarget: '1000',
+    gender: 'Male',
+    calTarget: 'normal',
   },
 ];
 

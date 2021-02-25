@@ -21,7 +21,7 @@ function Card(props) {
         <div className="bottom">
           <InfoCon title="Age" info={props.age} />
           <InfoCon title="Gender" info={props.gender} />
-          <InfoCon title="Daily Calories" info={props.calTarget} />
+          <InfoCon title="Daily Calories" info={props.calories} />
         </div>
       </div>
     </section>

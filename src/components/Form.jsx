@@ -80,8 +80,8 @@ function Form() {
         />
         <Input
           onChange={handleData}
-          value={memberData.calories}
-          name="calories"
+          value={memberData.calTarget}
+          name="calTarget"
           label="Daily Caloric Requirement"
           type="number"
           placeholder="Calorie Target"
