@@ -1,4 +1,5 @@
 import React from 'react';
+import UserSettings from './UserSettings';
 import Form from './Form';
 
 function App() {

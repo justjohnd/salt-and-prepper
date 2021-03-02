@@ -5,8 +5,8 @@ const family = [
     color: '',
     birthday: '1978/06/13',
     age: '',
-    gender: 'Male',
-    calTarget: 'normal',
+    gender: 1,
+    calTarget: 1,
   },
   {
     id: '2',
@@ -14,8 +14,8 @@ const family = [
     color: '',
     birthday: '1987/06/04',
     age: '',
-    gender: 'Female',
-    calTarget: 'normal',
+    gender: 2,
+    calTarget: 1,
   },
   {
     id: '3',
@@ -23,8 +23,8 @@ const family = [
     color: '',
     birthday: '1978/06/13',
     age: '',
-    gender: 'Male',
-    calTarget: 'normal',
+    gender: 1,
+    calTarget: 1,
   },
 ];
 

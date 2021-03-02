@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import Input from './Input';
-import Family from './Family';
-import H2 from './H2';
 import Button from './Button';
+import H2 from './H2';
 import { addFamilyMember } from '../family';
 import FormSecMealPlan from './FormSecMealPlan';
 
-function Form() {
+function FormAddPerson() {
   const [message, setMessage] = useState(
-    'Please let us know a little information in order to calculate your daily nutritional needs'
+    'Enter friends or family information below or click Next Section when finished'
   );
   const [submitMember, setSubmitMember] = useState(false);
   const [submitNext, setSubmitNext] = useState(false);
@@ -51,9 +50,6 @@ function Form() {
   }
 
   function handleSubmit(event) {
-    setMessage(
-      'Cooking for anyone else? Enter friends or family information below or click Next to continue'
-    );
     setSubmitMember(true);
     addFamilyMember(memberData);
     setMemberData(DEFAULT_STATE);
@@ -124,11 +120,10 @@ function Form() {
             Next Section
           </button>
         )}
-        <Family />
         {submitNext && <FormSecMealPlan />}
       </form>
     </div>
   );
 }
 
-export default Form;
+export default FormAddPerson;
