@@ -2,7 +2,7 @@ import React from 'react';
 import InfoCon from './InfoCon';
 import styled from 'styled-components';
 
-const FamilyMemberColor = styled.div`
+const UserColor = styled.div`
   border-radius: 100%;
   width: 20px;
   height: 20px;
@@ -15,7 +15,7 @@ function Card(props) {
     <section className="con-card">
       <div className="card">
         <div className="top">
-          <FamilyMemberColor bg={props.color} />
+          <UserColor bg={props.color} />
           <h2 className="name">{props.name}</h2>
         </div>
         <div className="bottom">

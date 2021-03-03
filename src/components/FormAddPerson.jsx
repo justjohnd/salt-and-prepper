@@ -1,17 +1,8 @@
 import React, { useState } from 'react';
 import Input from './Input';
 import Button from './Button';
-import H2 from './H2';
-import { addFamilyMember } from '../family';
-import FormSecMealPlan from './FormSecMealPlan';
 
-function FormAddPerson() {
-  const [message, setMessage] = useState(
-    'Enter friends or family information below or click Next Section when finished'
-  );
-  const [submitMember, setSubmitMember] = useState(false);
-  const [submitNext, setSubmitNext] = useState(false);
-
+function FormAddPerson(props) {
   const [memberData, setMemberData] = useState({
     fullName: '',
     birthday: '',
@@ -49,22 +40,21 @@ function FormAddPerson() {
     }));
   }
 
-  function handleSubmit(event) {
-    setSubmitMember(true);
-    addFamilyMember(memberData);
+  function handleAddUser(event) {
+    const newUser = memberData;
+    props.addNewUser(newUser);
     setMemberData(DEFAULT_STATE);
     event.preventDefault();
   }
 
-  function handleNextSection(event) {
-    setSubmitNext(true);
+  function handleCloseSection(event) {
+    props.changeFormVisibility(props.formVisibility);
     event.preventDefault();
   }
 
   return (
     <div>
       <form className="form align-left">
-        <H2 message={message} />
         <Input
           onChange={handleData}
           name="fullName"
@@ -114,13 +104,8 @@ function FormAddPerson() {
           </select>
         </label>
 
-        <Button onClick={handleSubmit} buttonText="Add Person" />
-        {submitMember && (
-          <button onClick={handleNextSection} type="submit">
-            Next Section
-          </button>
-        )}
-        {submitNext && <FormSecMealPlan />}
+        <Button onClick={handleAddUser} buttonText="Add Person" />
+        <Button onClick={handleCloseSection} buttonText="Close Section" />
       </form>
     </div>
   );

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import FormFamily from "./FormFamily";
+import UserSection from './UserSection';
 
 function UserSettings() {
   return (
     <div>
-      <FormFamily />
+      <UserSection />
     </div>
   );
 }

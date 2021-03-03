@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import Input from './Input';
-import Family from './Family';
+import UserCards from './UserCards';
 import H2 from './H2';
 import Button from './Button';
-import { addFamilyMember } from '../family';
+import { addUser } from '../users';
 import FormSecMealPlan from './FormSecMealPlan';
 
 function Form() {
@@ -55,7 +55,7 @@ function Form() {
       'Cooking for anyone else? Enter friends or family information below or click Next to continue'
     );
     setSubmitMember(true);
-    addFamilyMember(memberData);
+    addUser(memberData);
     setMemberData(DEFAULT_STATE);
     event.preventDefault();
   }
@@ -124,7 +124,7 @@ function Form() {
             Next Section
           </button>
         )}
-        <Family />
+        <UserCards />
         {submitNext && <FormSecMealPlan />}
       </form>
     </div>

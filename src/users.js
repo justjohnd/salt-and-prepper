@@ -1,4 +1,4 @@
-const family = [
+const USER_DATA = [
   {
     id: '1',
     fullName: 'John',
@@ -6,7 +6,7 @@ const family = [
     birthday: '1978/06/13',
     age: '',
     gender: 1,
-    calTarget: 1,
+    calTarget: 2,
   },
   {
     id: '2',
@@ -15,7 +15,7 @@ const family = [
     birthday: '1987/06/04',
     age: '',
     gender: 2,
-    calTarget: 1,
+    calTarget: 0,
   },
   {
     id: '3',
@@ -30,10 +30,10 @@ const family = [
 
 const colors = ['#314e52', '#f2a154', '#f76b8a', '#e7e6e1'];
 
-function addFamilyMember(memberData) {
+function addUser(memberData) {
   const maximum = Math.max.apply(
     null,
-    family.map((x) => x.id)
+    USER_DATA.map((x) => x.id)
   );
 
   let newMember = {
@@ -41,9 +41,9 @@ function addFamilyMember(memberData) {
     color: '',
     id: maximum + 1,
   };
-  family.push(newMember);
+  USER_DATA.push(newMember);
 }
 
-export default family;
+export default USER_DATA;
 export { colors };
-export { addFamilyMember };
+export { addUser };
