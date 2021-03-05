@@ -127,8 +127,19 @@ label {
 }
 
 .form .btn-round {
-  border-radius: 100%;
-  width: unset;
-  height: 75px;
-  margin: auto 0;
+    color: #50a3a2;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    outline: none;
+    margin: auto 5px auto 0;
+    padding: 0;
+}
+
+.btn-round.btn-sm {
+  width: 30px;
+  height: 30px;
 }

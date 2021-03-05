@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import Button from './Button';
 import H2 from './H2';
+import Button from './Button';
 import UserCards from './UserCards';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
 
 function UserSection() {
   const [formVisibility, setFormVisibility] = useState(false);
@@ -10,12 +11,9 @@ function UserSection() {
   );
 
   function changeFormVisibility() {
-    formVisibility ? setFormVisibility(false) : setFormVisibility(true);
-  }
-
-  function handleClick() {
-    setFormVisibility(true);
-    setMessage('Add a new person to your group:');
+    setFormVisibility((prevValue) => {
+      return !prevValue;
+    });
   }
 
   return (
@@ -24,14 +22,17 @@ function UserSection() {
         <H2 message={message} />
         <div className="container">
           <UserCards
-            formVisibility={formVisibility}
-            changeFormVisibility={changeFormVisibility}
+            showForm={formVisibility}
+            toggleForm={changeFormVisibility}
           />
           {!formVisibility && (
             <Button
               className="btn-round"
-              onClick={handleClick}
-              buttonText={<i className="fas fa-2x fa-user-plus"></i>}
+              onClick={() => {
+                setFormVisibility(true);
+                setMessage('Add a new person to your group:');
+              }}
+              buttonText={<PersonAddIcon />}
             />
           )}
         </div>

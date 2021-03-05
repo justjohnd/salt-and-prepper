@@ -48,7 +48,7 @@ function FormAddPerson(props) {
   }
 
   function handleCloseSection(event) {
-    props.changeFormVisibility(props.formVisibility);
+    props.toggleForm(props.showForm);
     event.preventDefault();
   }
 

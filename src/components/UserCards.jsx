@@ -14,10 +14,10 @@ function UserCards(props) {
 
   return (
     <div>
-      {props.formVisibility && (
+      {props.showForm && (
         <FormAddPerson
-          formVisibility={props.formVisibility}
-          changeFormVisibility={props.changeFormVisibility}
+          showForm={props.showForm}
+          toggleForm={props.toggleForm}
           addNewUser={addNewUser}
         />
       )}

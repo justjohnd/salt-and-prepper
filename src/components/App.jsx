@@ -1,10 +1,10 @@
 import React from 'react';
-import UserSettings from './UserSettings';
+import UserSection from './UserSection';
 
 function App() {
   return (
     <div>
-      <UserSettings />
+      <UserSection />
     </div>
   );
 }
