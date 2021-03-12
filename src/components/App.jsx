@@ -1,26 +1,12 @@
 import React from 'react';
-import Card from './Card';
-import family, { colors } from '../family';
-
-function createFamily(family) {
-  family.color = colors[family.id - 1];
-
-  return (
-    <div>
-      <Card
-        key={family.id}
-        color={family.color}
-        name={family.name}
-        age={family.age}
-        gender={family.gender}
-        calTarget={family.calTarget}
-      />
-    </div>
-  );
-}
+import UserSection from './UserSection';
 
 function App() {
-  return <div>{family.map(createFamily)}</div>;
+  return (
+    <div>
+      <UserSection />
+    </div>
+  );
 }
 
 export default App;

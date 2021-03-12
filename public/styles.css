@@ -2,28 +2,37 @@ body {
   font-family: sans-serif;
   margin: 0 auto;
   padding: 25px;
-  max-width: 400px;
-  min-width: 400px;
   background-color: #dfe6e9;
   text-align: center;
   color: #2d3436;
 }
 
-.heading {
-  text-align: center;
-  font-size: 2em;
-  margin: 20px 0 30px;
+.container {
+  display: flex;
+  flex-grow: 1;
+}
+
+.align-left {
+  text-align: left;
+}
+
+
+/* Card Content */
+.con-card {
+    display: flex;
+    flex-grow: 1
 }
 
 .card {
   border-radius: 25px;
   position: relative;
   padding: 25px 15px;
+  margin: 15px 20px 15px 0;
   background-color: #fff;
   box-shadow: 0 2px 5px #ccc;
   text-align: left;
   text-transform: capitalize;
-  margin-bottom: 30px;
+  width: 100%;
 }
 
 .top {
@@ -56,7 +65,7 @@ body {
 
 .info-con {
   display: inline-block;
-  padding: 5px;
+  padding: 5px 10px;
   max-width: 100px;
 }
 
@@ -71,4 +80,66 @@ body {
   font-size: 18px;
   font-weight: 700;
   margin: 0;
+}
+
+/* Form Content */
+.form {
+  padding: 20px 0;
+  position: relative;
+}
+
+label {
+  display: inline-block;
+}
+
+.form input,
+.form select {
+  border: 1px solid rgba(252, 252, 252, 0.4);
+  color: #2d3436;
+  background-color: #fff;
+  width: 250px;
+  height: 100%;
+  border-radius: 3px;
+  font-family: "Source Sans Pro", sans-serif;
+  padding: 10px 15px;
+  margin: 10px 10px 10px 0;
+  display: block;
+  font-size: 18px;
+  font-weight: 300;
+}
+
+.form input:focus {
+    color: #2d3436;
+}
+
+.form button {
+  appearance: none;
+  outline: 0;
+  background-color: white;
+  border: 0;
+  padding: 10px 15px;
+  color: #50a3a2;
+  border-radius: 3px;
+  width: 250px;
+  font-size: 18px;
+  text-align: center;
+  margin: 15px 15px 0 0;
+}
+
+.form .btn-round {
+    color: #50a3a2;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    outline: none;
+    margin: auto 5px auto 0;
+    padding: 0;
+}
+
+.btn-round.btn-sm {
+  width: 30px;
+  height: 30px;
 }
