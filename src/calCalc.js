@@ -3,7 +3,7 @@ import male, { female } from './calRequirements';
 //Calculate calorie requirement
 function calCalc(age, gender, lifestyle) {
   let calArray = [];
-  if (gender == 1) {
+  if (gender == 2) {
     calArray = male;
   } else {
     calArray = female;

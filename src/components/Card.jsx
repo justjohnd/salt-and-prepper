@@ -10,7 +10,7 @@ const UserColor = styled.div`
   width: 20px;
   height: 20px;
   margin-right: 5px;
-  background-color: ${(props) => (props.bg != '' ? props.bg : `black`)};
+  background-color: ${(props) => (props.bg != '' ? props.bg : 'black')};
 `;
 
 function Card(props) {
@@ -22,12 +22,18 @@ function Card(props) {
           <h2 className="name">{props.name}</h2>
           <Button
             className="btn-round btn-sm"
-            onClick={() => {}}
+            onClick={() => {
+              !props.formEditVisibility && props.changeFormEditVisibility();
+              props.formVisibility && props.changeFormVisibility();
+              props.onEdit(props.user);
+            }}
             buttonText={<EditIcon />}
           />
           <Button
             className="btn-round btn-sm"
-            onClick={() => {}}
+            onClick={() => {
+              props.onDelete(props.id);
+            }}
             buttonText={<DeleteIcon />}
           />
         </div>
