@@ -11,9 +11,9 @@ function UserCards(props) {
         {props.users.map((user) => {
           const userAge = ageCalc(user.birthday);
           let userGender;
-          user.gender == 1
+          user.gender === 1
             ? (userGender = '')
-            : user.gender == 2
+            : user.gender === 2
             ? (userGender = 'Male')
             : (userGender = 'Female');
           let userCal;
