@@ -21,7 +21,7 @@ const USER_DATA = [
     id: 3,
     fullName: 'Kai',
     color: '',
-    birthday: '1978/06/13',
+    birthday: '06/14/2019',
     age: '',
     gender: 2,
     calTarget: 2,

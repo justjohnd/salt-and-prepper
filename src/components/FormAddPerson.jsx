@@ -42,7 +42,7 @@ function FormAddPerson(props) {
     let newMax = maxId + 1;
     console.log(newMax);
 
-    setNewUser((prevValue) => {
+    setNewUser(prevValue => {
       return {
         ...prevValue,
         [name]: value,
@@ -114,8 +114,16 @@ function FormAddPerson(props) {
           </select>
         </label>
 
-        <Button onClick={handleAddUser} buttonText="Add Person" />
-        <Button onClick={handleCloseSection} buttonText="Close Section" />
+        <Button
+          className="btn-lg"
+          onClick={handleAddUser}
+          buttonText="Add Person"
+        />
+        <Button
+          className="btn-lg"
+          onClick={handleCloseSection}
+          buttonText="Close Section"
+        />
       </form>
     </div>
   );
