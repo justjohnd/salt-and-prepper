@@ -8,7 +8,7 @@ function UserCards(props) {
   return (
     <div>
       <div className="container">
-        {props.users.map((user) => {
+        {props.users.map(user => {
           const userAge = ageCalc(user.birthday);
           let userGender;
           user.gender === 1
@@ -17,7 +17,9 @@ function UserCards(props) {
             ? (userGender = 'Male')
             : (userGender = 'Female');
           let userCal;
-          if (userAge && userGender && user.calTarget) {
+          if (userAge < 4) {
+            userCal = 0;
+          } else if (userAge && userGender && user.calTarget) {
             userCal = calCalc(userAge, userGender, user.calTarget);
           } else {
             userCal = '';

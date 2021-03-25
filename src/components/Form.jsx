@@ -44,7 +44,7 @@ function Form() {
   function handleData(event) {
     const { name, value } = event.target;
 
-    setMemberData((prevValue) => ({
+    setMemberData(prevValue => ({
       ...prevValue,
       [name]: value,
     }));

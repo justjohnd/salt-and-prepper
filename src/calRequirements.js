@@ -134,27 +134,6 @@ const female = [
     activityLevels: [
       {
         activity: 1,
-        min: 1000,
-        max: 1000,
-      },
-      {
-        activity: 2,
-        min: 1000,
-        max: 1400,
-      },
-      {
-        activity: 3,
-        min: 1000,
-        max: 1400,
-      },
-    ],
-    min: 2,
-    max: 3,
-  },
-  {
-    activityLevels: [
-      {
-        activity: 1,
         min: 1200,
         max: 1200,
       },

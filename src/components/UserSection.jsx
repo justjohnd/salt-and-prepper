@@ -23,13 +23,13 @@ function UserSection() {
   });
 
   function changeFormVisibility() {
-    setFormVisibility((prevValue) => {
+    setFormVisibility(prevValue => {
       return !prevValue;
     });
   }
 
   function changeFormEditVisibility() {
-    setFormEditVisibility((prevValue) => {
+    setFormEditVisibility(prevValue => {
       return !prevValue;
     });
   }
@@ -39,8 +39,8 @@ function UserSection() {
   }
 
   function deleteUser(id) {
-    setUsers((prevVal) => {
-      return prevVal.filter((user) => {
+    setUsers(prevVal => {
+      return prevVal.filter(user => {
         return user.id !== id;
       });
     });
@@ -59,7 +59,7 @@ function UserSection() {
   function editUserData(e) {
     const { name, value } = e.target;
 
-    setEditUser((prevValue) => {
+    setEditUser(prevValue => {
       return {
         ...prevValue,
         [name]: value,
@@ -68,20 +68,18 @@ function UserSection() {
   }
 
   function handleEdit(e) {
-    setUsers((users) => {
-      return users.filter((user) => {
+    setUsers(users => {
+      return users.filter(user => {
         return user.id !== editUser.id;
       });
     });
 
-    setUsers((users) => {
+    setUsers(users => {
       return [...users, editUser];
     });
     setEditUser({});
     e.preventDefault();
   }
-
-  console.log(formEditVisibility);
 
   return (
     <div>

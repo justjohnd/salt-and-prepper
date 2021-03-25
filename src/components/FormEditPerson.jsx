@@ -24,7 +24,7 @@ function FormEditPerson(props) {
     <div>
       <form className="form align-left">
         <Input
-          onChange={(e) => props.editUserData(e)}
+          onChange={e => props.editUserData(e)}
           name="fullName"
           value={props.formData.fullName}
           label="Name"
@@ -72,7 +72,8 @@ function FormEditPerson(props) {
           </select>
         </label>
         <Button
-          onClick={(e) => {
+          className="btn-lg"
+          onClick={e => {
             props.handleEdit(e);
             props.changeFormEditVisibility();
             e.preventDefault();
@@ -80,7 +81,8 @@ function FormEditPerson(props) {
           buttonText="Submit"
         />
         <Button
-          onClick={(e) => {
+          className="btn-lg"
+          onClick={e => {
             props.changeFormEditVisibility();
             e.preventDefault();
           }}
