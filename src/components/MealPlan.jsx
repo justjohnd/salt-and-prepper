@@ -11,7 +11,7 @@ function MealPlan(props) {
     'Ketogenic',
   ];
   const [mealData, setMealData] = useState(null);
-  const [calories, setCalories] = useState(props.calTarget);
+  const [calories, setCalories] = useState(props.userCalAverage);
   const [diet, setDiet] = useState('');
 
   function handleDiet(e) {
@@ -54,7 +54,7 @@ function MealPlan(props) {
           <input
             className="d-block"
             type="number"
-            placeholder=""
+            placeholder={props.userCalAverage}
             onChange={e => e.target.value}
           />
           <button onClick={getMealData}>Get Daily Meal Plan</button>

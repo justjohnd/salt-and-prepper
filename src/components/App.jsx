@@ -12,12 +12,10 @@ function App() {
     setUserCalAverage(calAverage);
   }
 
-  const calTarget = 2000;
-
   return (
     <div>
       <UserSection addUserCal={addUserCal} />
-      <MealPlan calTarget={calTarget} />
+      <MealPlan userCalAverage={userCalAverage} />
     </div>
   );
 }
