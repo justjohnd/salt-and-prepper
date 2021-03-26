@@ -20,7 +20,7 @@ function MealPlan(props) {
 
   function getMealData() {
     fetch(
-      `https://api.spoonacular.com/recipes/complexSearch?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&diet=${diet}&maxReadyTime=30&maxSugar=10&minProtein=1&minCarbs=1&minFat=1&maxCalories=1000&sort=random&number=6`
+      `https://api.spoonacular.com/recipes/complexSearch?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&diet=${diet}&maxReadyTime=30&maxSugar=10&minProtein=1&minCarbs=1&minFat=1&maxCalories=1000&sort=random&number=1`
     )
       .then(response => response.json())
       .then(data => {

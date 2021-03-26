@@ -2,13 +2,12 @@ import React from 'react';
 import Meal from './Meal';
 
 export default function MealList({ mealData }) {
-  const results = mealData.results;
   let totals = [];
 
-  if (results !== []) {
+  if (mealData.results !== []) {
     //If API returns empty array results cannot be mapped, and page will crash
     for (let i = 0; i < 5; i++) {
-      const totalingArray = results.map(
+      const totalingArray = mealData.results.map(
         result => result.nutrition.nutrients[i].amount
       );
       const nutrientTotal = totalingArray.reduce((acc, cur) => acc + cur);
