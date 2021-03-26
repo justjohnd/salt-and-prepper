@@ -18,6 +18,7 @@ export default function Meal({ meal }) {
       });
   }, [meal.id]);
 
+  let calories = meal.nutrition.nutrients[0].amount.toFixed(0);
   return (
     <article>
       {recipeData && (
@@ -25,9 +26,13 @@ export default function Meal({ meal }) {
           <h1>{meal.title}</h1>
           <img src={recipeData.image} alt="recipe" />
           <ul className="instructions">
+            {/* Note: servings and calories are adjusted for small size dishes */}
             <li> Preparation time: {recipeData.readyInMinutes} minutes</li>
-            <li> Number of servings: {recipeData.servings}</li>
-            <li> Calories: {meal.nutrition.nutrients[0].amount}</li>
+            <li>
+              Number of servings:
+              {calories <= 300 ? recipeData.servings / 2 : recipeData.servings}
+            </li>
+            <li> Calories: {calories <= 300 ? calories * 2 : calories} </li>
           </ul>
 
           <a

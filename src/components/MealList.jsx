@@ -28,6 +28,7 @@ export default function MealList({ mealData }) {
         <h1>Macros</h1>
         <ul>
           <li>Calories: {calories.toFixed(0)}</li>
+          <li>Difference from target: {2000 - calories.toFixed(0)} </li>
           <li>Protein: {protein.toFixed(0)}</li>
           <li>Fat: {fat.toFixed(0)}</li>
           <li>Carbohydrates: {carbs.toFixed(0)}</li>
