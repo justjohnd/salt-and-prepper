@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { isConstructorDeclaration } from 'typescript';
 import MealList from './MealList';
 import Checkbox from './Checkbox';
 
-function MealPlan() {
+function MealPlan(props) {
   const DIETS = [
     'Vegetarian',
     'Vegan',
@@ -12,25 +11,20 @@ function MealPlan() {
     'Ketogenic',
   ];
   const [mealData, setMealData] = useState(null);
-  const [calories, setCalories] = useState(2000);
+  const [calories, setCalories] = useState(props.calTarget);
   const [diet, setDiet] = useState('');
 
   function handleDiet(e) {
-    setDiet(e.target.title);
-  }
-
-  function handleChange(e) {
-    setCalories(e.target.value);
+    setDiet();
   }
 
   function getMealData() {
     fetch(
-      `https://api.spoonacular.com/mealplanner/generate?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&timeFrame=day&targetCalories=${calories}&diet=${diet}`
+      `https://api.spoonacular.com/recipes/complexSearch?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&diet=${diet}&maxReadyTime=30&maxSugar=10&minProtein=1&minCarbs=1&minFat=1&maxCalories=1000&sort=random&number=6`
     )
       .then(response => response.json())
       .then(data => {
         setMealData(data);
-        console.log(data);
       })
       .catch(() => {
         console.log('error');
@@ -38,28 +32,35 @@ function MealPlan() {
   }
 
   return (
-    <div className="con-plan">
+    <div>
       <section className="controls">
-        <ul className="diets">
-          {DIETS.map(diet => {
-            return (
-              <Checkbox
-                title={diet}
-                onClick={handleDiet}
-                htmlFor={diet}
-                label={diet}
-              />
-            );
-          })}
-        </ul>
-        <input
-          type="number"
-          placeholder="Calories (e.g. 2000)"
-          onChange={handleChange}
-        />
-        <button onClick={getMealData}>Get Daily Meal Plan</button>
-        {mealData && <MealList mealData={mealData} />}
+        <div className="control">
+          <p>Diet</p>
+          <ul className="diet-options">
+            {DIETS.map((diet, index) => {
+              return (
+                <Checkbox
+                  key={index}
+                  title={diet}
+                  onClick={handleDiet}
+                  htmlFor={diet}
+                  label={diet}
+                />
+              );
+            })}
+          </ul>
+        </div>
+        <div className="control">
+          <input
+            className="d-block"
+            type="number"
+            placeholder=""
+            onChange={e => e.target.value}
+          />
+          <button onClick={getMealData}>Get Daily Meal Plan</button>
+        </div>
       </section>
+      {mealData && <MealList mealData={mealData} />}
     </div>
   );
 }

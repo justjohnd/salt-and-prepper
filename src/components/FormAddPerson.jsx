@@ -40,7 +40,6 @@ function FormAddPerson(props) {
       props.allUsers[0].id
     );
     let newMax = maxId + 1;
-    console.log(newMax);
 
     setNewUser(prevValue => {
       return {

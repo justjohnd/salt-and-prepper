@@ -5,6 +5,7 @@ import ageCalc from '../ageCalc';
 import calCalc from '../calCalc';
 
 function UserCards(props) {
+  const userCalArray = []; //This array collects userCal, which will be used to calculate the average calories for all memters in the User Section
   return (
     <div>
       <div className="container">
@@ -21,6 +22,7 @@ function UserCards(props) {
             userCal = 0;
           } else if (userAge && userGender && user.calTarget) {
             userCal = calCalc(userAge, userGender, user.calTarget);
+            userCalArray.push(userCal);
           } else {
             userCal = '';
           }
@@ -45,6 +47,7 @@ function UserCards(props) {
             />
           );
         })}
+        {props.addUserCal(userCalArray)}
       </div>
     </div>
   );
