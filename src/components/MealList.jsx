@@ -1,44 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Meal from './Meal';
 
-export default function MealList({ mealData }) {
-  let totals = [];
-
-  if (mealData.results !== []) {
-    //If API returns empty array results cannot be mapped, and page will crash
-    for (let i = 0; i < 5; i++) {
-      const totalingArray = mealData.results.map(
-        result => result.nutrition.nutrients[i].amount
-      );
-      const nutrientTotal = totalingArray.reduce((acc, cur) => acc + cur);
-      totals.push(nutrientTotal);
-    }
-  } else {
-    totals = ['', '', '', '', ''];
-    console.log(
-      'Error: API call returned empty array. Check the endpoint parameters'
-    );
-  }
-
-  const [calories, protein, fat, carbs, sugar] = totals;
-
+export default function MealList(props) {
   return (
     <main>
       <section className="nutrients">
         <h1>Macros</h1>
         <ul>
-          <li>Calories: {calories.toFixed(0)}</li>
-          <li>Difference from target: {2000 - calories.toFixed(0)} </li>
-          <li>Protein: {protein.toFixed(0)}</li>
-          <li>Fat: {fat.toFixed(0)}</li>
-          <li>Carbohydrates: {carbs.toFixed(0)}</li>
-          <li>Sugar: {sugar.toFixed(0)}</li>
+          <li>Calories: {props.calories.toFixed(0)}</li>
+          <li>Difference from target: {2000 - props.calories.toFixed(0)} </li>
+          <li>Protein: {props.protein.toFixed(0)}</li>
+          <li>Fat: {props.fat.toFixed(0)}</li>
+          <li>Carbohydrates: {props.carbs.toFixed(0)}</li>
+          <li>Sugar: {props.sugar.toFixed(0)}</li>
         </ul>
       </section>
 
       <section className="meals">
-        {mealData.results.map(meal => {
-          return <Meal key={meal.id} meal={meal} />;
+        {props.meals.map(meal => {
+          return <Meal key={meal.results[0].id} meal={meal} />;
         })}
       </section>
     </main>
