@@ -4,21 +4,20 @@ export default function Meal({ meal }) {
   const [recipeData, setRecipeData] = useState(null);
 
   useEffect(() => {
-    fetch(
-      `https://api.spoonacular.com/recipes/${meal.results[0].id}/information?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&includeNutrition=false`
-    )
-      .then(response => response.json())
-      .then(data => {
-        setRecipeData(data);
-      })
-      .catch(() => {
-        console.log('error');
-      });
+    getMealInformation().catch(() => {
+      console.log('error');
+    });
   }, [meal.results[0].id]);
 
-  useEffect(() => {
-    console.log(recipeData);
-  }, [recipeData]);
+  async function getMealInformation() {
+    const response = await fetch(
+      `https://api.spoonacular.com/recipes/${meal.results[0].id}/information?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&includeNutrition=false`
+    );
+    const data = await response.json();
+    setRecipeData(data);
+    console.log(data);
+    console.log(data.analyzedInstructions[0].steps.length);
+  }
 
   let calories = meal.results[0].nutrition.nutrients[0].amount.toFixed(0);
   return (

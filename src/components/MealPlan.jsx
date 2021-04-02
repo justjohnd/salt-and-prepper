@@ -29,7 +29,6 @@ function MealPlan(props) {
   useEffect(() => {
     if (meal) {
       setMeals([...meals, meal]);
-      console.log(meals);
     }
   }, [meal]);
 
@@ -92,13 +91,17 @@ function MealPlan(props) {
   async function getMeals() {
     let i = 0;
     let totalCalories = 0;
-    let target = 500; //props.userCalAverage;
+    let target = 500; // props.userCalAverage;
 
-    while (totalCalories < target && i < 2) {
-      await getMeal().catch(() => {
-        console.log('error');
-        i++;
-      });
+    while (totalCalories < target) {
+      // not reading i !!!!
+      //typically i < 6
+      if (i < 1) {
+        await getMeal().catch(() => {
+          console.log('error');
+          i++;
+        });
+      }
     }
 
     async function getMeal() {
@@ -112,9 +115,6 @@ function MealPlan(props) {
       findWord(meal.results[0].title.toLowerCase()); // Parse title
       ids.push(meal.results[0].id);
       if (!duplicate && !idDuplicate && !dontInclude) {
-        console.log(
-          `original calories: ${meal.results[0].nutrition.nutrients[0].amount}`
-        );
         if (addCalories) {
           totalCalories =
             totalCalories +
