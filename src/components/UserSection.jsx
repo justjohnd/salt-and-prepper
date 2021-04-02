@@ -7,7 +7,7 @@ import FormAddPerson from './FormAddPerson';
 import FormEditPerson from './FormEditPerson';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 
-function UserSection() {
+function UserSection(props) {
   const [users, setUsers] = useState(USER_DATA);
   const [formVisibility, setFormVisibility] = useState(false);
   const [formEditVisibility, setFormEditVisibility] = useState(false);
@@ -20,6 +20,7 @@ function UserSection() {
     birthday: '',
     gender: '',
     calTarget: '',
+    userCal: '',
   });
 
   function changeFormVisibility() {
@@ -103,6 +104,7 @@ function UserSection() {
         )}
         <div className="container">
           <UserCards
+            addUserCal={props.addUserCal}
             users={users}
             onEdit={clickToEdit}
             onDelete={deleteUser}
