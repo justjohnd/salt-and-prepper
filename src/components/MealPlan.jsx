@@ -57,6 +57,14 @@ function MealPlan(props) {
     }
   }, [meals]);
 
+  function deleteMeal(foundId) {
+    setMeals(prevVal => {
+      return prevVal.filter(meal => {
+        return meal.results[0].id !== foundId;
+      });
+    });
+  }
+
   function findWord(string) {
     const words = string.split(' ');
 
@@ -91,17 +99,14 @@ function MealPlan(props) {
   async function getMeals() {
     let i = 0;
     let totalCalories = 0;
-    let target = 500; // props.userCalAverage;
+    let target = 700; // props.userCalAverage;
 
-    while (totalCalories < target) {
-      // not reading i !!!!
+    while (totalCalories < target && i < 2) {
       //typically i < 6
-      if (i < 1) {
-        await getMeal().catch(() => {
-          console.log('error');
-          i++;
-        });
-      }
+      await getMeal().catch(() => {
+        console.log('error');
+      });
+      i++;
     }
 
     async function getMeal() {
@@ -187,14 +192,8 @@ function MealPlan(props) {
           carbs={carbs}
           sugar={sugar}
           meals={meals}
-        />
-      )}
-      {meal && (
-        <ul>
-          {keywordsSeen.map((keyword, index) => {
-            return <li key={index}>{keyword}</li>;
-          })}
-        </ul>
+          deleteMeal={deleteMeal}
+        ></MealList>
       )}
     </div>
   );

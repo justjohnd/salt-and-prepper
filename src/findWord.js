@@ -7,6 +7,7 @@ const DONT_INCLUDE = {
   cheesecake: true,
   brownie: true,
   brownies: true,
+  choco: true,
 };
 
 const KEYWORDS = {
