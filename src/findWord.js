@@ -97,6 +97,8 @@ const DONT_ADD_CALORIES = {
   wrap: true,
   enchilada: true,
   enchiladas: true,
+  couscous: true,
+  652417: true,
 };
 
 const MUST_ADD_CALORIES = {
@@ -107,4 +109,5 @@ const MUST_ADD_CALORIES = {
 export default KEYWORDS;
 export { DONT_INCLUDE };
 export { DONT_ADD_CALORIES };
+export { MUST_ADD_CALORIES };
 export { BAD_API_IDS };

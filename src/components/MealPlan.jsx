@@ -4,8 +4,10 @@ import Checkbox from './Checkbox';
 import KEYWORDS, {
   DONT_INCLUDE,
   DONT_ADD_CALORIES,
+  MUST_ADD_CALORIES,
   BAD_API_IDS,
 } from '../findWord';
+import Meal from './Meal';
 
 function MealPlan(props) {
   const keywordsSeen = [];
@@ -100,6 +102,10 @@ function MealPlan(props) {
       if (DONT_ADD_CALORIES[word]) {
         addCalories = false;
       }
+
+      if (MUST_ADD_CALORIES[word]) {
+        addCalories = true;
+      }
     }
   }
 
@@ -146,7 +152,7 @@ function MealPlan(props) {
         if (target - runningCalTally < 250) {
           meal.results[0].addCalories = false;
           newCalTotal = newCalTotal - 200;
-        } else if (!addCalories) {
+        } else if (!addCalories || DONT_ADD_CALORIES[meal.results[0].id]) {
           newCalTotal = newCalTotal - 200;
           meal.results[0].addCalories = true;
         } else if (newCalTotal <= 250) {
