@@ -138,7 +138,7 @@ function MealPlan(props) {
       const duplicate = findDupes(keywordsSeen);
       const idDuplicate = findDupes(ids);
       const response = await fetch(
-        `https://api.spoonacular.com/recipes/complexSearch?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&diet=${diet}&type=main course,side dish,snack,appetizer,salad,soup,fingerfood&fillIngredients=true&instructionsRequired=true&maxReadyTime=30&maxSugar=10&minProtein=1&minCarbs=1&minFat=1&minCalories=1&maxCalories=${maxCalories}&sort=random&number=1`
+        `https://api.spoonacular.com/recipes/complexSearch?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&diet=${diet}&type=main course,side dish,snack,appetizer,salad,soup,fingerfood&excludeIngredients=white chocolate, vanilla bean paste&fillIngredients=true&instructionsRequired=true&maxReadyTime=30&maxSugar=10&minProtein=1&minCarbs=1&minFat=1&minCalories=1&maxCalories=${maxCalories}&sort=random&number=1`
       );
       const meal = await response.json();
       findWord(meal.results[0].title.toLowerCase()); // Parse title, determine how and whether to adjust calories

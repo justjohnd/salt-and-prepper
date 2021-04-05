@@ -55,7 +55,7 @@ const KEYWORDS = {
   pakoda: true,
   omelet: true,
   dip: true,
-  salse: true,
+  salsa: true,
 };
 
 const DONT_ADD_CALORIES = {
@@ -104,6 +104,8 @@ const DONT_ADD_CALORIES = {
   nachos: true,
   nacho: true,
   potatoes: true,
+  naan: true,
+  farfalle: true,
   652417: true,
 };
 
