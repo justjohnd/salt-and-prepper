@@ -18,6 +18,8 @@ const DONT_INCLUDE = {
   brownie: true,
   brownies: true,
   choco: true,
+  donut: true,
+  donuts: true,
 };
 
 const KEYWORDS = {
@@ -98,6 +100,10 @@ const DONT_ADD_CALORIES = {
   enchilada: true,
   enchiladas: true,
   couscous: true,
+  potato: true,
+  nachos: true,
+  nacho: true,
+  potatoes: true,
   652417: true,
 };
 
