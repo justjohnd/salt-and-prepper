@@ -1,3 +1,13 @@
+import { TurnedInNotOutlined } from '@material-ui/icons';
+
+const BAD_API_IDS = {
+  624304: true,
+  638790: true,
+  624194: true,
+  157109: true,
+  765725: true,
+};
+
 const DONT_INCLUDE = {
   chocolate: true,
   cookies: true,
@@ -14,7 +24,7 @@ const KEYWORDS = {
   bread: true,
   pizza: true,
   sandwich: true,
-  sandiwiches: true,
+  sandwiches: true,
   soup: true,
   thighs: true,
   frittata: true,
@@ -46,13 +56,55 @@ const KEYWORDS = {
   salse: true,
 };
 
-const ADD_CALORIES = {
+const DONT_ADD_CALORIES = {
+  quinoa: true,
+  sandwich: true,
+  sandwiches: true,
+  rice: true,
+  pizza: true,
+  puppies: true,
+  pasta: true,
+  BLT: true,
+  quiche: true,
+  beriyani: true,
+  pilaf: true,
+  macaroni: true,
+  mac: true,
+  burger: true,
+  burgers: true,
+  pita: true,
+  pocket: true,
+  waffle: true,
+  pancake: true,
+  flatbread: true,
+  grain: true,
+  spaghetti: true,
+  linguine: true,
+  penne: true,
+  noodle: true,
+  noodles: true,
+  pie: true,
+  tortilla: true,
+  taco: true,
+  tacos: true,
+  quesadilla: true,
+  quesadillas: true,
+  burrito: true,
+  burritos: true,
+  tostada: true,
+  tostadas: true,
+  croquettes: true,
+  wrap: true,
+  enchilada: true,
+  enchiladas: true,
+};
+
+const MUST_ADD_CALORIES = {
   dip: true,
   salsa: true,
-  curry: true,
-  dal: true,
 };
 
 export default KEYWORDS;
 export { DONT_INCLUDE };
-export { ADD_CALORIES };
+export { DONT_ADD_CALORIES };
+export { BAD_API_IDS };

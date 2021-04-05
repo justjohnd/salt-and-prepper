@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import MealList from './MealList';
 import Checkbox from './Checkbox';
-import KEYWORDS, { DONT_INCLUDE, ADD_CALORIES } from '../findWord';
+import KEYWORDS, {
+  DONT_INCLUDE,
+  DONT_ADD_CALORIES,
+  BAD_API_IDS,
+} from '../findWord';
 
 function MealPlan(props) {
   const keywordsSeen = [];
   const ids = [];
   const totals = [];
   let dontInclude = false;
-  let addCalories = false;
+  let addCalories = true;
+  let runningCalTally = 0;
+  let target = 700; // props.userCalAverage;
   const DIETS = [
     'Vegetarian',
     'Vegan',
@@ -33,12 +39,16 @@ function MealPlan(props) {
   }, [meal]);
 
   useEffect(() => {
+    //This is for totals
     if (meals.length > 0) {
+      let addCalCount = 0;
       for (let i = 0; i < 5; i++) {
         const totalingArray = meals.map(e => {
           if (e.results[0].addCalories) {
-            return e.results[0].nutrition.nutrients[i].amount + 200;
-          } else if (e.results[0].doubleCalories) {
+            addCalCount++;
+          }
+
+          if (e.results[0].doubleCalories) {
             return e.results[0].nutrition.nutrients[i].amount * 2;
           } else {
             return e.results[0].nutrition.nutrients[i].amount;
@@ -49,7 +59,7 @@ function MealPlan(props) {
         totals.push(nutrientTotal);
       }
 
-      setCalories(totals[0]);
+      setCalories(totals[0] + 200 * addCalCount);
       setProtein(totals[1]);
       setFat(totals[2]);
       setCarbs(totals[3]);
@@ -58,11 +68,21 @@ function MealPlan(props) {
   }, [meals]);
 
   function deleteMeal(foundId) {
+    const deleteMealCalories = meals.filter(meal => {
+      if (meal.results[0].id === foundId) {
+        return meal.results[0].nutrition.nutrients[0].amount;
+      }
+    });
+
+    runningCalTally = target - deleteMealCalories;
+    console.log(runningCalTally);
+
     setMeals(prevVal => {
       return prevVal.filter(meal => {
         return meal.results[0].id !== foundId;
       });
     });
+    getMeals();
   }
 
   function findWord(string) {
@@ -73,12 +93,12 @@ function MealPlan(props) {
         keywordsSeen.push(word);
       }
 
-      if (DONT_INCLUDE[word]) {
+      if (DONT_INCLUDE[word] || BAD_API_IDS[word]) {
         dontInclude = true;
       }
 
-      if (ADD_CALORIES[word]) {
-        addCalories = true;
+      if (DONT_ADD_CALORIES[word]) {
+        addCalories = false;
       }
     }
   }
@@ -98,10 +118,8 @@ function MealPlan(props) {
 
   async function getMeals() {
     let i = 0;
-    let totalCalories = 0;
-    let target = 700; // props.userCalAverage;
 
-    while (totalCalories < target && i < 2) {
+    while (runningCalTally < target && i < 4) {
       //typically i < 6
       await getMeal().catch(() => {
         console.log('error');
@@ -110,40 +128,39 @@ function MealPlan(props) {
     }
 
     async function getMeal() {
-      let maxCalories = target;
+      let maxCalories = target - runningCalTally;
       const duplicate = findDupes(keywordsSeen);
       const idDuplicate = findDupes(ids);
       const response = await fetch(
-        `https://api.spoonacular.com/recipes/complexSearch?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&diet=${diet}&instructionsRequired=true&maxReadyTime=30&maxSugar=10&minProtein=1&minCarbs=1&minFat=1&minCalories=1&maxCalories=${maxCalories}&sort=random&number=1`
+        `https://api.spoonacular.com/recipes/complexSearch?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&diet=${diet}&fillIngredients=true&instructionsRequired=true&maxReadyTime=30&maxSugar=10&minProtein=1&minCarbs=1&minFat=1&minCalories=1&maxCalories=${maxCalories}&sort=random&number=1`
       );
       const meal = await response.json();
-      findWord(meal.results[0].title.toLowerCase()); // Parse title
+      findWord(meal.results[0].title.toLowerCase()); // Parse title, determine how and whether to adjust calories
       ids.push(meal.results[0].id);
       if (!duplicate && !idDuplicate && !dontInclude) {
-        if (addCalories) {
-          totalCalories =
-            totalCalories +
-            Number(meal.results[0].nutrition.nutrients[0].amount) +
-            200;
+        let newCalTotal = Number(meal.results[0].nutrition.nutrients[0].amount);
+        meal.results[0].addCalories = true;
+        meal.results[0].doubleCalories = false;
+        newCalTotal = newCalTotal + 200;
+
+        if (target - runningCalTally < 250) {
+          meal.results[0].addCalories = false;
+          newCalTotal = newCalTotal - 200;
+        } else if (!addCalories) {
+          newCalTotal = newCalTotal - 200;
           meal.results[0].addCalories = true;
-          meal.results[0].doubleCalories = false;
-        } else if (
-          Number(meal.results[0].nutrition.nutrients[0].amount) <= 250
-        ) {
-          totalCalories =
-            totalCalories +
-            Number(meal.results[0].nutrition.nutrients[0].amount) * 2;
-          meal.results[0].addCalories = false;
+        } else if (newCalTotal <= 250) {
+          // Note: I can probably remove all double-calorie logic because addCalories is added to every low-calorie dish
+          newCalTotal = newCalTotal * 2;
           meal.results[0].doubleCalories = true;
-        } else {
-          totalCalories =
-            totalCalories +
-            Number(meal.results[0].nutrition.nutrients[0].amount);
-          meal.results[0].addCalories = false;
-          meal.results[0].doubleCalories = false;
         }
+        meal.results[0].adjustedCal = newCalTotal;
+        runningCalTally = runningCalTally + newCalTotal;
+        console.log(meal.results[0]);
+        console.log(`Running Calorie Tally: ${runningCalTally}`);
         return setMeal(meal);
       } else {
+        console.log(meal.results[0]);
         console.log(
           `Fetched ${meal.results[0].title.toLowerCase()} discarded because either ID was repeated, it was found on the "DON'T INCLUDE" list, or it was too similar to a previous fetch`
         );

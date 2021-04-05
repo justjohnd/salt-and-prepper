@@ -15,8 +15,12 @@ export default function Meal(props) {
     );
     const data = await response.json();
     if (data.analyzedInstructions[0].steps.length === 1) {
+      console.log(
+        `Note: recipe with ${props.meal.id} has been removed because it does not contain recipe instructions`
+      );
       props.deleteMeal(props.meal.id);
     } else {
+      console.log(data);
       setRecipeData(data);
     }
   }
