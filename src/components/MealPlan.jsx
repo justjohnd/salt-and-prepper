@@ -16,7 +16,7 @@ function MealPlan(props) {
   let dontInclude = false;
   let addCalories = true;
   let runningCalTally = 0;
-  let target = 700; // props.userCalAverage;
+  let target = props.userCalAverage;
   const DIETS = [
     'Vegetarian',
     'Vegan',
@@ -26,6 +26,7 @@ function MealPlan(props) {
   ];
   const [meal, setMeal] = useState(null);
   const [meals, setMeals] = useState([]);
+  const [getMealsComplete, setGetMealsComplete] = useState(false);
   const [calorieTarget, setCalorieTarget] = useState(props.userCalAverage);
   const [diet, setDiet] = useState('');
   const [calories, setCalories] = useState(0);
@@ -43,13 +44,8 @@ function MealPlan(props) {
   useEffect(() => {
     //This is for totals
     if (meals.length > 0) {
-      let addCalCount = 0;
       for (let i = 0; i < 5; i++) {
         const totalingArray = meals.map(e => {
-          if (e.results[0].addCalories) {
-            addCalCount++;
-          }
-
           if (e.results[0].doubleCalories) {
             return e.results[0].nutrition.nutrients[i].amount * 2;
           } else {
@@ -61,7 +57,15 @@ function MealPlan(props) {
         totals.push(nutrientTotal);
       }
 
-      setCalories(totals[0] + 200 * addCalCount);
+      const addCaloriesArray = meals.map(e => e.results[0].addCalories);
+      let addCalTotal = 0;
+      for (let i = 0; i < addCaloriesArray.length; i++) {
+        if (addCaloriesArray[i]) {
+          addCalTotal++;
+        }
+      }
+
+      setCalories(totals[0] + 200 * addCalTotal);
       setProtein(totals[1]);
       setFat(totals[2]);
       setCarbs(totals[3]);
@@ -125,13 +129,14 @@ function MealPlan(props) {
   async function getMeals() {
     let i = 0;
 
-    while (runningCalTally < target && i < 4) {
-      //typically i < 6
+    while (runningCalTally < target && i < 5) {
       await getMeal().catch(() => {
         console.log('error');
       });
       i++;
     }
+
+    setGetMealsComplete(true);
 
     async function getMeal() {
       let maxCalories = target - runningCalTally;
@@ -207,8 +212,9 @@ function MealPlan(props) {
           <button onClick={getMeals}>Get Daily Meal Plan</button>
         </div>
       </section>
-      {meals.length > 0 && (
+      {getMealsComplete && (
         <MealList
+          target={target}
           calories={calories}
           protein={protein}
           fat={fat}

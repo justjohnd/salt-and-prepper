@@ -7,25 +7,24 @@ export default function Meal(props) {
     getMealInformation().catch(() => {
       console.log('error');
     });
+
+    async function getMealInformation() {
+      const response = await fetch(
+        `https://api.spoonacular.com/recipes/${props.meal.id}/information?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&includeNutrition=false`
+      );
+      const data = await response.json();
+      console.log(data);
+      if (data.analyzedInstructions[0].steps.length === 1) {
+        console.log(
+          `Note: recipe with ${props.meal.id} has been removed because it does not contain recipe instructions`
+        );
+        props.deleteMeal(props.meal.id);
+      } else {
+        setRecipeData(data);
+      }
+    }
   }, [props.meal.id]);
 
-  async function getMealInformation() {
-    const response = await fetch(
-      `https://api.spoonacular.com/recipes/${props.meal.id}/information?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&includeNutrition=false`
-    );
-    const data = await response.json();
-    if (data.analyzedInstructions[0].steps.length === 1) {
-      console.log(
-        `Note: recipe with ${props.meal.id} has been removed because it does not contain recipe instructions`
-      );
-      props.deleteMeal(props.meal.id);
-    } else {
-      console.log(data);
-      setRecipeData(data);
-    }
-  }
-
-  let calories = props.meal.nutrition.nutrients[0].amount.toFixed(0);
   return (
     <div>
       {recipeData && (
@@ -37,13 +36,14 @@ export default function Meal(props) {
             <li> Preparation time: {recipeData.readyInMinutes} minutes</li>
             <li>
               Number of servings:
-              {/* {calories <= 300 ? recipeData.servings / 2 : recipeData.servings} */}
               {recipeData.servings}
             </li>
             <li>
               Calories:
-              {/* {calories <= 300 ? calories * 2 : calories} */}
-              {calories}
+              {props.meal.adjustedCal.toFixed(0)}
+            </li>
+            <li>
+              {props.meal.addCalories && 'Calories were added to this meal'}
             </li>
           </ul>
 

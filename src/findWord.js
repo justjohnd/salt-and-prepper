@@ -97,6 +97,7 @@ const DONT_ADD_CALORIES = {
   tostadas: true,
   croquettes: true,
   wrap: true,
+  wraps: true,
   enchilada: true,
   enchiladas: true,
   couscous: true,
@@ -106,7 +107,12 @@ const DONT_ADD_CALORIES = {
   potatoes: true,
   naan: true,
   farfalle: true,
+  dumpling: true,
+  dumplings: true,
+  fettuccine: true,
+  alfredo: true,
   652417: true,
+  157456: true,
 };
 
 const MUST_ADD_CALORIES = {

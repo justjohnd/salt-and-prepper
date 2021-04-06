@@ -5,10 +5,13 @@ export default function MealList(props) {
   return (
     <main>
       <section className="nutrients">
+        {/* Calculates TOTALS for all meals generate */}
         <h1>Macros</h1>
         <ul>
           <li>Calories: {props.calories.toFixed(0)}</li>
-          <li>Difference from target: {2000 - props.calories.toFixed(0)} </li>
+          <li>
+            Difference from target: {props.target - props.calories.toFixed(0)}{' '}
+          </li>
           <li>Protein: {props.protein.toFixed(0)}</li>
           <li>Fat: {props.fat.toFixed(0)}</li>
           <li>Carbohydrates: {props.carbs.toFixed(0)}</li>
