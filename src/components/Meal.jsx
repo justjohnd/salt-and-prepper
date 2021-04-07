@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function Meal(props) {
   const [recipeData, setRecipeData] = useState(null);
@@ -71,7 +72,7 @@ export default function Meal(props) {
           {showInstructions && (
             <ul className="instructions">
               {recipeData.analyzedInstructions[0].steps.map(e => {
-                return <li>{e.step}</li>;
+                return <li key={uuidv4()}>{e.step}</li>;
               })}
             </ul>
           )}
