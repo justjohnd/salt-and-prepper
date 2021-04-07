@@ -1,14 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import MealList from './MealList';
 import Checkbox from './Checkbox';
-import KEYWORDS, { DONT_INCLUDE, ADD_CALORIES } from '../findWord';
+import KEYWORDS, {
+  DONT_INCLUDE,
+  DONT_ADD_CALORIES,
+  MUST_ADD_CALORIES,
+  BAD_API_IDS,
+} from '../findWord';
 
 function MealPlan(props) {
   const keywordsSeen = [];
   const ids = [];
   const totals = [];
   let dontInclude = false;
-  let addCalories = false;
+  let addCalories = true;
+  let runningCalTally = 0;
+  let target = props.userCalAverage;
   const DIETS = [
     'Vegetarian',
     'Vegan',
@@ -18,7 +25,7 @@ function MealPlan(props) {
   ];
   const [meal, setMeal] = useState(null);
   const [meals, setMeals] = useState([]);
-  const [calorieTarget, setCalorieTarget] = useState(props.userCalAverage);
+  const [getMealsComplete, setGetMealsComplete] = useState(false);
   const [diet, setDiet] = useState('');
   const [calories, setCalories] = useState(0);
   const [protein, setProtein] = useState(0);
@@ -29,17 +36,15 @@ function MealPlan(props) {
   useEffect(() => {
     if (meal) {
       setMeals([...meals, meal]);
-      console.log(meals);
     }
   }, [meal]);
 
   useEffect(() => {
+    //This is for totals
     if (meals.length > 0) {
-      for (let i = 0; i < 5; i++) {
+      for (let i = 1; i < 5; i++) {
         const totalingArray = meals.map(e => {
-          if (e.results[0].addCalories) {
-            return e.results[0].nutrition.nutrients[i].amount + 200;
-          } else if (e.results[0].doubleCalories) {
+          if (e.results[0].doubleCalories) {
             return e.results[0].nutrition.nutrients[i].amount * 2;
           } else {
             return e.results[0].nutrition.nutrients[i].amount;
@@ -50,6 +55,10 @@ function MealPlan(props) {
         totals.push(nutrientTotal);
       }
 
+      const calTotalArray = meals.map(e => e.results[0].adjustedCal);
+      const calTotal = calTotalArray.reduce((acc, cur) => acc + cur);
+      totals.unshift(calTotal);
+
       setCalories(totals[0]);
       setProtein(totals[1]);
       setFat(totals[2]);
@@ -58,20 +67,46 @@ function MealPlan(props) {
     }
   }, [meals]);
 
+  function deleteMeal(foundId) {
+    const deleteMealCalories = meals.filter(meal => {
+      if (meal.results[0].id === foundId) {
+        return meal;
+      }
+    });
+
+    runningCalTally =
+      target - deleteMealCalories[0].results[0].nutrition.nutrients[0].amount;
+    // console.log(runningCalTally);
+
+    setMeals(prevVal => {
+      return prevVal.filter(meal => {
+        return meal.results[0].id !== foundId;
+      });
+    });
+    getMeals();
+  }
+
   function findWord(string) {
     const words = string.split(' ');
+    // console.log(words);
 
     for (const word of words) {
       if (KEYWORDS[word]) {
         keywordsSeen.push(word);
       }
 
-      if (DONT_INCLUDE[word]) {
+      if (DONT_INCLUDE[word] || BAD_API_IDS[word]) {
         dontInclude = true;
       }
 
-      if (ADD_CALORIES[word]) {
+      if (DONT_ADD_CALORIES[word]) {
+        addCalories = false;
+        // console.log(`addCalories: ${addCalories}`);
+      }
+
+      if (MUST_ADD_CALORIES[word]) {
         addCalories = true;
+        // console.log(`addCalories: ${addCalories}`);
       }
     }
   }
@@ -91,198 +126,67 @@ function MealPlan(props) {
 
   async function getMeals() {
     let i = 0;
-    let totalCalories = 0;
-    let target = 500; //props.userCalAverage;
 
-    while (totalCalories < target && i < 2) {
+    while (runningCalTally < target && i < 3) {
       await getMeal().catch(() => {
         console.log('error');
-        i++;
       });
+      i++;
+      console.log(i);
     }
 
+    setGetMealsComplete(true);
+
     async function getMeal() {
-      let maxCalories = target;
+      let maxCalories = target - runningCalTally;
       const duplicate = findDupes(keywordsSeen);
       const idDuplicate = findDupes(ids);
       const response = await fetch(
-        `https://api.spoonacular.com/recipes/complexSearch?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&diet=${diet}&instructionsRequired=true&maxReadyTime=30&maxSugar=10&minProtein=1&minCarbs=1&minFat=1&minCalories=1&maxCalories=${maxCalories}&sort=random&number=1`
+        `https://api.spoonacular.com/recipes/complexSearch?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&diet=${diet}&type=main course,side dish,snack,appetizer,salad,soup,fingerfood&excludeIngredients=white chocolate,vanilla bean paste,semi sweet chocolate chips&fillIngredients=true&instructionsRequired=true&maxReadyTime=30&maxSugar=10&minProtein=1&minCarbs=1&minFat=1&minCalories=1&maxCalories=${maxCalories}&sort=random&number=1`
       );
       const meal = await response.json();
-      findWord(meal.results[0].title.toLowerCase()); // Parse title
+      dontInclude = false;
+      addCalories = true;
+      findWord(meal.results[0].title.toLowerCase()); // Parse title, determine how and whether to adjust calories
       ids.push(meal.results[0].id);
       if (!duplicate && !idDuplicate && !dontInclude) {
-        console.log(
-          `original calories: ${meal.results[0].nutrition.nutrients[0].amount}`
-        );
-        if (addCalories) {
-          totalCalories =
-            totalCalories +
-            Number(meal.results[0].nutrition.nutrients[0].amount) +
-            200;
-          meal.results[0].addCalories = true;
-          meal.results[0].doubleCalories = false;
-        } else if (
-          Number(meal.results[0].nutrition.nutrients[0].amount) <= 250
-        ) {
-          totalCalories =
-            totalCalories +
-            Number(meal.results[0].nutrition.nutrients[0].amount) * 2;
+        console.log(idDuplicate);
+        let newCalTotal = Number(meal.results[0].nutrition.nutrients[0].amount);
+        meal.results[0].addCalories = true;
+        meal.results[0].doubleCalories = false;
+        newCalTotal = newCalTotal + 200;
+
+        if (target - runningCalTally < 250) {
           meal.results[0].addCalories = false;
-          meal.results[0].doubleCalories = true;
-        } else {
-          totalCalories =
-            totalCalories +
-            Number(meal.results[0].nutrition.nutrients[0].amount);
-          meal.results[0].addCalories = false;
-          meal.results[0].doubleCalories = false;
+          addCalories = false;
+          newCalTotal = newCalTotal - 200;
+          // console.log(`addCalories: ${addCalories}`);
+        } else if (!addCalories || DONT_ADD_CALORIES[meal.results[0].id]) {
+          if (newCalTotal <= 250) {
+            newCalTotal = newCalTotal * 2;
+            meal.results[0].addCalories = true;
+            meal.results[0].doubleCalories = true;
+            // console.log(`addCalories: ${addCalories}`);
+          } else {
+            newCalTotal = newCalTotal - 200;
+            meal.results[0].addCalories = false;
+            addCalories = false;
+            // console.log(`addCalories: ${addCalories}`);
+          }
         }
+        meal.results[0].adjustedCal = newCalTotal;
+        runningCalTally = runningCalTally + newCalTotal;
+        // console.log(meal.results[0]);
+        // console.log(`Running Calorie Tally: ${runningCalTally}`);
         return setMeal(meal);
       } else {
+        console.log(meal.results[0]);
         console.log(
           `Fetched ${meal.results[0].title.toLowerCase()} discarded because either ID was repeated, it was found on the "DON'T INCLUDE" list, or it was too similar to a previous fetch`
         );
       }
     }
   }
-
-  //     .then(() => {
-  //       if (totalCalories <= target) {
-  //         if (totalCalories < target - 250 && totalCalories < target - 50) {
-  //           maxCalories = target - totalCalories + 50;
-  //         } else {
-  //           maxCalories = 250;
-  //         }
-  //         return fetch(
-  //           `https://api.spoonacular.com/recipes/complexSearch?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&diet=${diet}&maxReadyTime=30&maxSugar=10&minProtein=1&minCarbs=1&minFat=1&minCalories=1&maxCalories=${maxCalories}&sort=random&number=1`
-  //         )
-  //           .then(response => response.json())
-  //           .then(data => {
-  //             // console.log(findDupes(keywordsSeen));
-  //             totalCalories =
-  //               totalCalories +
-  //               Number(data.results[0].nutrition.nutrients[0].amount);
-  //             setMeal(data);
-  //             findWord(data.results[0].title.toLowerCase());
-  //           })
-  //           .catch(() => {
-  //             console.log('error');
-  //           });
-  //       } else {
-  //         console.log(
-  //           `total exceeds target or ${target}, currently at ${totalCalories}`
-  //         );
-  //       }
-  //     })
-
-  //     .then(() => {
-  //       if (totalCalories <= target) {
-  //         if (totalCalories < target - 250 && totalCalories < target - 50) {
-  //           maxCalories = target - totalCalories + 50;
-  //         } else {
-  //           maxCalories = 250;
-  //         }
-  //         return fetch(
-  //           `https://api.spoonacular.com/recipes/complexSearch?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&diet=${diet}&maxReadyTime=30&maxSugar=10&minProtein=1&minCarbs=1&minFat=1&minCalories=1&maxCalories=${maxCalories}&sort=random&number=1`
-  //         )
-  //           .then(response => response.json())
-  //           .then(data => {
-  //             // console.log(`keywords already seen: ${findDupes(keywordsSeen)}`);
-  //             totalCalories =
-  //               totalCalories +
-  //               Number(data.results[0].nutrition.nutrients[0].amount);
-  //             setMeal(data);
-  //             findWord(data.results[0].title.toLowerCase());
-  //           })
-  //           .catch(() => {
-  //             console.log('error');
-  //           });
-  //       } else {
-  //         console.log(`total exceeds target, currently at ${totalCalories}`);
-  //       }
-  //     })
-
-  //     .then(() => {
-  //       if (totalCalories <= target) {
-  //         if (totalCalories < target - 250 && totalCalories < target - 50) {
-  //           maxCalories = target - totalCalories + 50;
-  //         } else {
-  //           maxCalories = 250;
-  //         }
-  //         return fetch(
-  //           `https://api.spoonacular.com/recipes/complexSearch?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&diet=${diet}&maxReadyTime=30&maxSugar=10&minProtein=1&minCarbs=1&minFat=1&minCalories=1&maxCalories=${maxCalories}&sort=random&number=1`
-  //         )
-  //           .then(response => response.json())
-  //           .then(data => {
-  //             // console.log(`keywords already seen: ${findDupes(keywordsSeen)}`);
-  //             totalCalories =
-  //               totalCalories +
-  //               Number(data.results[0].nutrition.nutrients[0].amount);
-  //             setMeal(data);
-  //             findWord(data.results[0].title.toLowerCase());
-  //           })
-  //           .catch(() => {
-  //             console.log('error');
-  //           });
-  //       } else {
-  //         console.log(`total exceeds target, currently at ${totalCalories}`);
-  //       }
-  //     })
-
-  //     .then(() => {
-  //       if (totalCalories <= target) {
-  //         if (totalCalories < target - 250 && totalCalories < target - 50) {
-  //           maxCalories = target - totalCalories + 50;
-  //         } else {
-  //           maxCalories = 250;
-  //         }
-  //         return fetch(
-  //           `https://api.spoonacular.com/recipes/complexSearch?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&diet=${diet}&maxReadyTime=30&maxSugar=10&minProtein=1&minCarbs=1&minFat=1&minCalories=1&maxCalories=${maxCalories}&sort=random&number=1`
-  //         )
-  //           .then(response => response.json())
-  //           .then(data => {
-  //             // console.log(`keywords already seen: ${findDupes(keywordsSeen)}`);
-  //             totalCalories =
-  //               totalCalories +
-  //               Number(data.results[0].nutrition.nutrients[0].amount);
-  //             setMeal(data);
-  //             findWord(data.results[0].title.toLowerCase());
-  //           })
-  //           .catch(() => {
-  //             console.log('error');
-  //           });
-  //       } else {
-  //         console.log(`total exceeds target, currently at ${totalCalories}`);
-  //       }
-  //     })
-
-  //     .then(() => {
-  //       if (totalCalories <= target) {
-  //         if (totalCalories < target - 250 && totalCalories < target - 50) {
-  //           maxCalories = target - totalCalories + 50;
-  //         } else {
-  //           maxCalories = 250;
-  //         }
-  //         return fetch(
-  //           `https://api.spoonacular.com/recipes/complexSearch?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&diet=${diet}&maxReadyTime=30&maxSugar=10&minProtein=1&minCarbs=1&minFat=1&minCalories=1&maxCalories=${maxCalories}&sort=random&number=1`
-  //         )
-  //           .then(response => response.json())
-  //           .then(data => {
-  //             // console.log(`keywords already seen: ${findDupes(keywordsSeen)}`);
-  //             totalCalories =
-  //               totalCalories +
-  //               Number(data.results[0].nutrition.nutrients[0].amount);
-  //             setMeal(data);
-  //             findWord(data.results[0].title.toLowerCase());
-  //           })
-  //           .catch(() => {
-  //             console.log('error');
-  //           });
-  //       } else {
-  //         console.log(`total exceeds target, currently at ${totalCalories}`);
-  //       }
-  //     });
-  // }
 
   function handleDiet(e) {
     setDiet();
@@ -317,22 +221,17 @@ function MealPlan(props) {
           <button onClick={getMeals}>Get Daily Meal Plan</button>
         </div>
       </section>
-      {meals.length > 0 && (
+      {getMealsComplete && (
         <MealList
+          target={target}
           calories={calories}
           protein={protein}
           fat={fat}
           carbs={carbs}
           sugar={sugar}
           meals={meals}
-        />
-      )}
-      {meal && (
-        <ul>
-          {keywordsSeen.map((keyword, index) => {
-            return <li key={index}>{keyword}</li>;
-          })}
-        </ul>
+          deleteMeal={deleteMeal}
+        ></MealList>
       )}
     </div>
   );
