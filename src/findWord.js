@@ -66,7 +66,7 @@ const DONT_ADD_CALORIES = {
   pizza: true,
   puppies: true,
   pasta: true,
-  BLT: true,
+  blt: true,
   quiche: true,
   beriyani: true,
   pilaf: true,

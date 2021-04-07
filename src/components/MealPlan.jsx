@@ -7,7 +7,6 @@ import KEYWORDS, {
   MUST_ADD_CALORIES,
   BAD_API_IDS,
 } from '../findWord';
-import Meal from './Meal';
 
 function MealPlan(props) {
   const keywordsSeen = [];
@@ -27,7 +26,6 @@ function MealPlan(props) {
   const [meal, setMeal] = useState(null);
   const [meals, setMeals] = useState([]);
   const [getMealsComplete, setGetMealsComplete] = useState(false);
-  const [calorieTarget, setCalorieTarget] = useState(props.userCalAverage);
   const [diet, setDiet] = useState('');
   const [calories, setCalories] = useState(0);
   const [protein, setProtein] = useState(0);
@@ -44,7 +42,7 @@ function MealPlan(props) {
   useEffect(() => {
     //This is for totals
     if (meals.length > 0) {
-      for (let i = 0; i < 5; i++) {
+      for (let i = 1; i < 5; i++) {
         const totalingArray = meals.map(e => {
           if (e.results[0].doubleCalories) {
             return e.results[0].nutrition.nutrients[i].amount * 2;
@@ -57,15 +55,11 @@ function MealPlan(props) {
         totals.push(nutrientTotal);
       }
 
-      const addCaloriesArray = meals.map(e => e.results[0].addCalories);
-      let addCalTotal = 0;
-      for (let i = 0; i < addCaloriesArray.length; i++) {
-        if (addCaloriesArray[i]) {
-          addCalTotal++;
-        }
-      }
+      const calTotalArray = meals.map(e => e.results[0].adjustedCal);
+      const calTotal = calTotalArray.reduce((acc, cur) => acc + cur);
+      totals.unshift(calTotal);
 
-      setCalories(totals[0] + 200 * addCalTotal);
+      setCalories(totals[0]);
       setProtein(totals[1]);
       setFat(totals[2]);
       setCarbs(totals[3]);
@@ -76,12 +70,13 @@ function MealPlan(props) {
   function deleteMeal(foundId) {
     const deleteMealCalories = meals.filter(meal => {
       if (meal.results[0].id === foundId) {
-        return meal.results[0].nutrition.nutrients[0].amount;
+        return meal;
       }
     });
 
-    runningCalTally = target - deleteMealCalories;
-    console.log(runningCalTally);
+    runningCalTally =
+      target - deleteMealCalories[0].results[0].nutrition.nutrients[0].amount;
+    // console.log(runningCalTally);
 
     setMeals(prevVal => {
       return prevVal.filter(meal => {
@@ -93,6 +88,7 @@ function MealPlan(props) {
 
   function findWord(string) {
     const words = string.split(' ');
+    // console.log(words);
 
     for (const word of words) {
       if (KEYWORDS[word]) {
@@ -105,10 +101,12 @@ function MealPlan(props) {
 
       if (DONT_ADD_CALORIES[word]) {
         addCalories = false;
+        // console.log(`addCalories: ${addCalories}`);
       }
 
       if (MUST_ADD_CALORIES[word]) {
         addCalories = true;
+        // console.log(`addCalories: ${addCalories}`);
       }
     }
   }
@@ -129,11 +127,12 @@ function MealPlan(props) {
   async function getMeals() {
     let i = 0;
 
-    while (runningCalTally < target && i < 5) {
+    while (runningCalTally < target && i < 3) {
       await getMeal().catch(() => {
         console.log('error');
       });
       i++;
+      console.log(i);
     }
 
     setGetMealsComplete(true);
@@ -143,12 +142,15 @@ function MealPlan(props) {
       const duplicate = findDupes(keywordsSeen);
       const idDuplicate = findDupes(ids);
       const response = await fetch(
-        `https://api.spoonacular.com/recipes/complexSearch?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&diet=${diet}&type=main course,side dish,snack,appetizer,salad,soup,fingerfood&excludeIngredients=white chocolate, vanilla bean paste&fillIngredients=true&instructionsRequired=true&maxReadyTime=30&maxSugar=10&minProtein=1&minCarbs=1&minFat=1&minCalories=1&maxCalories=${maxCalories}&sort=random&number=1`
+        `https://api.spoonacular.com/recipes/complexSearch?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&diet=${diet}&type=main course,side dish,snack,appetizer,salad,soup,fingerfood&excludeIngredients=white chocolate,vanilla bean paste,semi sweet chocolate chips&fillIngredients=true&instructionsRequired=true&maxReadyTime=30&maxSugar=10&minProtein=1&minCarbs=1&minFat=1&minCalories=1&maxCalories=${maxCalories}&sort=random&number=1`
       );
       const meal = await response.json();
+      dontInclude = false;
+      addCalories = true;
       findWord(meal.results[0].title.toLowerCase()); // Parse title, determine how and whether to adjust calories
       ids.push(meal.results[0].id);
       if (!duplicate && !idDuplicate && !dontInclude) {
+        console.log(idDuplicate);
         let newCalTotal = Number(meal.results[0].nutrition.nutrients[0].amount);
         meal.results[0].addCalories = true;
         meal.results[0].doubleCalories = false;
@@ -156,19 +158,26 @@ function MealPlan(props) {
 
         if (target - runningCalTally < 250) {
           meal.results[0].addCalories = false;
+          addCalories = false;
           newCalTotal = newCalTotal - 200;
+          // console.log(`addCalories: ${addCalories}`);
         } else if (!addCalories || DONT_ADD_CALORIES[meal.results[0].id]) {
-          newCalTotal = newCalTotal - 200;
-          meal.results[0].addCalories = false;
-        } else if (newCalTotal <= 250) {
-          // Note: I can probably remove all double-calorie logic because addCalories is added to every low-calorie dish
-          newCalTotal = newCalTotal * 2;
-          meal.results[0].doubleCalories = true;
+          if (newCalTotal <= 250) {
+            newCalTotal = newCalTotal * 2;
+            meal.results[0].addCalories = true;
+            meal.results[0].doubleCalories = true;
+            // console.log(`addCalories: ${addCalories}`);
+          } else {
+            newCalTotal = newCalTotal - 200;
+            meal.results[0].addCalories = false;
+            addCalories = false;
+            // console.log(`addCalories: ${addCalories}`);
+          }
         }
         meal.results[0].adjustedCal = newCalTotal;
         runningCalTally = runningCalTally + newCalTotal;
-        console.log(meal.results[0]);
-        console.log(`Running Calorie Tally: ${runningCalTally}`);
+        // console.log(meal.results[0]);
+        // console.log(`Running Calorie Tally: ${runningCalTally}`);
         return setMeal(meal);
       } else {
         console.log(meal.results[0]);

@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 
 export default function Meal(props) {
   const [recipeData, setRecipeData] = useState(null);
+  const [showInstructions, setShowInstructions] = useState(false);
+  const [showInstructionsButton, setShowInstructionsButton] = useState(
+    'Show Instructions'
+  );
 
   useEffect(() => {
     getMealInformation().catch(() => {
@@ -25,35 +29,62 @@ export default function Meal(props) {
     }
   }, [props.meal.id]);
 
+  function getInstructions() {
+    setShowInstructions(prevValue => {
+      return !prevValue;
+    });
+
+    if (getInstructions) {
+      setShowInstructionsButton('Hide Instructions');
+    } else {
+      setShowInstructionsButton('Show Instructions');
+    }
+  }
+
   return (
-    <div>
+    <div className="recipe">
       {recipeData && (
         <div>
-          <h1>{props.meal.title}</h1>
+          <h2 className="title">{props.meal.title}</h2>
           <img src={recipeData.image} alt="recipe" />
           <ul className="instructions">
-            {/* Note: servings and calories are adjusted for small size dishes */}
-            <li> Preparation time: {recipeData.readyInMinutes} minutes</li>
             <li>
-              Number of servings:
+              <strong>Preparation time: </strong> {recipeData.readyInMinutes}{' '}
+              minutes
+            </li>
+            <li>
+              <strong>Number of servings: </strong>
               {recipeData.servings}
             </li>
             <li>
-              Calories:
+              <strong>Calories: </strong>
               {props.meal.adjustedCal.toFixed(0)}
             </li>
             <li>
-              {props.meal.addCalories && 'Calories were added to this meal'}
+              <strong>
+                {props.meal.addCalories && 'Calories were added to this meal'}
+              </strong>
             </li>
           </ul>
 
-          <a
-            href={recipeData.sourceUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Go to Recipe
-          </a>
+          <button onClick={getInstructions}>{showInstructionsButton}</button>
+          {showInstructions && (
+            <ul className="instructions">
+              {recipeData.analyzedInstructions[0].steps.map(e => {
+                return <li>{e.step}</li>;
+              })}
+            </ul>
+          )}
+
+          <button>
+            <a
+              href={recipeData.sourceUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Go to Recipe
+            </a>
+          </button>
         </div>
       )}
     </div>
