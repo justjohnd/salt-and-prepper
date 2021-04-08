@@ -15,7 +15,7 @@ function MealPlan(props) {
   let dontInclude = false;
   let addCalories = true;
   let runningCalTally = 0;
-  let target = props.userCalAverage;
+  let target = 1000; // props.userCalAverage;
   const DIETS = [
     'Vegetarian',
     'Vegan',
@@ -32,6 +32,24 @@ function MealPlan(props) {
   const [fat, setFat] = useState(0);
   const [carbs, setCarbs] = useState(0);
   const [sugar, setSugar] = useState(0);
+  const [numberOfMeals, setNumberOfMeals] = useState(1);
+  const [mealPairs, setMealPairs] = useState([
+    {
+      key: 1,
+      meal1: {},
+      meal2: {},
+    },
+    {
+      key: 2,
+      meal1: {},
+      meal2: {},
+    },
+    {
+      key: 3,
+      meal1: {},
+      meal2: {},
+    },
+  ]);
 
   useEffect(() => {
     if (meal) {
@@ -40,7 +58,7 @@ function MealPlan(props) {
   }, [meal]);
 
   useEffect(() => {
-    //This is for totals
+    //This totals all macros except calories
     if (meals.length > 0) {
       for (let i = 1; i < 5; i++) {
         const totalingArray = meals.map(e => {
@@ -55,7 +73,9 @@ function MealPlan(props) {
         totals.push(nutrientTotal);
       }
 
+      //calTotalArray also to be used order dishes into seperate meals
       const calTotalArray = meals.map(e => e.results[0].adjustedCal);
+      // console.log(calTotalArray);
       const calTotal = calTotalArray.reduce((acc, cur) => acc + cur);
       totals.unshift(calTotal);
 
@@ -64,6 +84,61 @@ function MealPlan(props) {
       setFat(totals[2]);
       setCarbs(totals[3]);
       setSugar(totals[4]);
+    }
+
+    if (meals.length > 1) {
+      mealItems();
+      console.log(`mealItems ran`);
+    }
+
+    function mealItems() {
+      let sortedMeals = [...meals];
+      let pairedDishes = Math.floor(sortedMeals.length / 2);
+      let remainder = pairedDishes % 2;
+      let pairedDishGroup = [];
+
+      for (let i = 0; i < pairedDishes; i++) {
+        let dishGroup = [];
+        dishGroup.push(sortedMeals[i]);
+        dishGroup.push(sortedMeals[sortedMeals.length - (i + 1)]);
+        pairedDishGroup.push(dishGroup);
+      }
+      // I there is a single remaining dish this section will find the item and add it to the array
+      if (remainder !== 0) {
+        const mealsIds = mealIdMap(meals);
+        const sortedMealsIds = mealIdMap(sortedMeals);
+        const difference = mealsIds.filter(
+          e => sortedMealsIds.indexOf(e) === -1
+        );
+        let dishGroup = [];
+        dishGroup.push(difference);
+        pairedDishGroup.push(dishGroup);
+
+        function mealIdMap(array) {
+          return array.map(e => e.results[0].id);
+        }
+      }
+
+      return pairedDishGroup;
+    }
+
+    //This function will sort the meals objects in order or minimum to maximum calories
+    function sortMeals(dishes) {
+      const ordered = [];
+
+      for (let i = 0; i < dishes.length; i++) {
+        const val = dishes[i].results[0].adjustedCal;
+        console.log(val);
+        let currIdx = 0;
+
+        while (currIdx < ordered.length) {
+          if (val < ordered[currIdx].results[0].adjustedCal) break;
+          currIdx++;
+        }
+        ordered.splice(currIdx, 0, dishes[i]);
+      }
+      console.log(ordered);
+      return ordered;
     }
   }, [meals]);
 
@@ -127,12 +202,12 @@ function MealPlan(props) {
   async function getMeals() {
     let i = 0;
 
-    while (runningCalTally < target && i < 3) {
+    while (runningCalTally < target && i < numberOfMeals * 2) {
       await getMeal().catch(() => {
-        console.log('error');
+        console.log(`Error: Meal did not generate.`);
       });
       i++;
-      console.log(i);
+      // console.log(i);
     }
 
     setGetMealsComplete(true);
@@ -150,7 +225,7 @@ function MealPlan(props) {
       findWord(meal.results[0].title.toLowerCase()); // Parse title, determine how and whether to adjust calories
       ids.push(meal.results[0].id);
       if (!duplicate && !idDuplicate && !dontInclude) {
-        console.log(idDuplicate);
+        // console.log(idDuplicate);
         let newCalTotal = Number(meal.results[0].nutrition.nutrients[0].amount);
         meal.results[0].addCalories = true;
         meal.results[0].doubleCalories = false;
@@ -176,7 +251,7 @@ function MealPlan(props) {
         }
         meal.results[0].adjustedCal = newCalTotal;
         runningCalTally = runningCalTally + newCalTotal;
-        // console.log(meal.results[0]);
+        console.log(meal.results[0]);
         // console.log(`Running Calorie Tally: ${runningCalTally}`);
         return setMeal(meal);
       } else {
@@ -184,12 +259,18 @@ function MealPlan(props) {
         console.log(
           `Fetched ${meal.results[0].title.toLowerCase()} discarded because either ID was repeated, it was found on the "DON'T INCLUDE" list, or it was too similar to a previous fetch`
         );
+        i--;
       }
     }
   }
 
   function handleDiet(e) {
     setDiet();
+  }
+
+  function handleMeals(e) {
+    setNumberOfMeals(e.target.value);
+    console.log(numberOfMeals);
   }
 
   return (
@@ -210,6 +291,14 @@ function MealPlan(props) {
               );
             })}
           </ul>
+        </div>
+        <div className="control">
+          <p>Number of Meals</p>
+          <select onChange={handleMeals} className="d-block">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+          </select>
         </div>
         <div className="control">
           <input
