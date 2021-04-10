@@ -16,6 +16,8 @@ function MealPlan(props) {
   let addCalories = true;
   let runningCalTally = 0;
   let target = 1000; // props.userCalAverage;
+  let rejectionReason = '';
+
   const DIETS = [
     'Vegetarian',
     'Vegan',
@@ -170,8 +172,15 @@ function MealPlan(props) {
         keywordsSeen.push(word);
       }
 
-      if (DONT_INCLUDE[word] || BAD_API_IDS[word]) {
+      if (DONT_INCLUDE[word]) {
         dontInclude = true;
+        rejectionReason =
+          'this type of food was already selected by another recipe.';
+      }
+
+      if (BAD_API_IDS[word]) {
+        rejectionReason =
+          'based on recipe ID, this recipe is missing key information.';
       }
 
       if (DONT_ADD_CALORIES[word]) {
@@ -219,45 +228,50 @@ function MealPlan(props) {
       const response = await fetch(
         `https://api.spoonacular.com/recipes/complexSearch?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&diet=${diet}&type=main course,side dish,snack,appetizer,salad,soup,fingerfood&excludeIngredients=white chocolate,vanilla bean paste,semi sweet chocolate chips&fillIngredients=true&instructionsRequired=true&maxReadyTime=30&maxSugar=10&minProtein=1&minCarbs=1&minFat=1&minCalories=1&maxCalories=${maxCalories}&sort=random&number=1`
       );
-      const meal = await response.json();
+      const fetchedMeal = await response.json();
       dontInclude = false;
       addCalories = true;
-      findWord(meal.results[0].title.toLowerCase()); // Parse title, determine how and whether to adjust calories
-      ids.push(meal.results[0].id);
+      findWord(fetchedMeal.results[0].title.toLowerCase()); // Parse title, determine how and whether to adjust calories
+      ids.push(fetchedMeal.results[0].id);
       if (!duplicate && !idDuplicate && !dontInclude) {
         // console.log(idDuplicate);
-        let newCalTotal = Number(meal.results[0].nutrition.nutrients[0].amount);
-        meal.results[0].addCalories = true;
-        meal.results[0].doubleCalories = false;
+        let newCalTotal = Number(
+          fetchedMeal.results[0].nutrition.nutrients[0].amount
+        );
+        fetchedMeal.results[0].addCalories = true;
+        fetchedMeal.results[0].doubleCalories = false;
         newCalTotal = newCalTotal + 200;
 
         if (target - runningCalTally < 250) {
-          meal.results[0].addCalories = false;
+          fetchedMeal.results[0].addCalories = false;
           addCalories = false;
           newCalTotal = newCalTotal - 200;
           // console.log(`addCalories: ${addCalories}`);
-        } else if (!addCalories || DONT_ADD_CALORIES[meal.results[0].id]) {
+        } else if (
+          !addCalories ||
+          DONT_ADD_CALORIES[fetchedMeal.results[0].id]
+        ) {
           if (newCalTotal <= 250) {
             newCalTotal = newCalTotal * 2;
-            meal.results[0].addCalories = true;
-            meal.results[0].doubleCalories = true;
+            fetchedMeal.results[0].addCalories = true;
+            fetchedMeal.results[0].doubleCalories = true;
             // console.log(`addCalories: ${addCalories}`);
           } else {
             newCalTotal = newCalTotal - 200;
-            meal.results[0].addCalories = false;
+            fetchedMeal.results[0].addCalories = false;
             addCalories = false;
             // console.log(`addCalories: ${addCalories}`);
           }
         }
-        meal.results[0].adjustedCal = newCalTotal;
+        fetchedMeal.results[0].adjustedCal = newCalTotal;
         runningCalTally = runningCalTally + newCalTotal;
-        console.log(meal.results[0]);
+        console.log(fetchedMeal.results[0]);
         // console.log(`Running Calorie Tally: ${runningCalTally}`);
-        return setMeal(meal);
+        setMeal(fetchedMeal);
       } else {
         console.log(meal.results[0]);
         console.log(
-          `Fetched ${meal.results[0].title.toLowerCase()} discarded because either ID was repeated, it was found on the "DON'T INCLUDE" list, or it was too similar to a previous fetch`
+          `Fetched ${meal.results[0].title.toLowerCase()} discarded because ${rejectionReason}`
         );
         i--;
       }

@@ -19,7 +19,10 @@ export default function Meal(props) {
       );
       const data = await response.json();
       // console.log(data);
-      if (data.analyzedInstructions[0].steps.length === 1) {
+      if (
+        data.analyzedInstructions[0].steps.length === 1 ||
+        data.analyzedInstructions === []
+      ) {
         console.log(
           `Note: recipe with ${props.meal.id} has been removed because it does not contain recipe instructions`
         );
