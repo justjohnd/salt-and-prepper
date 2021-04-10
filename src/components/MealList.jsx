@@ -22,11 +22,7 @@ export default function MealList(props) {
       <section className="meals">
         {props.meals.map(meal => {
           return (
-            <Meal
-              key={meal.results[0].id}
-              deleteMeal={props.deleteMeal}
-              meal={meal.results[0]}
-            />
+            <Meal key={meal.id} deleteMeal={props.deleteMeal} meal={meal} />
           );
         })}
       </section>

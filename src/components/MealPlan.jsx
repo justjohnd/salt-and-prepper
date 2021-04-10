@@ -56,6 +56,8 @@ function MealPlan(props) {
   useEffect(() => {
     if (meal) {
       setMeals([...meals, meal]);
+      // const { results: mealData } = meal;
+      // console.log(meals[0].mealData[0]);
     }
   }, [meal]);
 
@@ -64,10 +66,11 @@ function MealPlan(props) {
     if (meals.length > 0) {
       for (let i = 1; i < 5; i++) {
         const totalingArray = meals.map(e => {
-          if (e.results[0].doubleCalories) {
-            return e.results[0].nutrition.nutrients[i].amount * 2;
+          let nutrient = e.nutrition.nutrients;
+          if (e.doubleCalories) {
+            return nutrient[i].amount * 2;
           } else {
-            return e.results[0].nutrition.nutrients[i].amount;
+            return nutrient[i].amount;
           }
         });
 
@@ -75,8 +78,8 @@ function MealPlan(props) {
         totals.push(nutrientTotal);
       }
 
-      //calTotalArray also to be used order dishes into seperate meals
-      const calTotalArray = meals.map(e => e.results[0].adjustedCal);
+      //calTotalArray also to be used to organize dishes into seperate meals
+      const calTotalArray = meals.map(e => e.adjustedCal);
       // console.log(calTotalArray);
       const calTotal = calTotalArray.reduce((acc, cur) => acc + cur);
       totals.unshift(calTotal);
@@ -117,7 +120,7 @@ function MealPlan(props) {
         pairedDishGroup.push(dishGroup);
 
         function mealIdMap(array) {
-          return array.map(e => e.results[0].id);
+          return array.map(e => e.id);
         }
       }
 
@@ -129,12 +132,12 @@ function MealPlan(props) {
       const ordered = [];
 
       for (let i = 0; i < dishes.length; i++) {
-        const val = dishes[i].results[0].adjustedCal;
+        const val = dishes[i].adjustedCal;
         console.log(val);
         let currIdx = 0;
 
         while (currIdx < ordered.length) {
-          if (val < ordered[currIdx].results[0].adjustedCal) break;
+          if (val < ordered[currIdx].adjustedCal) break;
           currIdx++;
         }
         ordered.splice(currIdx, 0, dishes[i]);
@@ -146,18 +149,18 @@ function MealPlan(props) {
 
   function deleteMeal(foundId) {
     const deleteMealCalories = meals.filter(meal => {
-      if (meal.results[0].id === foundId) {
+      if (meal.id === foundId) {
         return meal;
       }
     });
 
     runningCalTally =
-      target - deleteMealCalories[0].results[0].nutrition.nutrients[0].amount;
+      target - deleteMealCalories[0].nutrition.nutrients[0].amount;
     // console.log(runningCalTally);
 
     setMeals(prevVal => {
       return prevVal.filter(meal => {
-        return meal.results[0].id !== foundId;
+        return meal.id !== foundId;
       });
     });
     getMeals();
@@ -267,11 +270,11 @@ function MealPlan(props) {
         runningCalTally = runningCalTally + newCalTotal;
         console.log(fetchedMeal.results[0]);
         // console.log(`Running Calorie Tally: ${runningCalTally}`);
-        setMeal(fetchedMeal);
+        setMeal(fetchedMeal.results[0]);
       } else {
-        console.log(meal.results[0]);
+        console.log(meal);
         console.log(
-          `Fetched ${meal.results[0].title.toLowerCase()} discarded because ${rejectionReason}`
+          `Fetched ${meal.title.toLowerCase()} discarded because ${rejectionReason}`
         );
         i--;
       }
