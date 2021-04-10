@@ -18,8 +18,11 @@ export default function Meal(props) {
         `https://api.spoonacular.com/recipes/${props.meal.id}/information?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&includeNutrition=false`
       );
       const data = await response.json();
-      console.log(data);
-      if (data.analyzedInstructions[0].steps.length === 1) {
+      // console.log(data);
+      if (
+        data.analyzedInstructions[0].steps.length === 1 ||
+        data.analyzedInstructions === []
+      ) {
         console.log(
           `Note: recipe with ${props.meal.id} has been removed because it does not contain recipe instructions`
         );
