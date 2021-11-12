@@ -7,6 +7,8 @@ const BAD_API_IDS = {
   157109: true,
   765725: true,
   627767: true,
+  773671: true,
+  629887: true,
 };
 
 const DONT_INCLUDE = {

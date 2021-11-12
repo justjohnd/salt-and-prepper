@@ -114,12 +114,12 @@ function FormAddPerson(props) {
         </label>
 
         <Button
-          className="btn-lg"
+          className="btn-primary"
           onClick={handleAddUser}
           buttonText="Add Person"
         />
         <Button
-          className="btn-lg"
+          className="btn-primary"
           onClick={handleCloseSection}
           buttonText="Close Section"
         />

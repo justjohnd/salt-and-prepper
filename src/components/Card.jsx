@@ -8,7 +8,7 @@ import AnnouncementIcon from '@material-ui/icons/Announcement';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 
-const UserColor = styled.div`
+const CardColor = styled.div`
   border-radius: 100%;
   width: 20px;
   height: 20px;
@@ -21,7 +21,7 @@ function Card(props) {
     <section className="con-card">
       <div className="card">
         <div className="top">
-          <UserColor bg={props.color} />
+          <CardColor bg={props.color} />
           <h2 className="name">{props.name}</h2>
           <Button
             className="btn-round btn-sm"
