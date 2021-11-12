@@ -1,8 +1,15 @@
+:root {
+  --color-primary: rgb(43, 180, 70);
+  --color-primary-hov: rgba(43, 180, 70, 0.836);
+  --color-secondary: #50a3a2;
+  --color-dark: #2e3639;
+}
+
 body {
   font-family: 'Roboto', sans-serif;
   background-color: #dfe6e9;
   text-align: center;
-  color: #2d3436;
+  color: var(--color-dark);
   margin: 0;
   padding: 0 3rem;
 }
@@ -57,7 +64,7 @@ input {
 
 .name {
   font-size: 2em;
-  color: #2d3436;
+  color: var(--color-dark);
   display: flex;
   flex: 1;
   margin: 0;
@@ -125,46 +132,69 @@ label {
   color: #2d3436;
 }
 
-.form button {
+/* Buttons */
+button {
+  color: var(--color-dark);
+  border: none;
+  font-family: 'Rotobo', sans-serif;
+  font-size: 1rem;
+  padding: 10px 15px;
+  background-color: white;
+  margin: 15px 15px 0 0;
+  cursor: pointer;
+  outline: none;
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
   appearance: none;
   outline: 0;
   border: 0;
-  color: #50a3a2;
   border-radius: 3px;
   font-size: 18px;
   text-align: center;
-  padding: 0;
-  margin: 0;
+}
+
+.btn-primary:hover {
+  cursor: pointer;
+  background-color: var(--color-primary-hov);
 }
 
 .control button {
   margin: 0;
 }
 
-.btn-lg,
-.btn-sm {
-  width: 250px;
-  padding: 10px 15px;
-  background-color: white;
-  margin: 15px 15px 0 0;
+.btn-round {
+  position: relative;
 }
 
 .form .btn-round {
-  color: #50a3a2;
+  color: var(--color-dark);
   border: none;
   border-radius: 50%;
   width: 50px;
   height: 50px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-  cursor: pointer;
-  outline: none;
   margin: auto 5px auto 0;
   padding: 0;
+}
+
+/* Add person icon image naturally looks a little skewed right, so skew left */
+.btn-round.btn-primary svg {
+  position: absolute;
+  top: 50%;
+  left: 46%;
+  transform: translate(-50%, -50%);
 }
 
 .btn-round.btn-sm {
   width: 30px;
   height: 30px;
+  color: var(--color-secondary);
+}
+
+.btn-round.btn-sm:hover {
+  color: var(--color-primary-hov);
 }
 
 /* Preferences */
@@ -185,21 +215,6 @@ label {
   text-align: center;
   padding: 0.5rem;
   border: solid 1px black;
-}
-
-button {
-  padding: 0.5rem 1rem;
-  background-color: rgb(235, 105, 235);
-  color: #f3f3f3;
-  border: none;
-  font-family: 'Rotobo', sans-serif;
-  font-size: 1rem;
-  margin: 0 10px;
-}
-
-button:hover {
-  cursor: pointer;
-  background-color: rgba(235, 105, 235, 0.836);
 }
 
 /* Meal Plan Contents */
@@ -270,7 +285,7 @@ article {
 
 a {
   text-decoration: none;
-  background-color: rgb(235, 105, 235);
+  background-color: var(--color-primary);
   color: #f3f3f3;
   width: fit-content;
   padding: 0.5rem 1rem;
@@ -278,7 +293,7 @@ a {
 
 a:hover {
   cursor: pointer;
-  background-color: rgba(235, 105, 235, 0.836);
+  background-color: var(--color-primary-hov);
 }
 
 @media only screen and (max-width: 550px) {

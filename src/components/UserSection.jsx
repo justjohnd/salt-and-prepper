@@ -115,7 +115,7 @@ function UserSection(props) {
           />
           {!formVisibility && (
             <Button
-              className="btn-round"
+              className="btn-round btn-primary"
               onClick={() => {
                 setFormVisibility(true);
                 setFormEditVisibility(false);

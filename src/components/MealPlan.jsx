@@ -15,7 +15,7 @@ function MealPlan(props) {
   let dontInclude = false;
   let addCalories = true;
   let runningCalTally = 0;
-  let target = 1000; // props.userCalAverage;
+  let target = 1000; // Set this for testing. Typiocally props.userCalAverage;
   let rejectionReason = '';
 
   const DIETS = [
@@ -62,9 +62,9 @@ function MealPlan(props) {
   }, [meal]);
 
   useEffect(() => {
-    //This totals all macros except calories
+    //This totals all macros
     if (meals.length > 0) {
-      for (let i = 1; i < 5; i++) {
+      for (let i = 1; i < 6; i++) {
         const totalingArray = meals.map(e => {
           let nutrient = e.nutrition.nutrients;
           if (e.doubleCalories) {
@@ -78,26 +78,21 @@ function MealPlan(props) {
         totals.push(nutrientTotal);
       }
 
-      //calTotalArray also to be used to organize dishes into seperate meals
-      const calTotalArray = meals.map(e => e.adjustedCal);
-      // console.log(calTotalArray);
-      const calTotal = calTotalArray.reduce((acc, cur) => acc + cur);
-      totals.unshift(calTotal);
-
-      setCalories(totals[0]);
-      setProtein(totals[1]);
-      setFat(totals[2]);
-      setCarbs(totals[3]);
-      setSugar(totals[4]);
+      setCalories(totals[4]);
+      setProtein(totals[0]);
+      setFat(totals[1]);
+      setCarbs(totals[2]);
+      setSugar(totals[3]);
     }
 
     if (meals.length > 1) {
-      mealItems();
-      console.log(`mealItems ran`);
+      console.log(mealItems());
     }
 
     function mealItems() {
+      //This function takes the highest calorie meal and places it in an array with the lowest-calorie meal. Then it looks at the remaining meals and repeats. It there is one item remaining (in the case of meals.length = odd number), the last item is placed in its own array
       let sortedMeals = [...meals];
+      sortedMeals = sortMeals(sortedMeals);
       let pairedDishes = Math.floor(sortedMeals.length / 2);
       let remainder = pairedDishes % 2;
       let pairedDishGroup = [];
@@ -107,21 +102,12 @@ function MealPlan(props) {
         dishGroup.push(sortedMeals[i]);
         dishGroup.push(sortedMeals[sortedMeals.length - (i + 1)]);
         pairedDishGroup.push(dishGroup);
+        sortedMeals.filter(e => e.id !== dishGroup[0].id);
+        sortedMeals.filter(e => e.id !== dishGroup[1].id);
       }
-      // I there is a single remaining dish this section will find the item and add it to the array
+      // If there is a single remaining dish this section will find the item and add it to the array
       if (remainder !== 0) {
-        const mealsIds = mealIdMap(meals);
-        const sortedMealsIds = mealIdMap(sortedMeals);
-        const difference = mealsIds.filter(
-          e => sortedMealsIds.indexOf(e) === -1
-        );
-        let dishGroup = [];
-        dishGroup.push(difference);
-        pairedDishGroup.push(dishGroup);
-
-        function mealIdMap(array) {
-          return array.map(e => e.id);
-        }
+        pairedDishGroup.push(sortedMeals[0]);
       }
 
       return pairedDishGroup;
@@ -133,7 +119,6 @@ function MealPlan(props) {
 
       for (let i = 0; i < dishes.length; i++) {
         const val = dishes[i].adjustedCal;
-        console.log(val);
         let currIdx = 0;
 
         while (currIdx < ordered.length) {
@@ -142,7 +127,6 @@ function MealPlan(props) {
         }
         ordered.splice(currIdx, 0, dishes[i]);
       }
-      console.log(ordered);
       return ordered;
     }
   }, [meals]);
@@ -150,6 +134,7 @@ function MealPlan(props) {
   function deleteMeal(foundId) {
     const deleteMealCalories = meals.filter(meal => {
       if (meal.id === foundId) {
+        console.log('Deleted meal');
         return meal;
       }
     });
@@ -219,7 +204,7 @@ function MealPlan(props) {
         console.log(`Error: Meal did not generate.`);
       });
       i++;
-      // console.log(i);
+      console.log(i);
     }
 
     setGetMealsComplete(true);
@@ -236,6 +221,7 @@ function MealPlan(props) {
       addCalories = true;
       findWord(fetchedMeal.results[0].title.toLowerCase()); // Parse title, determine how and whether to adjust calories
       ids.push(fetchedMeal.results[0].id);
+      console.log(fetchedMeal);
       if (!duplicate && !idDuplicate && !dontInclude) {
         // console.log(idDuplicate);
         let newCalTotal = Number(
@@ -267,6 +253,11 @@ function MealPlan(props) {
           }
         }
         fetchedMeal.results[0].adjustedCal = newCalTotal;
+        fetchedMeal.results[0].nutrition.nutrients.push({
+          type: 'Adjusted Calories',
+          amount: newCalTotal,
+          unit: 'kcal',
+        });
         runningCalTally = runningCalTally + newCalTotal;
         console.log(fetchedMeal.results[0]);
         // console.log(`Running Calorie Tally: ${runningCalTally}`);
@@ -274,7 +265,7 @@ function MealPlan(props) {
       } else {
         console.log(meal);
         console.log(
-          `Fetched ${meal.title.toLowerCase()} discarded because ${rejectionReason}`
+          `Fetched ${meal.title.toLowerCase()} discarded from search fetch because ${rejectionReason}`
         );
         i--;
       }
@@ -324,7 +315,11 @@ function MealPlan(props) {
             placeholder={props.userCalAverage}
             onChange={e => e.target.value}
           />
-          <button onClick={getMeals}>Get Daily Meal Plan</button>
+          <button 
+          className="btn-primary"
+          onClick={getMeals}>
+          Get Daily Meal Plan
+          </button>
         </div>
       </section>
       {getMealsComplete && (
