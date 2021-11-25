@@ -114,8 +114,6 @@ const DONT_ADD_CALORIES = {
   dumplings: true,
   fettuccine: true,
   alfredo: true,
-  652417: true,
-  157456: true,
 };
 
 const MUST_ADD_CALORIES = {

@@ -1,22 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import MealList from './MealList';
 import Checkbox from './Checkbox';
-import KEYWORDS, {
-  DONT_INCLUDE,
-  DONT_ADD_CALORIES,
-  MUST_ADD_CALORIES,
-  BAD_API_IDS,
-} from '../findWord';
+
 
 function MealPlan(props) {
-  const keywordsSeen = [];
   const ids = [];
   const totals = [];
-  let dontInclude = false;
-  let addCalories = true;
   let runningCalTally = 0;
   let target = 1000; // Set this for testing. Typiocally props.userCalAverage;
-  let rejectionReason = '';
 
   const DIETS = [
     'Vegetarian',
@@ -93,7 +84,6 @@ function MealPlan(props) {
 
     runningCalTally =
       target - deleteMealCalories[0].nutrition.nutrients[0].amount;
-    // console.log(runningCalTally);
 
     setMeals(prevVal => {
       return prevVal.filter(meal => {
@@ -103,72 +93,34 @@ function MealPlan(props) {
     getMeals();
   }
 
-  function findWord(string) {
-    const words = string.split(' ');
-    // console.log(words);
-
-    for (const word of words) {
-      if (KEYWORDS[word]) {
-        keywordsSeen.push(word);
-      }
-
-      if (DONT_INCLUDE[word]) {
-        dontInclude = true;
-        rejectionReason =
-          'this type of food was already selected by another recipe.';
-      }
-
-      if (BAD_API_IDS[word]) {
-        rejectionReason =
-          'based on recipe ID, this recipe is missing key information.';
-      }
-
-      if (DONT_ADD_CALORIES[word]) {
-        addCalories = false;
-        // console.log(`addCalories: ${addCalories}`);
-      }
-
-      if (MUST_ADD_CALORIES[word]) {
-        addCalories = true;
-        // console.log(`addCalories: ${addCalories}`);
-      }
+    function handleCallback(i) {
+      setMeals(prevVal => {
+        let results = prevVal.results.splice(i, 1);;
+        return results;
+      });
     }
-  }
-
-  function findDupes(arr) {
-    const observed = {};
-    for (let i = 0; i < arr.length; i++) {
-      if (observed[arr[i]]) {
-        return arr[i];
-      } else {
-        observed[arr[i]] = arr[i];
-      }
-    }
-
-    return false;
-  }
+        
 
     function getMeals() {
       let maxCalories = target - runningCalTally;
-      const duplicate = findDupes(keywordsSeen);
-      const idDuplicate = findDupes(ids);
+      
 
       fetch(
         `https://api.spoonacular.com/recipes/complexSearch?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&diet=vegetarian&type=main course,side dish,snack,appetizer,salad,soup,fingerfood&excludeIngredients=white chocolate,vanilla bean paste,semi sweet chocolate chips&fillIngredients=true&instructionsRequired=true&maxReadyTime=30&maxSugar=10&minProtein=1&minCarbs=1&minFat=1&minCalories=1&maxCalories=${props.userCalAverage}&sort=random&number=1`
       )
         .then((response) => response.json())
         .then(data => {
+
           setMeals(data);
         })
         .catch(() => {
-          console.log(`Error: Meal did not generate.`);
+          console.log(`Error`);
         });
 
 
-      // const fetchedMeal = response.json();
-      // dontInclude = false;
-      // addCalories = true;
-      // findWord(fetchedMeal.results[0].title.toLowerCase()); // Parse title, determine how and whether to adjust calories
+
+      
+      
       // ids.push(fetchedMeal.results[0].id);
       // console.log(fetchedMeal);
       // if (!duplicate && !idDuplicate && !dontInclude) {
@@ -272,6 +224,7 @@ function MealPlan(props) {
           sugar={sugar}
           meals={meals}
           deleteMeal={deleteMeal}
+          handleCallback={handleCallback}
         />
       }
     </div>
