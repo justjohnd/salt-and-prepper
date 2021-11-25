@@ -47,20 +47,20 @@ export default function Meal(props) {
 
   return (
     <div className="recipe">
-      {recipeData && (
+      {props.meal && (
         <div>
           <h2 className="title">{props.meal.title}</h2>
-          <img src={recipeData.image} alt="recipe" />
+          <img src={props.meal.image} alt="recipe" />
           <ul className="instructions">
-            <li>
-              <strong>Preparation time: </strong> {recipeData.readyInMinutes}{' '}
+            {/* <li> */}
+              {/* <strong>Preparation time: </strong> {recipeData.readyInMinutes}{' '}
               minutes
-            </li>
-            <li>
+            </li> */}
+            {/* <li>
               <strong>Number of servings: </strong>
               {recipeData.servings}
-            </li>
-            <li>
+            </li> */}
+            {/* <li>
               <strong>Calories: </strong>
               {props.meal.adjustedCal.toFixed(0)}
             </li>
@@ -68,19 +68,19 @@ export default function Meal(props) {
               <strong>
                 {props.meal.addCalories && 'Calories were added to this meal'}
               </strong>
-            </li>
+            </li> */}
           </ul>
 
-          <button onClick={getInstructions}>{showInstructionsButton}</button>
+          {/* <button onClick={getInstructions}>{showInstructionsButton}</button>
           {showInstructions && (
             <ul className="instructions">
               {recipeData.analyzedInstructions[0].steps.map(e => {
                 return <li key={uuidv4()}>{e.step}</li>;
               })}
             </ul>
-          )}
+          )} */}
 
-          <button>
+          {/* <button>
             <a
               href={recipeData.sourceUrl}
               target="_blank"
@@ -88,7 +88,7 @@ export default function Meal(props) {
             >
               Go to Recipe
             </a>
-          </button>
+          </button> */}
         </div>
       )}
     </div>

@@ -26,7 +26,7 @@ function MealPlan(props) {
     'Ketogenic',
   ];
   const [meal, setMeal] = useState(null);
-  const [meals, setMeals] = useState([]);
+  const [meals, setMeals] = useState();
   const [diet, setDiet] = useState('');
   const [calories, setCalories] = useState(0);
   const [protein, setProtein] = useState(0);
@@ -58,30 +58,30 @@ function MealPlan(props) {
   //   }
   // }, [meal]);
 
-  useEffect(() => {
-    //This totals all macros
-    if (meals.length > 0) {
-      for (let i = 1; i < 6; i++) {
-        const totalingArray = meals.map(e => {
-          let nutrient = e.nutrition.nutrients;
-          if (e.doubleCalories) {
-            return nutrient[i].amount * 2;
-          } else {
-            return nutrient[i].amount;
-          }
-        });
+  // useEffect(() => {
+  //   //This totals all macros
+  //   if (meals.length > 0) {
+  //     for (let i = 1; i < 6; i++) {
+  //       const totalingArray = meals.map(e => {
+  //         let nutrient = e.nutrition.nutrients;
+  //         if (e.doubleCalories) {
+  //           return nutrient[i].amount * 2;
+  //         } else {
+  //           return nutrient[i].amount;
+  //         }
+  //       });
 
-        const nutrientTotal = totalingArray.reduce((acc, cur) => acc + cur);
-        totals.push(nutrientTotal);
-      }
+  //       const nutrientTotal = totalingArray.reduce((acc, cur) => acc + cur);
+  //       totals.push(nutrientTotal);
+  //     }
 
-      setCalories(totals[4]);
-      setProtein(totals[0]);
-      setFat(totals[1]);
-      setCarbs(totals[2]);
-      setSugar(totals[3]);
-    }
-  }, [meals]);
+  //     setCalories(totals[4]);
+  //     setProtein(totals[0]);
+  //     setFat(totals[1]);
+  //     setCarbs(totals[2]);
+  //     setSugar(totals[3]);
+  //   }
+  // }, [meals]);
 
   function deleteMeal(foundId) {
     const deleteMealCalories = meals.filter(meal => {
@@ -158,7 +158,7 @@ function MealPlan(props) {
       )
         .then((response) => response.json())
         .then(data => {
-          setMeal(data);
+          setMeals(data);
         })
         .catch(() => {
           console.log(`Error: Meal did not generate.`);
@@ -262,8 +262,8 @@ function MealPlan(props) {
           </button>
         </div>
       </section>
-      {meals && (
-        <MealList
+      {meals &&
+        <MealList meals={meals}
           target={target}
           calories={calories}
           protein={protein}
@@ -272,8 +272,8 @@ function MealPlan(props) {
           sugar={sugar}
           meals={meals}
           deleteMeal={deleteMeal}
-        ></MealList>
-      )}
+        />
+      }
     </div>
   );
 }

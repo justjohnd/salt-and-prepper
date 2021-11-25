@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import Meal from './Meal';
 
 export default function MealList(props) {
+  const results = props.meals.results;
   return (
     <main>
       <section className="nutrients">
         {/* Calculates TOTALS for all meals generate */}
-        <h1>Macros</h1>
+        {/* <h1>Macros</h1>
         <ul>
           <li>Calories: {props.calories.toFixed(0)}</li>
           <li>
@@ -16,11 +17,11 @@ export default function MealList(props) {
           <li>Fat: {props.fat.toFixed(0)}</li>
           <li>Carbohydrates: {props.carbs.toFixed(0)}</li>
           <li>Sugar: {props.sugar.toFixed(0)}</li>
-        </ul>
+        </ul> */}
       </section>
 
       <section className="meals">
-        {props.meals.map(meal => {
+        {results.map(meal => {
           return (
             <Meal key={meal.id} deleteMeal={props.deleteMeal} meal={meal} />
           );
