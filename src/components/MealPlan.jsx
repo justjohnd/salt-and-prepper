@@ -52,13 +52,11 @@ function MealPlan(props) {
     },
   ]);
 
-  useEffect(() => {
-    if (meal) {
-      setMeals([...meals, meal]);
-      // const { results: mealData } = meal;
-      // console.log(meals[0].mealData[0]);
-    }
-  }, [meal]);
+  // useEffect(() => {
+  //   if (meal) {
+  //     setMeals([...meals, meal]);
+  //   }
+  // }, [meal]);
 
   useEffect(() => {
     //This totals all macros
@@ -82,51 +80,6 @@ function MealPlan(props) {
       setFat(totals[1]);
       setCarbs(totals[2]);
       setSugar(totals[3]);
-    }
-
-    if (meals.length > 1) {
-      console.log(mealItems());
-    }
-
-    function mealItems() {
-      //This function takes the highest calorie meal and places it in an array with the lowest-calorie meal. Then it looks at the remaining meals and repeats. It there is one item remaining (in the case of meals.length = odd number), the last item is placed in its own array
-      let sortedMeals = [...meals];
-      sortedMeals = sortMeals(sortedMeals);
-      let pairedDishes = Math.floor(sortedMeals.length / 2);
-      let remainder = pairedDishes % 2;
-      let pairedDishGroup = [];
-
-      for (let i = 0; i < pairedDishes; i++) {
-        let dishGroup = [];
-        dishGroup.push(sortedMeals[i]);
-        dishGroup.push(sortedMeals[sortedMeals.length - (i + 1)]);
-        pairedDishGroup.push(dishGroup);
-        sortedMeals.filter(e => e.id !== dishGroup[0].id);
-        sortedMeals.filter(e => e.id !== dishGroup[1].id);
-      }
-      // If there is a single remaining dish this section will find the item and add it to the array
-      if (remainder !== 0) {
-        pairedDishGroup.push(sortedMeals[0]);
-      }
-
-      return pairedDishGroup;
-    }
-
-    //This function will sort the meals objects in order or minimum to maximum calories
-    function sortMeals(dishes) {
-      const ordered = [];
-
-      for (let i = 0; i < dishes.length; i++) {
-        const val = dishes[i].adjustedCal;
-        let currIdx = 0;
-
-        while (currIdx < ordered.length) {
-          if (val < ordered[currIdx].adjustedCal) break;
-          currIdx++;
-        }
-        ordered.splice(currIdx, 0, dishes[i]);
-      }
-      return ordered;
     }
   }, [meals]);
 
@@ -203,7 +156,7 @@ function MealPlan(props) {
       fetch(
         `https://api.spoonacular.com/recipes/complexSearch?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&diet=vegetarian&type=main course,side dish,snack,appetizer,salad,soup,fingerfood&excludeIngredients=white chocolate,vanilla bean paste,semi sweet chocolate chips&fillIngredients=true&instructionsRequired=true&maxReadyTime=30&maxSugar=10&minProtein=1&minCarbs=1&minFat=1&minCalories=1&maxCalories=${props.userCalAverage}&sort=random&number=1`
       )
-        .then(response => response.json())
+        .then((response) => response.json())
         .then(data => {
           setMeal(data);
         })
@@ -212,52 +165,52 @@ function MealPlan(props) {
         });
 
 
-      const fetchedMeal = response.json();
-      dontInclude = false;
-      addCalories = true;
-      findWord(fetchedMeal.results[0].title.toLowerCase()); // Parse title, determine how and whether to adjust calories
-      ids.push(fetchedMeal.results[0].id);
-      console.log(fetchedMeal);
-      if (!duplicate && !idDuplicate && !dontInclude) {
-        // console.log(idDuplicate);
-        let newCalTotal = Number(
-          fetchedMeal.results[0].nutrition.nutrients[0].amount
-        );
-        fetchedMeal.results[0].addCalories = true;
-        fetchedMeal.results[0].doubleCalories = false;
-        newCalTotal = newCalTotal + 200;
+      // const fetchedMeal = response.json();
+      // dontInclude = false;
+      // addCalories = true;
+      // findWord(fetchedMeal.results[0].title.toLowerCase()); // Parse title, determine how and whether to adjust calories
+      // ids.push(fetchedMeal.results[0].id);
+      // console.log(fetchedMeal);
+      // if (!duplicate && !idDuplicate && !dontInclude) {
+      //   // console.log(idDuplicate);
+      //   let newCalTotal = Number(
+      //     fetchedMeal.results[0].nutrition.nutrients[0].amount
+      //   );
+      //   fetchedMeal.results[0].addCalories = true;
+      //   fetchedMeal.results[0].doubleCalories = false;
+      //   newCalTotal = newCalTotal + 200;
 
-        if (target - runningCalTally < 250) {
-          fetchedMeal.results[0].addCalories = false;
-          addCalories = false;
-          newCalTotal = newCalTotal - 200;
-          // console.log(`addCalories: ${addCalories}`);
-        } else if (
-          !addCalories ||
-          DONT_ADD_CALORIES[fetchedMeal.results[0].id]
-        ) {
-          if (newCalTotal <= 250) {
-            newCalTotal = newCalTotal * 2;
-            fetchedMeal.results[0].addCalories = true;
-            fetchedMeal.results[0].doubleCalories = true;
-            // console.log(`addCalories: ${addCalories}`);
-          } else {
-            newCalTotal = newCalTotal - 200;
-            fetchedMeal.results[0].addCalories = false;
-            addCalories = false;
-            // console.log(`addCalories: ${addCalories}`);
-          }
-        }
-        fetchedMeal.results[0].adjustedCal = newCalTotal;
-        fetchedMeal.results[0].nutrition.nutrients.push({
-          type: 'Adjusted Calories',
-          amount: newCalTotal,
-          unit: 'kcal',
-        });
-        runningCalTally = runningCalTally + newCalTotal;
-      } else {
-        i--;
-      }
+      //   if (target - runningCalTally < 250) {
+      //     fetchedMeal.results[0].addCalories = false;
+      //     addCalories = false;
+      //     newCalTotal = newCalTotal - 200;
+      //     // console.log(`addCalories: ${addCalories}`);
+      //   } else if (
+      //     !addCalories ||
+      //     DONT_ADD_CALORIES[fetchedMeal.results[0].id]
+      //   ) {
+      //     if (newCalTotal <= 250) {
+      //       newCalTotal = newCalTotal * 2;
+      //       fetchedMeal.results[0].addCalories = true;
+      //       fetchedMeal.results[0].doubleCalories = true;
+      //       // console.log(`addCalories: ${addCalories}`);
+      //     } else {
+      //       newCalTotal = newCalTotal - 200;
+      //       fetchedMeal.results[0].addCalories = false;
+      //       addCalories = false;
+      //       // console.log(`addCalories: ${addCalories}`);
+      //     }
+      //   }
+      //   fetchedMeal.results[0].adjustedCal = newCalTotal;
+      //   fetchedMeal.results[0].nutrition.nutrients.push({
+      //     type: 'Adjusted Calories',
+      //     amount: newCalTotal,
+      //     unit: 'kcal',
+      //   });
+      //   runningCalTally = runningCalTally + newCalTotal;
+      // } else {
+      //   i--;
+      // }
   }
 
   function handleDiet(e) {
