@@ -27,7 +27,6 @@ function MealPlan(props) {
   ];
   const [meal, setMeal] = useState(null);
   const [meals, setMeals] = useState([]);
-  const [getMealsComplete, setGetMealsComplete] = useState(false);
   const [diet, setDiet] = useState('');
   const [calories, setCalories] = useState(0);
   const [protein, setProtein] = useState(0);
@@ -196,27 +195,24 @@ function MealPlan(props) {
     return false;
   }
 
-  async function getMeals() {
-    let i = 0;
-
-    while (runningCalTally < target && i < numberOfMeals * 2) {
-      await getMeal().catch(() => {
-        console.log(`Error: Meal did not generate.`);
-      });
-      i++;
-      console.log(i);
-    }
-
-    setGetMealsComplete(true);
-
-    async function getMeal() {
+    function getMeals() {
       let maxCalories = target - runningCalTally;
       const duplicate = findDupes(keywordsSeen);
       const idDuplicate = findDupes(ids);
-      const response = await fetch(
-        `https://api.spoonacular.com/recipes/complexSearch?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&diet=${diet}&type=main course,side dish,snack,appetizer,salad,soup,fingerfood&excludeIngredients=white chocolate,vanilla bean paste,semi sweet chocolate chips&fillIngredients=true&instructionsRequired=true&maxReadyTime=30&maxSugar=10&minProtein=1&minCarbs=1&minFat=1&minCalories=1&maxCalories=${maxCalories}&sort=random&number=1`
-      );
-      const fetchedMeal = await response.json();
+
+      fetch(
+        `https://api.spoonacular.com/recipes/complexSearch?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&diet=vegetarian&type=main course,side dish,snack,appetizer,salad,soup,fingerfood&excludeIngredients=white chocolate,vanilla bean paste,semi sweet chocolate chips&fillIngredients=true&instructionsRequired=true&maxReadyTime=30&maxSugar=10&minProtein=1&minCarbs=1&minFat=1&minCalories=1&maxCalories=${props.userCalAverage}&sort=random&number=1`
+      )
+        .then(response => response.json())
+        .then(data => {
+          setMeal(data);
+        })
+        .catch(() => {
+          console.log(`Error: Meal did not generate.`);
+        });
+
+
+      const fetchedMeal = response.json();
       dontInclude = false;
       addCalories = true;
       findWord(fetchedMeal.results[0].title.toLowerCase()); // Parse title, determine how and whether to adjust calories
@@ -259,17 +255,9 @@ function MealPlan(props) {
           unit: 'kcal',
         });
         runningCalTally = runningCalTally + newCalTotal;
-        console.log(fetchedMeal.results[0]);
-        // console.log(`Running Calorie Tally: ${runningCalTally}`);
-        setMeal(fetchedMeal.results[0]);
       } else {
-        console.log(meal);
-        console.log(
-          `Fetched ${meal.title.toLowerCase()} discarded from search fetch because ${rejectionReason}`
-        );
         i--;
       }
-    }
   }
 
   function handleDiet(e) {
@@ -278,7 +266,6 @@ function MealPlan(props) {
 
   function handleMeals(e) {
     setNumberOfMeals(e.target.value);
-    console.log(numberOfMeals);
   }
 
   return (
@@ -322,7 +309,7 @@ function MealPlan(props) {
           </button>
         </div>
       </section>
-      {getMealsComplete && (
+      {meals && (
         <MealList
           target={target}
           calories={calories}
