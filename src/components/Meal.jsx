@@ -72,11 +72,11 @@ export default function Meal(props) {
               <strong>Sugar: </strong>
               {props.sugar}
             </li>
-            {/* <li>
+            <li>
               <strong>
-                {props.meal.addCalories && 'Calories were added to this meal'}
+                {props.addCalories && 'Calories were added to this meal'}
               </strong>
-            </li> */}
+            </li>
           </ul>
 
           {/* <button onClick={getInstructions}>{showInstructionsButton}</button>

@@ -11,13 +11,12 @@ import KEYWORDS, {
 function MealList(props) {
   const keywordsSeen = [];
   let dontInclude = false;
-  let addCalories = true;
+  let addCalories = false;
   const results = props.meals.results;
   const rejectionReason = [];
 
   for (let i = 0; i < results.length; i++) {
     dontInclude = false;
-    addCalories = true;
      if (BAD_API_IDS[results[i].id]) {
         dontInclude = true;
         rejectionReason.push(
@@ -36,14 +35,7 @@ function MealList(props) {
       } else {
         i--;
       }
-    } else if (addCalories) {
-      let calories = results[i].nutrition.nutrients[0].amount;
-      calories = calories + 200;
-      console.log(`calories were added to ${results[i].title}`);
-      results[i].addCalories = true;
-    } else {
-      console.log(`no calories were added to ${results[i].title}`);
-    }
+    } 
   } 
 
   function findWord(string) {
@@ -73,15 +65,17 @@ function MealList(props) {
           `Title (${string})indicates that this food is a desert, therfore don't include`
         );
       }
-
-      if (DONT_ADD_CALORIES[word]) {
-        addCalories = false;
-      }
-
-      if (MUST_ADD_CALORIES[word]) {
-        addCalories = true;
-      }
     }
+  }
+
+  function addCaloriesCheck(string) {
+    addCalories = false;
+    const words = string.split(' ');
+        for (const word of words) {
+          if (MUST_ADD_CALORIES[word]) {
+            return addCalories = true;
+          }
+        }
   }
 
 
@@ -105,7 +99,19 @@ function MealList(props) {
 
       <section className="meals">
         {results.map(meal => {
-          const [calories, protein, carbohydrates, fat, sugar] = meal.nutrition.nutrients;
+          const [calories, protein, fat, carbohydrates, sugar] = meal.nutrition.nutrients;
+          calories.addCalories = false;
+
+          {/* Check to see if calories should be added */}
+          addCaloriesCheck(meal.title);
+          if (addCalories) {
+            calories.amount = calories.amount + 200;
+            console.log(`calories were added to ${meal.title}`);
+            calories.addCalories = true;
+          } else {
+            console.log(`no calories were added to ${meal.title}`);
+          }
+
           return (
             <Meal
               key={meal.id}
@@ -116,6 +122,7 @@ function MealList(props) {
               fat={fat.amount.toFixed(0)}
               fat={carbohydrates.amount.toFixed(0)}
               sugar={sugar.amount.toFixed(0)}
+              addCalories={calories.addCalories}
             />
           );
         })}

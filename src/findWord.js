@@ -119,6 +119,7 @@ const DONT_ADD_CALORIES = {
 const MUST_ADD_CALORIES = {
   dip: true,
   salsa: true,
+  curry: true
 };
 
 export default KEYWORDS;
