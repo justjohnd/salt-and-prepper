@@ -11,31 +11,31 @@ import KEYWORDS, {
 
 function MealList(props) {
   const keywordsSeen = [];
-  let dontInclude = false;
-  let addCalories = false;
   const results = props.meals.results;
   const rejectionReason = [];
-  let warning;
-  let caloriesArray = [];
-  let caloriesTotal;
 
     // Scrub data
     const resultsCopy = [...results];
     const scrubbedResults = resultsCopy.map((result) => {
-      result.dontInclude = false
+      result.dontInclude = false;
+      result.addCalories = false;
 
-      if (
-        BAD_API_IDS[result.id] 
-      ) {
+      if (BAD_API_IDS[result.id]) {
         result.dontInclude = true;
         rejectionReason.push(
           `Rejection Reason: Based on recipe ${result.id}, this recipe is missing kinformation.`
         );
       }
 
-      findWord(result.title.toLowerCase());
+      dontIncludeCheck(result.title.toLowerCase());
 
-      return result
+      if (addCaloriesCheck(result.title.toLowerCase())) {
+        result.addCalories = true;
+        let calories = result.nutrition.nutrients[0].amount;
+        calories += 200;
+      };
+
+      return result;
     });
 
     const filteredResults = scrubbedResults.filter(result => {
@@ -44,7 +44,7 @@ function MealList(props) {
       }
     });
 
-  function findWord(string) {
+  function dontIncludeCheck(string) {
     const words = string.split(' ');
 
     for (const word of words) {
@@ -54,10 +54,10 @@ function MealList(props) {
         } else {
           keywordsSeen.forEach((e) => {
             if (e === word) {
-              dontInclude = true;
               console.log(
                 `Rejection Reason: '${string} is similar or identical recipe already being used`
               );
+              return true;
             } else {
               keywordsSeen.push(word);
             }
@@ -66,23 +66,26 @@ function MealList(props) {
       }
 
       if (DONT_INCLUDE[word]) {
-        dontInclude = true;
         rejectionReason.push(
           `Title (${string})indicates that this food is a desert, therfore don't include`
         );
+        return true;
       }
     }
   }
 
   function addCaloriesCheck(string) {
-    addCalories = false;
     const words = string.split(' ');
         for (const word of words) {
           if (MUST_ADD_CALORIES[word]) {
-            return addCalories = true;
-          }
+            console.log("calories added to meal");
+            return true;
+          } else {
+          console.log("no calories added to meal");
+          return false;
         }
   }
+}
 
   // Find total for macros
 //   if (filteredResults !== []) {
@@ -117,19 +120,19 @@ function MealList(props) {
         {filteredResults.map(meal => {
           const [calories, protein, fat, carbohydrates, sugar] =
             meal.nutrition.nutrients;
-          calories.addCalories = false;
+          {/* calories.addCalories = false; */}
 
           {
             /* Check to see if calories should be added */
           }
-          addCaloriesCheck(meal.title);
+          {/* addCaloriesCheck(meal.title);
           if (addCalories) {
             calories.amount += 200;
             console.log(`calories were added to ${meal.title}`);
             calories.addCalories = true;
           } else {
             console.log(`no calories were added to ${meal.title}`);
-          }
+          } */}
 
           console.log(meal);
           console.log(filteredResults);
@@ -144,7 +147,7 @@ function MealList(props) {
               fat={fat.amount.toFixed(0)}
               fat={carbohydrates.amount.toFixed(0)}
               sugar={sugar.amount.toFixed(0)}
-              addCalories={calories.addCalories}
+              addCalories={meal.addCalories}
             />
           );
         })}
