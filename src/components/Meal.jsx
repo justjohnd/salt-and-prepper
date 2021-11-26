@@ -45,8 +45,6 @@ export default function Meal(props) {
   //   }
   // }
 
-  // const [calories, protein, fat, carbohydrates, sugar] = props.meal.nutrition.nutrients;
-
   return (
     <div className="recipe">
       {props.meal && (
@@ -58,23 +56,23 @@ export default function Meal(props) {
               <strong>Calories: </strong>
               {props.calories}
             </li>
-            {/* <li>
+            <li>
               <strong>Protein: </strong>
-              {protein}
+              {props.protein}
             </li>
             <li>
               <strong>Carbohydrates: </strong>
-              {carbohydrates}
+              {props.carbohydrates}
             </li>
             <li>
               <strong>Fat: </strong>
-              {fat}
+              {props.fat}
             </li>
             <li>
               <strong>Sugar: </strong>
-              {sugar}
+              {props.sugar}
             </li>
-            <li>
+            {/* <li>
               <strong>
                 {props.meal.addCalories && 'Calories were added to this meal'}
               </strong>

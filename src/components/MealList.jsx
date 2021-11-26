@@ -105,12 +105,18 @@ function MealList(props) {
 
       <section className="meals">
         {results.map(meal => {
+          const [calories, protein, carbohydrates, fat, sugar] = meal.nutrition.nutrients;
           return (
-            <Meal 
-            key={meal.id} 
-            deleteMeal={props.deleteMeal} 
-            meal={meal}
-            calories={meal.nutrition.nutrients[0].amount} />
+            <Meal
+              key={meal.id}
+              deleteMeal={props.deleteMeal}
+              meal={meal}
+              calories={calories.amount.toFixed(0)}
+              protein={protein.amount.toFixed(0)}
+              fat={fat.amount.toFixed(0)}
+              fat={carbohydrates.amount.toFixed(0)}
+              sugar={sugar.amount.toFixed(0)}
+            />
           );
         })}
       </section>
