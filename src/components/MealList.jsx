@@ -28,13 +28,15 @@ function MealList(props) {
     findWord(results[i].title.toLowerCase());
 
     if (dontInclude) {
-      props.handleCallback(i);
       console.log(rejectionReason);
       console.log(results[i]);
-      i--;
-    }
-
-    if (addCalories) {
+      props.handleCallback(i);
+      if (results.length === 1) {
+        break;
+      } else {
+        i--;
+      }
+    } else if (addCalories) {
       let calories = results[i].nutrition.nutrients[0].amount;
       calories = calories + 200;
       console.log(`calories were added to ${results[i].title}`);
@@ -42,7 +44,7 @@ function MealList(props) {
     } else {
       console.log(`no calories were added to ${results[i].title}`);
     }
-  }
+  } 
 
   function findWord(string) {
     const words = string.split(' ');
@@ -104,12 +106,16 @@ function MealList(props) {
       <section className="meals">
         {results.map(meal => {
           return (
-            <Meal key={meal.id} deleteMeal={props.deleteMeal} meal={meal} />
+            <Meal 
+            key={meal.id} 
+            deleteMeal={props.deleteMeal} 
+            meal={meal}
+            calories={meal.nutrition.nutrients[0].amount} />
           );
         })}
       </section>
     </main>
   );
-}
+      }
 
 export default MealList;

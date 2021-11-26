@@ -45,7 +45,7 @@ export default function Meal(props) {
   //   }
   // }
 
-  const [calories, protein, fat, carbohydrates, sugar] = props.meal.nutrition;
+  // const [calories, protein, fat, carbohydrates, sugar] = props.meal.nutrition.nutrients;
 
   return (
     <div className="recipe">
@@ -56,29 +56,29 @@ export default function Meal(props) {
           <ul className="instructions">
             <li>
               <strong>Calories: </strong>
-              {calories.toFixed(0)}
+              {props.calories}
             </li>
-            <li>
+            {/* <li>
               <strong>Protein: </strong>
-              {protein.toFixed(0)}
+              {protein}
             </li>
             <li>
               <strong>Carbohydrates: </strong>
-              {carbohydrates.toFixed(0)}
+              {carbohydrates}
             </li>
             <li>
               <strong>Fat: </strong>
-              {fat.toFixed(0)}
+              {fat}
             </li>
             <li>
               <strong>Sugar: </strong>
-              {sugar.toFixed(0)}
+              {sugar}
             </li>
             <li>
               <strong>
                 {props.meal.addCalories && 'Calories were added to this meal'}
               </strong>
-            </li>
+            </li> */}
           </ul>
 
           {/* <button onClick={getInstructions}>{showInstructionsButton}</button>

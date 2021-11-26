@@ -19,60 +19,6 @@ function MealPlan(props) {
   const [meal, setMeal] = useState(null);
   const [meals, setMeals] = useState();
   const [diet, setDiet] = useState('');
-  const [calories, setCalories] = useState(0);
-  const [protein, setProtein] = useState(0);
-  const [fat, setFat] = useState(0);
-  const [carbs, setCarbs] = useState(0);
-  const [sugar, setSugar] = useState(0);
-  const [numberOfMeals, setNumberOfMeals] = useState(1);
-  const [mealPairs, setMealPairs] = useState([
-    {
-      key: 1,
-      meal1: {},
-      meal2: {},
-    },
-    {
-      key: 2,
-      meal1: {},
-      meal2: {},
-    },
-    {
-      key: 3,
-      meal1: {},
-      meal2: {},
-    },
-  ]);
-
-  // useEffect(() => {
-  //   if (meal) {
-  //     setMeals([...meals, meal]);
-  //   }
-  // }, [meal]);
-
-  // useEffect(() => {
-  //   //This totals all macros
-  //   if (meals.length > 0) {
-  //     for (let i = 1; i < 6; i++) {
-  //       const totalingArray = meals.map(e => {
-  //         let nutrient = e.nutrition.nutrients;
-  //         if (e.doubleCalories) {
-  //           return nutrient[i].amount * 2;
-  //         } else {
-  //           return nutrient[i].amount;
-  //         }
-  //       });
-
-  //       const nutrientTotal = totalingArray.reduce((acc, cur) => acc + cur);
-  //       totals.push(nutrientTotal);
-  //     }
-
-  //     setCalories(totals[4]);
-  //     setProtein(totals[0]);
-  //     setFat(totals[1]);
-  //     setCarbs(totals[2]);
-  //     setSugar(totals[3]);
-  //   }
-  // }, [meals]);
 
   function deleteMeal(foundId) {
     const deleteMealCalories = meals.filter(meal => {
@@ -100,11 +46,7 @@ function MealPlan(props) {
       });
     }
         
-
-    function getMeals() {
-      let maxCalories = target - runningCalTally;
-      
-
+    function getMeals() {   
       fetch(
         `https://api.spoonacular.com/recipes/complexSearch?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&diet=vegetarian&type=main course,side dish,snack,appetizer,salad,soup,fingerfood&excludeIngredients=white chocolate,vanilla bean paste,semi sweet chocolate chips&fillIngredients=true&instructionsRequired=true&maxReadyTime=30&maxSugar=10&minProtein=1&minCarbs=1&minFat=1&minCalories=1&maxCalories=${props.userCalAverage}&sort=random&number=1`
       )
@@ -116,61 +58,10 @@ function MealPlan(props) {
         .catch(() => {
           console.log(`Error`);
         });
-
-
-
-      
-      
-      // ids.push(fetchedMeal.results[0].id);
-      // console.log(fetchedMeal);
-      // if (!duplicate && !idDuplicate && !dontInclude) {
-      //   // console.log(idDuplicate);
-      //   let newCalTotal = Number(
-      //     fetchedMeal.results[0].nutrition.nutrients[0].amount
-      //   );
-      //   fetchedMeal.results[0].addCalories = true;
-      //   fetchedMeal.results[0].doubleCalories = false;
-      //   newCalTotal = newCalTotal + 200;
-
-      //   if (target - runningCalTally < 250) {
-      //     fetchedMeal.results[0].addCalories = false;
-      //     addCalories = false;
-      //     newCalTotal = newCalTotal - 200;
-      //     // console.log(`addCalories: ${addCalories}`);
-      //   } else if (
-      //     !addCalories ||
-      //     DONT_ADD_CALORIES[fetchedMeal.results[0].id]
-      //   ) {
-      //     if (newCalTotal <= 250) {
-      //       newCalTotal = newCalTotal * 2;
-      //       fetchedMeal.results[0].addCalories = true;
-      //       fetchedMeal.results[0].doubleCalories = true;
-      //       // console.log(`addCalories: ${addCalories}`);
-      //     } else {
-      //       newCalTotal = newCalTotal - 200;
-      //       fetchedMeal.results[0].addCalories = false;
-      //       addCalories = false;
-      //       // console.log(`addCalories: ${addCalories}`);
-      //     }
-      //   }
-      //   fetchedMeal.results[0].adjustedCal = newCalTotal;
-      //   fetchedMeal.results[0].nutrition.nutrients.push({
-      //     type: 'Adjusted Calories',
-      //     amount: newCalTotal,
-      //     unit: 'kcal',
-      //   });
-      //   runningCalTally = runningCalTally + newCalTotal;
-      // } else {
-      //   i--;
-      // }
   }
 
   function handleDiet(e) {
     setDiet();
-  }
-
-  function handleMeals(e) {
-    setNumberOfMeals(e.target.value);
   }
 
   return (
@@ -193,14 +84,6 @@ function MealPlan(props) {
           </ul>
         </div>
         <div className="control">
-          <p>Number of Meals</p>
-          <select onChange={handleMeals} className="d-block">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-          </select>
-        </div>
-        <div className="control">
           <input
             className="d-block"
             type="number"
@@ -217,11 +100,6 @@ function MealPlan(props) {
       {meals &&
         <MealList meals={meals}
           target={target}
-          calories={calories}
-          protein={protein}
-          fat={fat}
-          carbs={carbs}
-          sugar={sugar}
           meals={meals}
           deleteMeal={deleteMeal}
           handleCallback={handleCallback}
