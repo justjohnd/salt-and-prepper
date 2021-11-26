@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Meal from './Meal';
 import KEYWORDS, {
   DONT_INCLUDE,
+  USED_INGREDIENT_COUNT,
   DONT_ADD_CALORIES,
   MUST_ADD_CALORIES,
   BAD_API_IDS,
@@ -14,29 +15,34 @@ function MealList(props) {
   let addCalories = false;
   const results = props.meals.results;
   const rejectionReason = [];
+  let warning;
+  let caloriesArray = [];
+  let caloriesTotal;
 
-  for (let i = 0; i < results.length; i++) {
-    dontInclude = false;
-     if (BAD_API_IDS[results[i].id]) {
-        dontInclude = true;
+    // Scrub data
+    const resultsCopy = [...results];
+    const scrubbedResults = resultsCopy.map((result) => {
+      result.dontInclude = false
+
+      if (
+        BAD_API_IDS[result.id] 
+      ) {
+        result.dontInclude = true;
         rejectionReason.push(
-          `Rejection Reason: Based on recipe ${results[i].id}, this recipe is missing key information.`
+          `Rejection Reason: Based on recipe ${result.id}, this recipe is missing kinformation.`
         );
       }
 
-    findWord(results[i].title.toLowerCase());
+      findWord(result.title.toLowerCase());
 
-    if (dontInclude) {
-      console.log(rejectionReason);
-      console.log(results[i]);
-      props.handleCallback(i);
-      if (results.length === 1) {
-        break;
-      } else {
-        i--;
+      return result
+    });
+
+    const filteredResults = scrubbedResults.filter(result => {
+      if (result.dontInclude === false) {
+        return result;
       }
-    } 
-  } 
+    });
 
   function findWord(string) {
     const words = string.split(' ');
@@ -79,47 +85,43 @@ function MealList(props) {
   }
 
   // Find total for macros
-  const caloriesArray = results.map((e) => {
-    let title = e.title;
-    let calories = e.nutrition.nutrients[0].amount;
-    addCaloriesCheck(title);
+//   if (filteredResults !== []) {
+//   caloriesArray = filteredResults.map((e) => {
+//     let title = e.title;
+//     let calories = e.nutrition.nutrients[0].amount;
+//     addCaloriesCheck(title);
 
-    if (addCalories) {
-      calories += 200;
-    }
+//     if (addCalories) {
+//       calories += 200;
+//     }
 
-    return calories.toFixed(0);
-  });
+//     return calories.toFixed(0);
+//   });
 
-  const caloriesTotal = caloriesArray.reduce((prev, cur) => {
-    return prev + cur;
-  });
+//   caloriesTotal = caloriesArray.reduce((prev, cur) => {
+//     return prev + cur;
+//   });
+// }
 
 
   return (
     <main>
       <section className="nutrients">
         {/* Calculates TOTALS for all meals generate */}
-        <h1>Total Calories: {caloriesTotal}</h1>
-        {/* <h1>Macros</h1>
-        <ul>
-          <li>Calories: {props.calories.toFixed(0)}</li>
-          <li>
-            Difference from target: {props.target - props.calories.toFixed(0)}{' '}
-          </li>
-          <li>Protein: {props.protein.toFixed(0)}</li>
-          <li>Fat: {props.fat.toFixed(0)}</li>
-          <li>Carbohydrates: {props.carbs.toFixed(0)}</li>
-          <li>Sugar: {props.sugar.toFixed(0)}</li>
-        </ul> */}
+        {/* <h1>Total Calories: {caloriesTotal}</h1> */}
+        {filteredResults === [] && <h1>Sorry, no results matched criteria</h1>}
+
       </section>
 
       <section className="meals">
-        {results.map(meal => {
-          const [calories, protein, fat, carbohydrates, sugar] = meal.nutrition.nutrients;
+        {filteredResults.map(meal => {
+          const [calories, protein, fat, carbohydrates, sugar] =
+            meal.nutrition.nutrients;
           calories.addCalories = false;
 
-          {/* Check to see if calories should be added */}
+          {
+            /* Check to see if calories should be added */
+          }
           addCaloriesCheck(meal.title);
           if (addCalories) {
             calories.amount += 200;
@@ -128,6 +130,9 @@ function MealList(props) {
           } else {
             console.log(`no calories were added to ${meal.title}`);
           }
+
+          console.log(meal);
+          console.log(filteredResults);
 
           return (
             <Meal

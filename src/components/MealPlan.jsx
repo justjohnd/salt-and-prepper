@@ -38,13 +38,6 @@ function MealPlan(props) {
     });
     getMeals();
   }
-
-    function handleCallback(i) {
-      setMeals(prevVal => {
-        let results = prevVal.results.splice(i, 1);;
-        return results;
-      });
-    }
         
     function getMeals() {   
       fetch(
@@ -102,7 +95,6 @@ function MealPlan(props) {
           target={target}
           meals={meals}
           deleteMeal={deleteMeal}
-          handleCallback={handleCallback}
         />
       }
     </div>

@@ -11,6 +11,10 @@ const BAD_API_IDS = {
   629887: true,
 };
 
+const USED_INGREDIENT_COUNT = {
+  0: true
+};
+
 const DONT_INCLUDE = {
   chocolate: true,
   cookies: true,
@@ -127,3 +131,4 @@ export { DONT_INCLUDE };
 export { DONT_ADD_CALORIES };
 export { MUST_ADD_CALORIES };
 export { BAD_API_IDS };
+export { USED_INGREDIENT_COUNT };
