@@ -13,6 +13,9 @@ function MealList(props) {
   const keywordsSeen = [];
   const results = props.meals.results;
   const rejectionReason = [];
+  let caloriesArray = [];
+  let caloriesTotal = "";
+
 
     // Scrub data
     const resultsCopy = [...results];
@@ -27,7 +30,9 @@ function MealList(props) {
         );
       }
 
-      dontIncludeCheck(result.title.toLowerCase());
+     if (dontIncludeCheck(result.title.toLowerCase())) {
+       result.dontInclude = true;
+     };
 
       if (addCaloriesCheck(result.title.toLowerCase())) {
         result.addCalories = true;
@@ -43,6 +48,13 @@ function MealList(props) {
         return result;
       }
     });
+
+    if (filteredResults[0] === undefined) {
+      console.log(filteredResults);
+    } else {
+      caloriesArray = filteredResults.map(result => result.nutrition.nutrients[0].amount);
+      caloriesTotal = caloriesArray.reduce((prev, cur) => prev + cur).toFixed(0);
+    }
 
   function dontIncludeCheck(string) {
     const words = string.split(' ');
@@ -87,32 +99,12 @@ function MealList(props) {
   }
 }
 
-  // Find total for macros
-//   if (filteredResults !== []) {
-//   caloriesArray = filteredResults.map((e) => {
-//     let title = e.title;
-//     let calories = e.nutrition.nutrients[0].amount;
-//     addCaloriesCheck(title);
-
-//     if (addCalories) {
-//       calories += 200;
-//     }
-
-//     return calories.toFixed(0);
-//   });
-
-//   caloriesTotal = caloriesArray.reduce((prev, cur) => {
-//     return prev + cur;
-//   });
-// }
-
-
   return (
     <main>
       <section className="nutrients">
         {/* Calculates TOTALS for all meals generate */}
-        {/* <h1>Total Calories: {caloriesTotal}</h1> */}
-        {filteredResults === [] && <h1>Sorry, no results matched criteria</h1>}
+        <h1>Total Calories: {caloriesTotal}</h1>
+        {filteredResults[0] === undefined && <h1>Sorry, no results matched criteria</h1>}
 
       </section>
 
@@ -120,22 +112,10 @@ function MealList(props) {
         {filteredResults.map(meal => {
           const [calories, protein, fat, carbohydrates, sugar] =
             meal.nutrition.nutrients;
-          {/* calories.addCalories = false; */}
 
-          {
-            /* Check to see if calories should be added */
-          }
-          {/* addCaloriesCheck(meal.title);
-          if (addCalories) {
-            calories.amount += 200;
-            console.log(`calories were added to ${meal.title}`);
-            calories.addCalories = true;
-          } else {
-            console.log(`no calories were added to ${meal.title}`);
-          } */}
-
-          console.log(meal);
-          console.log(filteredResults);
+            console.log(meal);
+            console.log("filtered:");
+            console.log(filteredResults);
 
           return (
             <Meal
