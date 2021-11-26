@@ -78,12 +78,29 @@ function MealList(props) {
         }
   }
 
+  // Find total for macros
+  const caloriesArray = results.map((e) => {
+    let title = e.title;
+    let calories = e.nutrition.nutrients[0].amount;
+    addCaloriesCheck(title);
+
+    if (addCalories) {
+      calories += 200;
+    }
+
+    return calories.toFixed(0);
+  });
+
+  const caloriesTotal = caloriesArray.reduce((prev, cur) => {
+    return prev + cur;
+  });
 
 
   return (
     <main>
       <section className="nutrients">
         {/* Calculates TOTALS for all meals generate */}
+        <h1>Total Calories: {caloriesTotal}</h1>
         {/* <h1>Macros</h1>
         <ul>
           <li>Calories: {props.calories.toFixed(0)}</li>
@@ -105,7 +122,7 @@ function MealList(props) {
           {/* Check to see if calories should be added */}
           addCaloriesCheck(meal.title);
           if (addCalories) {
-            calories.amount = calories.amount + 200;
+            calories.amount += 200;
             console.log(`calories were added to ${meal.title}`);
             calories.addCalories = true;
           } else {
