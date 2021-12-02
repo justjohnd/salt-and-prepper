@@ -9,7 +9,7 @@ import KEYWORDS, {
 
 function MealPlan(props) {
   let runningCalTally = 0;
-  let target = 700; // Set this for testing. Typiocally props.userCalAverage;
+  const target = props.userCalAverage;
 
   const DIETS = [
     'Vegetarian',
@@ -18,8 +18,9 @@ function MealPlan(props) {
     'Gluten Free',
     'Ketogenic',
   ];
-  const [meal, setMeal] = useState(null);
   const [meals, setMeals] = useState();
+  const [calorieSum, setCalorieSum] = useState("");
+  const [targetDifference, setTargetDifference] = useState("");
   const [diet, setDiet] = useState('vegan');
     const [isChecked, setIsChecked] = useState(
       new Array(DIETS.length).fill(false)
@@ -46,7 +47,7 @@ function MealPlan(props) {
         
     function getMeals() {   
       fetch(
-        `https://api.spoonacular.com/recipes/complexSearch?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&diet=${diet}&type=main course,side dish,snack,appetizer,salad,soup,fingerfood&excludeIngredients=white chocolate,vanilla bean paste,semi sweet chocolate chips&fillIngredients=true&instructionsRequired=true&maxReadyTime=30&maxSugar=10&minProtein=1&minCarbs=1&minFat=1&minCalories=1&maxCalories=${props.userCalAverage}&sort=random&number=3`
+        `https://api.spoonacular.com/recipes/complexSearch?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&diet=${diet}&type=main course,side dish,snack,appetizer,salad,soup,fingerfood&excludeIngredients=white chocolate,vanilla bean paste,semi sweet chocolate chips&fillIngredients=true&instructionsRequired=true&maxReadyTime=30&maxSugar=10&minProtein=1&minCarbs=1&minFat=1&minCalories=1&maxCalories=${target}&sort=random&number=3`
       )
         .then((response) => response.json())
         .then(data => {
@@ -156,7 +157,8 @@ function MealPlan(props) {
 
           const diffFromTarget = calorieComboArrays.map(array => {
             const calorieArrayTotal = array.reduce((prev, cur) => prev + cur).toFixed(0);
-            array.push(Math.abs(calorieArrayTotal - target));
+            setCalorieSum(calorieArrayTotal);
+            array.push((Math.abs(calorieArrayTotal - target)).toFixed(0));
             return array;
           });
 
@@ -173,6 +175,8 @@ function MealPlan(props) {
           console.log(filtered);
           
           setMeals(filtered);
+          
+          setTargetDifference(diffFromTarget);
         })
         .catch(() => {
           console.log(`Error`);
@@ -189,6 +193,8 @@ function MealPlan(props) {
     ));
     setDiet(DIETS[position]);
   };
+
+;
 
   return (
     <div>
@@ -225,6 +231,8 @@ function MealPlan(props) {
           </button>
         </div>
       </section>
+      <div>Total Calories: {calorieSum}</div>
+      <div>Difference from Target: {targetDifference}</div>
       {meals &&
         <MealList meals={meals}
           target={target}
