@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import MealList from './MealList';
-import Checkbox from './Checkbox';
 import KEYWORDS, {
   DONT_INCLUDE,
   MUST_ADD_CALORIES,
@@ -21,7 +20,10 @@ function MealPlan(props) {
   ];
   const [meal, setMeal] = useState(null);
   const [meals, setMeals] = useState();
-  const [diet, setDiet] = useState('');
+  const [diet, setDiet] = useState('vegan');
+    const [isChecked, setIsChecked] = useState(
+      new Array(DIETS.length).fill(false)
+    );
 
   function deleteMeal(foundId) {
     const deleteMealCalories = meals.filter(meal => {
@@ -44,7 +46,7 @@ function MealPlan(props) {
         
     function getMeals() {   
       fetch(
-        `https://api.spoonacular.com/recipes/complexSearch?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&diet=vegetarian&type=main course,side dish,snack,appetizer,salad,soup,fingerfood&excludeIngredients=white chocolate,vanilla bean paste,semi sweet chocolate chips&fillIngredients=true&instructionsRequired=true&maxReadyTime=30&maxSugar=10&minProtein=1&minCarbs=1&minFat=1&minCalories=1&maxCalories=${props.userCalAverage}&sort=random&number=3`
+        `https://api.spoonacular.com/recipes/complexSearch?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&diet=${diet}&type=main course,side dish,snack,appetizer,salad,soup,fingerfood&excludeIngredients=white chocolate,vanilla bean paste,semi sweet chocolate chips&fillIngredients=true&instructionsRequired=true&maxReadyTime=30&maxSugar=10&minProtein=1&minCarbs=1&minFat=1&minCalories=1&maxCalories=${props.userCalAverage}&sort=random&number=3`
       )
         .then((response) => response.json())
         .then(data => {
@@ -181,6 +183,13 @@ function MealPlan(props) {
     setDiet();
   }
 
+  const handleChecked = (position) => {
+    setIsChecked((prevVal) => prevVal.map((item, index) =>
+      index === position ? item = true : item = false
+    ));
+    setDiet(DIETS[position]);
+  };
+
   return (
     <div>
       <section className="controls">
@@ -189,13 +198,15 @@ function MealPlan(props) {
           <ul className="diet-options">
             {DIETS.map((diet, index) => {
               return (
-                <Checkbox
+                <li>
+                  <input 
+                  title={diet} 
                   key={index}
-                  title={diet}
-                  onClick={handleDiet}
-                  htmlFor={diet}
-                  label={diet}
-                />
+                  type="checkbox" 
+                  onChange={() => handleChecked(index)}
+                  checked={isChecked[index]} />
+                  <label htmlFor={diet}>{diet}</label>
+                </li>
               );
             })}
           </ul>
