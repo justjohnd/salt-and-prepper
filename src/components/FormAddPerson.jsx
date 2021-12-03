@@ -21,17 +21,17 @@ function FormAddPerson(props) {
     calTarget: '',
   };
 
-  const [genderOptions, setGenderOptions] = useState([
+  const genderOptions = [
     { value: 1, label: 'Unspecified' },
     { value: 2, label: 'Male' },
     { value: 3, label: 'Female' },
-  ]);
+  ];
 
-  const [lifestyleOptions, setlifestyleOptions] = useState([
+  const lifestyleOptions = [
     { value: 2, label: 'Moderately active' },
     { value: 1, label: 'Not very active' },
     { value: 3, label: 'Very active' },
-  ]);
+  ];
 
   function handleData(event) {
     const { name, value } = event.target;

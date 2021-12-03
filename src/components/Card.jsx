@@ -13,7 +13,7 @@ const CardColor = styled.div`
   width: 20px;
   height: 20px;
   margin-right: 5px;
-  background-color: ${props => (props.bg != '' ? props.bg : 'black')};
+  background-color: ${props => (props.bg !== '' ? props.bg : 'black')};
 `;
 
 function Card(props) {

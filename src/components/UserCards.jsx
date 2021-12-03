@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { colors } from '../users';
 import Card from './Card';
 import ageCalc from '../ageCalc';

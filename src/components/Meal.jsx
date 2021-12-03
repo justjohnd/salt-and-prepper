@@ -8,29 +8,29 @@ export default function Meal(props) {
     'Show Instructions'
   );
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    fetch(
-      `https://api.spoonacular.com/recipes/${props.meal.id}/information?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&includeNutrition=false`
-    )
-      .then(response => response.json())
-      .then(data => {
-        if (
-          data.analyzedInstructions[0].steps.length === 1 ||
-          data.analyzedInstructions === []
-        ) {
-          console.log(
-            `Note: recipe with ${props.meal.id} has been removed because it does not contain recipe instructions`
-          );
-          props.deleteMeal(props.meal.id);
-        } else {
-          setRecipeData(data);
-        }
-      })
-      .catch(() => {
-        console.log(`Error`);
-      });
-  }, [props.meal.id]);
+  //   fetch(
+  //     `https://api.spoonacular.com/recipes/${props.meal.id}/information?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&includeNutrition=false`
+  //   )
+  //     .then(response => response.json())
+  //     .then(data => {
+  //       if (
+  //         data.analyzedInstructions[0].steps.length === 1 ||
+  //         data.analyzedInstructions === []
+  //       ) {
+  //         console.log(
+  //           `Note: recipe with ${props.meal.id} has been removed because it does not contain recipe instructions`
+  //         );
+  //         props.deleteMeal(props.meal.id);
+  //       } else {
+  //         setRecipeData(data);
+  //       }
+  //     })
+  //     .catch(() => {
+  //       console.log(`Error`);
+  //     });
+  // }, [props.meal.id]);
 
   function getInstructions() {
     setShowInstructions(prevValue => {
@@ -78,17 +78,16 @@ export default function Meal(props) {
             </li>
           </ul>
 
-          <button onClick={getInstructions}>{showInstructionsButton}</button>
+          {/* <button onClick={getInstructions}>{showInstructionsButton}</button>
           {showInstructions && (
             <ul className="instructions">
               {recipeData.analyzedInstructions[0].steps.map(e => {
                 return <li key={uuidv4()}>{e.step}</li>;
               })}
             </ul>
-          )}
+          )} */}
         </div>
       )}
-      {console.log(recipeData)}
     </div>
   );
 }

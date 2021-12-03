@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import MealList from './MealList';
 import KEYWORDS, {
   DONT_INCLUDE,
@@ -8,7 +8,6 @@ import KEYWORDS, {
 
 
 function MealPlan(props) {
-  let runningCalTally = 0;
   let target = props.userCalAverage;
 
   const DIETS = [
@@ -18,7 +17,6 @@ function MealPlan(props) {
     'Gluten Free',
     'Ketogenic',
   ];
-  const [meal, setMeal] = useState(null);
   const [meals, setMeals] = useState();
   const [diet, setDiet] = useState('vegan');
     const [isChecked, setIsChecked] = useState(
@@ -28,29 +26,26 @@ const [totalCalories, setTotalCalories] = useState('');
 const [differenceFromTarget, setDifferenceFromTarget] = useState('');
 
   function deleteMeal(foundId) {
-    const deleteMealCalories = meals.filter(meal => {
-      if (meal.id === foundId) {
-        console.log('Deleted meal');
-        return meal;
-      }
-    });
+    // const deleteMealCalories = meals.filter(meal => {
+    //   if (meal.id === foundId) {
+    //     console.log('Deleted meal');
+    //     return meal;
+    //   }
+    // });
 
-    runningCalTally =
-      target - deleteMealCalories[0].nutrition.nutrients[0].amount;
-
-    setMeals(prevVal => {
-      return prevVal.filter(meal => {
-        return meal.id !== foundId;
-      });
-    });
-    getMeals();
+    // setMeals(prevVal => {
+    //   return prevVal.filter(meal => {
+    //     return meal.id !== foundId;
+    //   });
+    // });
+    // getMeals();
   }
         
     function getMeals() {   
       fetch(
-        `https://api.spoonacular.com/recipes/complexSearch?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&diet=${diet}&type=main course,side dish,snack,appetizer,salad,soup,fingerfood&excludeIngredients=white chocolate,vanilla bean paste,semi sweet chocolate chips&fillIngredients=true&instructionsRequired=true&maxReadyTime=30&maxSugar=10&minProtein=1&minCarbs=1&minFat=1&minCalories=1&maxCalories=${target}&sort=random&number=2`
+        `https://api.spoonacular.com/recipes/complexSearch?apiKey=cb1c464d94f142c08b156c5beddade8b&diet=${diet}&type=main course,side dish,snack,appetizer,salad,soup,fingerfood&excludeIngredients=white chocolate,vanilla bean paste,semi sweet chocolate chips&fillIngredients=true&instructionsRequired=true&maxReadyTime=30&maxSugar=10&minProtein=1&minCarbs=1&minFat=1&minCalories=1&maxCalories=${target}&sort=random&number=2`
       )
-        .then((response) => response.json())
+        .then(response => response.json())
         .then(data => {
           const keywordsSeen = [];
           const rejectionReason = [];
@@ -130,7 +125,7 @@ const [differenceFromTarget, setDifferenceFromTarget] = useState('');
 
           return filteredResults;
         })
-        .then((filteredResults) => {
+        .then(filteredResults => {
           // Create an array of calories for each meal to pass to combinations function
           const caloriesArray = filteredResults.map(result => {
             return result.nutrition.nutrients[0].amount;
@@ -142,27 +137,29 @@ const [differenceFromTarget, setDifferenceFromTarget] = useState('');
             if (array.length === 1) {
               output.push([array[0]]);
             } else {
-            for (let i = 0; i <= array.length - 1; i++) {
-              let firstPosition = array[i];
-              for (let j = i + 1; j <= array.length - 1; j++) {
-                let secondPosition = array[j];
-                output.push([firstPosition, i, secondPosition, j]);
+              for (let i = 0; i <= array.length - 1; i++) {
+                let firstPosition = array[i];
+                for (let j = i + 1; j <= array.length - 1; j++) {
+                  let secondPosition = array[j];
+                  output.push([firstPosition, i, secondPosition, j]);
+                }
               }
             }
-          }
             return output;
           };
 
           const calorieComboArrays = findCombinations(caloriesArray);
 
           const diffFromTarget = calorieComboArrays.map(array => {
-            const calorieArrayTotal = array.reduce((prev, cur) => prev + cur).toFixed(0);
+            const calorieArrayTotal = array
+              .reduce((prev, cur) => prev + cur)
+              .toFixed(0);
             setTotalCalories(calorieArrayTotal);
             array.push(Math.abs(calorieArrayTotal - target));
             return array;
           });
 
-          const differences = diffFromTarget.map((array) => array.at(-1));
+          const differences = diffFromTarget.map(array => array.at(-1));
           const closestToTarget = differences.indexOf(Math.min(...differences));
           const bestCombo = diffFromTarget[closestToTarget];
 
@@ -172,9 +169,11 @@ const [differenceFromTarget, setDifferenceFromTarget] = useState('');
             }
           });
 
-          const difference =
-            Math.abs(((filtered[0].nutrition.nutrients[0].amount +
-            filtered[1].nutrition.nutrients[0].amount) - target)).toFixed(0);
+          const difference = Math.abs(
+            filtered[0].nutrition.nutrients[0].amount +
+              filtered[1].nutrition.nutrients[0].amount -
+              target
+          ).toFixed(0);
 
           setDifferenceFromTarget(difference);
 
@@ -183,10 +182,6 @@ const [differenceFromTarget, setDifferenceFromTarget] = useState('');
         .catch(() => {
           console.log(`Error`);
         });
-  }
-
-  function handleDiet(e) {
-    setDiet();
   }
 
   const handleChecked = (position) => {
@@ -204,10 +199,9 @@ const [differenceFromTarget, setDifferenceFromTarget] = useState('');
           <ul className="diet-options">
             {DIETS.map((diet, index) => {
               return (
-                <li>
+                <li key={index}>
                   <input
                     title={diet}
-                    key={index}
                     type="checkbox"
                     onChange={() => handleChecked(index)}
                     checked={isChecked[index]}
@@ -236,7 +230,6 @@ const [differenceFromTarget, setDifferenceFromTarget] = useState('');
         <MealList
           meals={meals}
           target={target}
-          meals={meals}
           deleteMeal={deleteMeal}
         />
       )}

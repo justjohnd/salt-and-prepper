@@ -1,24 +1,24 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Input from './Input';
 import Button from './Button';
 
 function FormEditPerson(props) {
-  const [genderOptions, setGenderOptions] = useState([
+  const genderOptions = [
     { value: 1, label: 'Unspecified' },
     { value: 2, label: 'Male' },
     { value: 3, label: 'Female' },
-  ]);
+  ];
 
-  const [lifestyleOptions, setlifestyleOptions] = useState([
+  const lifestyleOptions = [
     { value: 2, label: 'Moderately active' },
     { value: 1, label: 'Not very active' },
     { value: 3, label: 'Very active' },
-  ]);
+  ];
 
-  function handleCloseSection(event) {
-    props.changeFormEditVisibility();
-    event.preventDefault();
-  }
+  // function handleCloseSection(event) {
+  //   props.changeFormEditVisibility();
+  //   event.preventDefault();
+  // }
 
   return (
     <div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Meal from './Meal';
 
 function MealList(props) {
@@ -25,7 +25,7 @@ function MealList(props) {
               calories={calories.amount.toFixed(0)}
               protein={protein.amount.toFixed(0)}
               fat={fat.amount.toFixed(0)}
-              fat={carbohydrates.amount.toFixed(0)}
+              carbohydrates={carbohydrates.amount.toFixed(0)}
               sugar={sugar.amount.toFixed(0)}
               addCalories={meal.addCalories}
             />
