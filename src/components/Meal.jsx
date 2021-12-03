@@ -2,36 +2,35 @@ import React, { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 export default function Meal(props) {
-  // const [recipeData, setRecipeData] = useState(null);
+  const [recipeData, setRecipeData] = useState(null);
   // const [showInstructions, setShowInstructions] = useState(false);
   // const [showInstructionsButton, setShowInstructionsButton] = useState(
   //   'Show Instructions'
   // );
 
-  // useEffect(() => {
-  //   getMealInformation().catch(() => {
-  //     console.log('error');
-  //   });
+  useEffect(() => {
 
-  //   async function getMealInformation() {
-  //     const response = await fetch(
-  //       `https://api.spoonacular.com/recipes/${props.meal.id}/information?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&includeNutrition=false`
-  //     );
-  //     const data = await response.json();
-  //     // console.log(data);
-  //     if (
-  //       data.analyzedInstructions[0].steps.length === 1 ||
-  //       data.analyzedInstructions === []
-  //     ) {
-  //       console.log(
-  //         `Note: recipe with ${props.meal.id} has been removed because it does not contain recipe instructions`
-  //       );
-  //       props.deleteMeal(props.meal.id);
-  //     } else {
-  //       setRecipeData(data);
-  //     }
-  //   }
-  // }, [props.meal.id]);
+    fetch(
+      `https://api.spoonacular.com/recipes/${props.meal.id}/information?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&includeNutrition=false`
+    )
+      .then(response => response.json())
+      .then(data => {
+        if (
+          data.analyzedInstructions[0].steps.length === 1 ||
+          data.analyzedInstructions === []
+        ) {
+          console.log(
+            `Note: recipe with ${props.meal.id} has been removed because it does not contain recipe instructions`
+          );
+          props.deleteMeal(props.meal.id);
+        } else {
+          setRecipeData(data);
+        }
+      })
+      .catch(() => {
+        console.log(`Error`);
+      });
+  }, [props.meal.id]);
 
   // function getInstructions() {
   //   setShowInstructions(prevValue => {
@@ -99,6 +98,7 @@ export default function Meal(props) {
           </button> */}
         </div>
       )}
+      {console.log(recipeData)}
     </div>
   );
 }

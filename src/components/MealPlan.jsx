@@ -154,7 +154,6 @@ const [differenceFromTarget, setDifferenceFromTarget] = useState('');
           };
 
           const calorieComboArrays = findCombinations(caloriesArray);
-          console.log(calorieComboArrays);
 
           const diffFromTarget = calorieComboArrays.map(array => {
             const calorieArrayTotal = array.reduce((prev, cur) => prev + cur).toFixed(0);
