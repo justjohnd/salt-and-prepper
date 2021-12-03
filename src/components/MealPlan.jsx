@@ -25,6 +25,7 @@ function MealPlan(props) {
       new Array(DIETS.length).fill(false)
     );
 const [totalCalories, setTotalCalories] = useState('');
+const [differenceFromTarget, setDifferenceFromTarget] = useState('');
 
   function deleteMeal(foundId) {
     const deleteMealCalories = meals.filter(meal => {
@@ -172,8 +173,12 @@ const [totalCalories, setTotalCalories] = useState('');
             }
           });
 
-          console.log(filtered);
-          
+          const difference =
+            Math.abs(((filtered[0].nutrition.nutrients[0].amount +
+            filtered[1].nutrition.nutrients[0].amount) - target)).toFixed(0);
+
+          setDifferenceFromTarget(difference);
+
           setMeals(filtered);
         })
         .catch(() => {
@@ -201,12 +206,13 @@ const [totalCalories, setTotalCalories] = useState('');
             {DIETS.map((diet, index) => {
               return (
                 <li>
-                  <input 
-                  title={diet} 
-                  key={index}
-                  type="checkbox" 
-                  onChange={() => handleChecked(index)}
-                  checked={isChecked[index]} />
+                  <input
+                    title={diet}
+                    key={index}
+                    type="checkbox"
+                    onChange={() => handleChecked(index)}
+                    checked={isChecked[index]}
+                  />
                   <label htmlFor={diet}>{diet}</label>
                 </li>
               );
@@ -220,21 +226,21 @@ const [totalCalories, setTotalCalories] = useState('');
             placeholder={props.userCalAverage}
             onChange={e => e.target.value}
           />
-          <button 
-          className="btn-primary"
-          onClick={getMeals}>
-          Get Daily Meal Plan
+          <button className="btn-primary" onClick={getMeals}>
+            Get Daily Meal Plan
           </button>
         </div>
       </section>
       <div>Total Calories: {totalCalories}</div>
-      {meals &&
-        <MealList meals={meals}
+      <div>Difference from Target: {differenceFromTarget}</div>
+      {meals && (
+        <MealList
+          meals={meals}
           target={target}
           meals={meals}
           deleteMeal={deleteMeal}
         />
-      }
+      )}
     </div>
   );
 }
