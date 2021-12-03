@@ -7,8 +7,8 @@ function App() {
 
   function addUserCal(userCalArray) {
     const calAverage = (
-      userCalArray.reduce((acc, cur) => acc + cur) / userCalArray.length
-    ).toFixed(0);
+      (userCalArray.reduce((acc, cur) => acc + cur) / userCalArray.length
+    ) / 3).toFixed(0);
     setUserCalAverage(calAverage);
   }
 
