@@ -24,6 +24,7 @@ function MealPlan(props) {
     const [isChecked, setIsChecked] = useState(
       new Array(DIETS.length).fill(false)
     );
+const [totalCalories, setTotalCalories] = useState('');
 
   function deleteMeal(foundId) {
     const deleteMealCalories = meals.filter(meal => {
@@ -156,6 +157,7 @@ function MealPlan(props) {
 
           const diffFromTarget = calorieComboArrays.map(array => {
             const calorieArrayTotal = array.reduce((prev, cur) => prev + cur).toFixed(0);
+            setTotalCalories(calorieArrayTotal);
             array.push(Math.abs(calorieArrayTotal - target));
             return array;
           });
@@ -225,6 +227,7 @@ function MealPlan(props) {
           </button>
         </div>
       </section>
+      <div>Total Calories: {totalCalories}</div>
       {meals &&
         <MealList meals={meals}
           target={target}
