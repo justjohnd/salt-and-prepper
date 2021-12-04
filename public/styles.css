@@ -18,6 +18,14 @@ h2 {
   margin-bottom: 0;
 }
 
+.d-none {
+  display: none;
+}
+
+.d-block {
+  display: block;
+}
+
 .container {
   display: flex;
   flex-grow: 1;

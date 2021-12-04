@@ -5,14 +5,12 @@ import Instructions from './Instructions';
 
 export default function Meal(props) {
   const [showInstructions, setShowInstructions] = useState(false);
-  const [showInstructionsButton, setShowInstructionsButton] = useState(
-    'Show Instructions'
+  const [showInstructionsButton, setShowInstructionsButton] = useState('Show Instructions'
   );
-    const [showIngredients, setShowIngredients] = useState(false);
-    const [showIngredientsButton, setShowIngredientsButton] =
+    const [ingredientsClickCount, setIngredientsClickCount] = useState(0);
+    const [ingredientsDisplay, setIngredientsDisplay] = useState('d-none');
+    const [ingredientsButton, setIngredientsButton] =
       useState('Show Ingredients');
-
-  const [areIngredients, setAreIngredients] = useState(false);
 
   // Use to remove items with no instructions
 
@@ -26,32 +24,31 @@ export default function Meal(props) {
   //         props.deleteMeal(props.meal.id);
   //       } else {
 
-  function getInstructions() {
-    setShowInstructions(prevValue => {
-      return !prevValue;
-    });
+  // function getInstructions() {
+  //   setShowInstructions(prevValue => {
+  //     return !prevValue;
+  //   });
 
-    if (getInstructions) {
-      setShowInstructionsButton('Hide Instructions');
+  //   if (getInstructions) {
+  //     setShowInstructionsButton('Hide Instructions');
+  //   } else {
+  //     setShowInstructionsButton('Show Instructions');
+  //   }
+  // }
+
+   function handleIngredients() {
+
+    setIngredientsClickCount(prevVal => prevVal + 1);
+
+    const curVal = ingredientsDisplay;
+    if (curVal === 'd-block') {
+      setIngredientsDisplay('d-none');
+      setIngredientsButton('Show Ingredients');
+
     } else {
-      setShowInstructionsButton('Show Instructions');
+      setIngredientsDisplay('d-block');
+      setIngredientsButton('Hide Ingredients');
     }
-  }
-
-   function getIngredients() {
-     setShowIngredients(prevValue => {
-       return !prevValue;
-     });
-
-     if (getIngredients) {
-       setShowIngredientsButton('Hide Ingredients');
-     } else {
-       setShowIngredientsButton('Show Ingredients');
-     }
-   }
-
-   function handleCallback() {
-     setAreIngredients(true);
    }
 
   return (
@@ -88,13 +85,17 @@ export default function Meal(props) {
             </li>
           </ul>
 
-          <button onClick={getIngredients}>{showIngredientsButton}</button>
-          {showIngredients && <Ingredients 
-          handleCallback={ () => handleCallback() }
-          meal={props.meal} />}
+          <button onClick={handleIngredients}>{ingredientsButton}</button>
+          <section className={ingredientsDisplay}>
+          {ingredientsClickCount === 1 && (
+            <Ingredients
+              meal={props.meal}
+            />
+          )}
+          </section>
 
-          <button onClick={getInstructions}>{showInstructionsButton}</button>
-          {showInstructions && <Instructions meal={props.meal} />}
+          {/* <button onClick={getInstructions}>{showInstructionsButton}</button>
+          {showInstructions && <Instructions meal={props.meal} />} */}
         </div>
       )}
     </div>
