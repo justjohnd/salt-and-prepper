@@ -1,21 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import Ingredients from "./Ingredients";
+import Instructions from './Instructions';
 
 export default function Meal(props) {
-  const [recipeData, setRecipeData] = useState(null);
   const [showInstructions, setShowInstructions] = useState(false);
   const [showInstructionsButton, setShowInstructionsButton] = useState(
     'Show Instructions'
   );
+    const [showIngredients, setShowIngredients] = useState(false);
+    const [showIngredientsButton, setShowIngredientsButton] =
+      useState('Show Ingredients');
 
-  // useEffect(() => {
+  const [areIngredients, setAreIngredients] = useState(false);
 
-  //   fetch(
-  //     `https://api.spoonacular.com/recipes/${props.meal.id}/information?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&includeNutrition=false`
-  //   )
-  //     .then(response => response.json())
-  //     .then(data => {
-  //       if (
+  // Use to remove items with no instructions
+
+// if (
   //         data.analyzedInstructions[0].steps.length === 1 ||
   //         data.analyzedInstructions === []
   //       ) {
@@ -24,13 +25,6 @@ export default function Meal(props) {
   //         );
   //         props.deleteMeal(props.meal.id);
   //       } else {
-  //         setRecipeData(data);
-  //       }
-  //     })
-  //     .catch(() => {
-  //       console.log(`Error`);
-  //     });
-  // }, [props.meal.id]);
 
   function getInstructions() {
     setShowInstructions(prevValue => {
@@ -43,6 +37,22 @@ export default function Meal(props) {
       setShowInstructionsButton('Show Instructions');
     }
   }
+
+   function getIngredients() {
+     setShowIngredients(prevValue => {
+       return !prevValue;
+     });
+
+     if (getIngredients) {
+       setShowIngredientsButton('Hide Ingredients');
+     } else {
+       setShowIngredientsButton('Show Ingredients');
+     }
+   }
+
+   function handleCallback() {
+     setAreIngredients(true);
+   }
 
   return (
     <div className="recipe">
@@ -78,14 +88,13 @@ export default function Meal(props) {
             </li>
           </ul>
 
-          {/* <button onClick={getInstructions}>{showInstructionsButton}</button>
-          {showInstructions && (
-            <ul className="instructions">
-              {recipeData.analyzedInstructions[0].steps.map(e => {
-                return <li key={uuidv4()}>{e.step}</li>;
-              })}
-            </ul>
-          )} */}
+          <button onClick={getIngredients}>{showIngredientsButton}</button>
+          {showIngredients && <Ingredients 
+          handleCallback={ () => handleCallback() }
+          meal={props.meal} />}
+
+          <button onClick={getInstructions}>{showInstructionsButton}</button>
+          {showInstructions && <Instructions meal={props.meal} />}
         </div>
       )}
     </div>
