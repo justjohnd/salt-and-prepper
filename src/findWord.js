@@ -1,4 +1,4 @@
-const BAD_API_IDS = {
+  const BAD_API_IDS = {
   624304: true,
   638790: true,
   624194: true,

@@ -25,11 +25,13 @@ const rejectionReason = [];
     );
 const [totalCalories, setTotalCalories] = useState('');
 const [differenceFromTarget, setDifferenceFromTarget] = useState('');
-
+const [disableButton, setDisableButton] = useState(false);
 // Set the views for ingredients and instructions sections in child components
   const [instructionsDisplay, setInstructionsDisplay] = useState(false);
   const [ingredientsDisplay, setIngredientsDisplay] = useState(false);
 
+
+  // Handle Displays for ingredients and instructions
      function handleInstructionsCallback() {
        setInstructionsDisplay(prevValue => {
          return !prevValue;
@@ -61,43 +63,17 @@ const [differenceFromTarget, setDifferenceFromTarget] = useState('');
     function getMeals() {   
       setIngredientsDisplay(false);
       setInstructionsDisplay(false);
+      setDisableButton(true);
 
       fetch(
-        `https://api.spoonacular.com/recipes/complexSearch?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&diet=${diet}&type=main course,side dish,snack,appetizer,salad,soup,fingerfood&excludeIngredients=white chocolate,vanilla bean paste,semi sweet chocolate chips&fillIngredients=true&instructionsRequired=true&maxReadyTime=30&maxSugar=10&minProtein=1&minCarbs=1&minFat=1&minCalories=1&maxCalories=${target}&sort=random&number=2`
+        `https://api.spoonacular.com/recipes/complexSearch?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&diet=${diet}&type=main course,side dish,snack,appetizer,salad,soup,fingerfood&excludeIngredients=white chocolate,vanilla bean paste,semi sweet chocolate chips&fillIngredients=true&instructionsRequired=true&maxReadyTime=30&maxSugar=10&minProtein=1&minCarbs=1&minFat=1&minCalories=1&maxCalories=${target}&sort=random&number=2` // Ideal is 8 calls
       )
         .then(response => response.json())
         .then(data => {
           const keywordsSeen = [];
-
           const scrubbedResults = data.results.map(result => {
             result.dontInclude = false;
             result.addCalories = false;
-
-            if (BAD_API_IDS[result.id]) {
-              result.dontInclude = true;
-              rejectionReason.push(
-                `Rejection Reason: Based on recipe ${result.id}, this recipe is missing kinformation.`
-              );
-            }
-
-            if (dontIncludeCheck(result.title.toLowerCase())) {
-              result.dontInclude = true;
-            }
-
-            if (addCaloriesCheck(result.title.toLowerCase())) {
-              result.addCalories = true;
-              let calories = result.nutrition.nutrients[0].amount;
-              calories = calories + 200;
-            }
-
-            return result;
-          });
-
-          const filteredResults = scrubbedResults.filter(result => {
-            if (result.dontInclude === false) {
-              return result;
-            }
-          });
 
           function dontIncludeCheck(string) {
             const words = string.split(' ');
@@ -109,9 +85,9 @@ const [differenceFromTarget, setDifferenceFromTarget] = useState('');
                 } else {
                   keywordsSeen.forEach(e => {
                     if (e === word) {
-                      console.log(
-                        `Rejection Reason: '${string} is similar or identical recipe already being used`
-                      );
+                      // console.log(
+                      //   `Rejection Reason: '${string} is similar or identical recipe already being used`
+                      // );
                       return true;
                     } else {
                       keywordsSeen.push(word);
@@ -131,6 +107,7 @@ const [differenceFromTarget, setDifferenceFromTarget] = useState('');
 
           function addCaloriesCheck(string) {
             const words = string.split(' ');
+            console.log(`Words: ${words}`);
             for (const word of words) {
               if (MUST_ADD_CALORIES[word]) {
                 console.log('calories added to meal');
@@ -142,6 +119,34 @@ const [differenceFromTarget, setDifferenceFromTarget] = useState('');
             }
           }
 
+          if (BAD_API_IDS[result.id]) {
+              result.dontInclude = true;
+              rejectionReason.push(
+                `Rejection Reason: Based on recipe ${result.id}, this recipe is missing kinformation.`
+              );
+              console.log(`Bad API reject?: ${rejectionReason}`);
+          }
+          if (dontIncludeCheck(result.title.toLowerCase())) {
+              result.dontInclude = true;
+              console.log(`dontIncludeCheck: true: ${result.id}`);
+          }
+          if (addCaloriesCheck(result.title.toLowerCase())) {
+              result.addCalories = true;
+              result.nutrition.nutrients[0].amount =
+                result.nutrition.nutrients[0].amount + 200;
+                console.log(`added calories: ${result.id}`)
+          }
+          return result;
+          });
+          console.log(scrubbedResults);
+
+          const filteredResults = scrubbedResults.filter(result => {
+            if (result.dontInclude === false) {
+              return result;
+            }
+          });
+          console.log(filteredResults);
+
           return filteredResults;
         })
         .then(filteredResults => {
@@ -149,6 +154,7 @@ const [differenceFromTarget, setDifferenceFromTarget] = useState('');
           const caloriesArray = filteredResults.map(result => {
             return result.nutrition.nutrients[0].amount;
           });
+          console.log(`Array of all items' calories only: ${caloriesArray}`);
 
           // Find all combinations of meals
           const findCombinations = array => {
@@ -168,39 +174,52 @@ const [differenceFromTarget, setDifferenceFromTarget] = useState('');
           };
 
           const calorieComboArrays = findCombinations(caloriesArray);
+          console.log(`Array of ideal calorie pairs: ${calorieComboArrays}`);
 
           const diffFromTarget = calorieComboArrays.map(array => {
             const calorieArrayTotal = array
               .reduce((prev, cur) => prev + cur)
               .toFixed(0);
-            setTotalCalories(calorieArrayTotal);
             array.push(Math.abs(calorieArrayTotal - target));
             return array;
           });
+          console.log(`Inclusion of difference from target for each pair: ${diffFromTarget}`);
 
           const differences = diffFromTarget.map(array => array.at(-1));
-          const closestToTarget = differences.indexOf(Math.min(...differences));
-          const bestCombo = diffFromTarget[closestToTarget];
+          console.log(`Array of differences from target only: ${differences}`);
 
-          const filtered = filteredResults.filter((result, index) => {
+          const closestToTarget = differences.indexOf(Math.min(...differences));
+          console.log(`Index number for smallest difference combo: ${closestToTarget}`);
+
+          const bestCombo = diffFromTarget[closestToTarget];
+          console.log(`Best array combination: ${bestCombo}`);
+
+         let filtered = [];
+         let calorieTotal = "";
+         if (filteredResults.length === 1) {
+           filtered = filteredResults;
+           calorieTotal = filtered[0].nutrition.nutrients[0].amount;
+         } else if (filteredResults.length > 1) {
+            filtered = filteredResults.filter((result, index) => {
             if (index === bestCombo[1] || index === bestCombo[3]) {
               return result;
-            }
-          });
+              }
+            });
+            calorieTotal = (filtered[0].nutrition.nutrients[0].amount + filtered[1].nutrition.nutrients[0].amount).toFixed(0);
+         }
+          console.log(`Best two arrays: ${filtered}`);
 
-          const difference = Math.abs(
-            filtered[0].nutrition.nutrients[0].amount +
-              filtered[1].nutrition.nutrients[0].amount -
-              target
-          ).toFixed(0);
+          setTotalCalories(calorieTotal);
+
+          const difference = Math.abs(calorieTotal - target).toFixed(0);
 
           setDifferenceFromTarget(difference);
-          console.log(rejectionReason);
           setMeals(filtered);
         })
         .catch(() => {
           console.log(`Error`);
-        });
+        })
+        .finally(() => setDisableButton(false));
   }
 
   const handleChecked = (position) => {
@@ -238,7 +257,9 @@ const [differenceFromTarget, setDifferenceFromTarget] = useState('');
             placeholder={props.userCalAverage}
             onChange={e => e.target.value}
           />
-          <button className="btn-primary" onClick={getMeals}>
+          <button
+          disabled={disableButton}
+          className="btn-primary" onClick={getMeals}>
             Get Daily Meal Plan
           </button>
         </div>
