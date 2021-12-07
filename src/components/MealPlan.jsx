@@ -8,7 +8,8 @@ import KEYWORDS, {
 
 
 function MealPlan(props) {
-  let target = props.userCalAverage;
+let target = props.userCalAverage;
+const rejectionReason = [];
 
   const DIETS = [
     'Vegetarian',
@@ -24,6 +25,22 @@ function MealPlan(props) {
     );
 const [totalCalories, setTotalCalories] = useState('');
 const [differenceFromTarget, setDifferenceFromTarget] = useState('');
+
+// Set the views for ingredients and instructions sections in child components
+  const [instructionsDisplay, setInstructionsDisplay] = useState(false);
+  const [ingredientsDisplay, setIngredientsDisplay] = useState(false);
+
+     function handleInstructionsCallback() {
+       setInstructionsDisplay(prevValue => {
+         return !prevValue;
+       });
+     }
+
+     function handleIngredientsCallback() {
+       setIngredientsDisplay(prevValue => {
+         return !prevValue;
+       });
+     }
 
   function deleteMeal(foundId) {
     // const deleteMealCalories = meals.filter(meal => {
@@ -42,13 +59,15 @@ const [differenceFromTarget, setDifferenceFromTarget] = useState('');
   }
         
     function getMeals() {   
+      setIngredientsDisplay(false);
+      setInstructionsDisplay(false);
+
       fetch(
         `https://api.spoonacular.com/recipes/complexSearch?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&diet=${diet}&type=main course,side dish,snack,appetizer,salad,soup,fingerfood&excludeIngredients=white chocolate,vanilla bean paste,semi sweet chocolate chips&fillIngredients=true&instructionsRequired=true&maxReadyTime=30&maxSugar=10&minProtein=1&minCarbs=1&minFat=1&minCalories=1&maxCalories=${target}&sort=random&number=2`
       )
         .then(response => response.json())
         .then(data => {
           const keywordsSeen = [];
-          const rejectionReason = [];
 
           const scrubbedResults = data.results.map(result => {
             result.dontInclude = false;
@@ -176,7 +195,7 @@ const [differenceFromTarget, setDifferenceFromTarget] = useState('');
           ).toFixed(0);
 
           setDifferenceFromTarget(difference);
-
+          console.log(rejectionReason);
           setMeals(filtered);
         })
         .catch(() => {
@@ -228,6 +247,10 @@ const [differenceFromTarget, setDifferenceFromTarget] = useState('');
       <div>Difference from Target: {differenceFromTarget}</div>
       {meals && (
         <MealList
+          ingredientsDisplay={ingredientsDisplay}
+          instructionsDisplay={instructionsDisplay}
+          handleInstructionsCallback={handleInstructionsCallback}
+          handleIngredientsCallback={handleIngredientsCallback}
           meals={meals}
           target={target}
           deleteMeal={deleteMeal}

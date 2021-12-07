@@ -7,11 +7,11 @@ export default function Ingredients(props) {
 
         return (
           <div>
-            {/* <ul className="ingredients">
+            <ul className="ingredients">
               {ingredients.map((ingredient) => {
                 return <li key={uuidv4()}>{ingredient.name} {ingredient.amount} {ingredient.unitShort}</li>;
               })}
-            </ul> */}
+            </ul>
           </div>
         );
       }

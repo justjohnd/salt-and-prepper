@@ -17,6 +17,10 @@ function MealList(props) {
           return (
             <Meal
               key={meal.id}
+              ingredientsDisplay={props.ingredientsDisplay}
+              instructionsDisplay={props.instructionsDisplay}
+              handleInstructionsCallback={props.handleInstructionsCallback}
+              handleIngredientsCallback={props.handleIngredientsCallback}
               deleteMeal={props.deleteMeal}
               meal={meal}
               calories={calories.amount.toFixed(0)}

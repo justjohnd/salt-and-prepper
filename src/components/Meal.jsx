@@ -3,10 +3,6 @@ import Ingredients from "./Ingredients";
 import Instructions from './Instructions';
 
 export default function Meal(props) {
-  const [instructionsDisplay, setInstructionsDisplay] = useState(false);
-    const [ingredientsDisplay, setIngredientsDisplay] = useState(false);
-
-
   // Use to remove items with no instructions
 
 // if (
@@ -18,18 +14,6 @@ export default function Meal(props) {
   //         );
   //         props.deleteMeal(props.meal.id);
   //       } else {
-
-   function handleInstructions() {
-     setInstructionsDisplay(prevValue => {
-       return !prevValue;
-     });
-   }
-
-   function handleIngredients() {
-       setIngredientsDisplay(prevValue => {
-         return !prevValue;
-       });
-   }
 
   return (
     <div className="recipe">
@@ -65,18 +49,18 @@ export default function Meal(props) {
             </li>
           </ul>
 
-          <button onClick={handleIngredients}>
-            {!ingredientsDisplay ? 'Show Ingredients' : 'Hide Ingredients'}
+          <button onClick={() => props.handleIngredientsCallback()}>
+            {!props.ingredientsDisplay ? 'Show Ingredients' : 'Hide Ingredients'}
           </button>
           <section className="ingredients-section">
-            {ingredientsDisplay && <Ingredients meal={props.meal} />}
+            {props.ingredientsDisplay && <Ingredients meal={props.meal} />}
           </section>
 
-          <button onClick={handleInstructions}>
-            {!instructionsDisplay ? 'Show Instructions' : 'Hide Instructions'}
+          <button onClick={() => props.handleInstructionsCallback()}>
+            {!props.instructionsDisplay ? 'Show Instructions' : 'Hide Instructions'}
           </button>
           <section className="ingredients-section">
-            {instructionsDisplay && <Instructions meal={props.meal} />}
+            {props.instructionsDisplay && <Instructions meal={props.meal} />}
           </section>
 
         </div>
