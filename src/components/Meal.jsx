@@ -1,16 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import React, { useState } from 'react';
 import Ingredients from "./Ingredients";
 import Instructions from './Instructions';
 
 export default function Meal(props) {
-  const [showInstructions, setShowInstructions] = useState(false);
-  const [showInstructionsButton, setShowInstructionsButton] = useState('Show Instructions'
-  );
-    const [ingredientsClickCount, setIngredientsClickCount] = useState(0);
-    const [ingredientsDisplay, setIngredientsDisplay] = useState('d-none');
-    const [ingredientsButton, setIngredientsButton] =
-      useState('Show Ingredients');
+  const [instructionsDisplay, setInstructionsDisplay] = useState(false);
+    const [ingredientsDisplay, setIngredientsDisplay] = useState(false);
+
 
   // Use to remove items with no instructions
 
@@ -24,31 +19,16 @@ export default function Meal(props) {
   //         props.deleteMeal(props.meal.id);
   //       } else {
 
-  // function getInstructions() {
-  //   setShowInstructions(prevValue => {
-  //     return !prevValue;
-  //   });
-
-  //   if (getInstructions) {
-  //     setShowInstructionsButton('Hide Instructions');
-  //   } else {
-  //     setShowInstructionsButton('Show Instructions');
-  //   }
-  // }
+   function handleInstructions() {
+     setInstructionsDisplay(prevValue => {
+       return !prevValue;
+     });
+   }
 
    function handleIngredients() {
-
-    setIngredientsClickCount(prevVal => prevVal + 1);
-
-    const curVal = ingredientsDisplay;
-    if (curVal === 'd-block') {
-      setIngredientsDisplay('d-none');
-      setIngredientsButton('Show Ingredients');
-
-    } else {
-      setIngredientsDisplay('d-block');
-      setIngredientsButton('Hide Ingredients');
-    }
+       setIngredientsDisplay(prevValue => {
+         return !prevValue;
+       });
    }
 
   return (
@@ -85,17 +65,20 @@ export default function Meal(props) {
             </li>
           </ul>
 
-          <button onClick={handleIngredients}>{ingredientsButton}</button>
-          <section className={ingredientsDisplay}>
-          {ingredientsClickCount === 1 && (
-            <Ingredients
-              meal={props.meal}
-            />
-          )}
+          <button onClick={handleIngredients}>
+            {!ingredientsDisplay ? 'Show Ingredients' : 'Hide Ingredients'}
+          </button>
+          <section className="ingredients-section">
+            {ingredientsDisplay && <Ingredients meal={props.meal} />}
           </section>
 
-          {/* <button onClick={getInstructions}>{showInstructionsButton}</button>
-          {showInstructions && <Instructions meal={props.meal} />} */}
+          <button onClick={handleInstructions}>
+            {!instructionsDisplay ? 'Show Instructions' : 'Hide Instructions'}
+          </button>
+          <section className="ingredients-section">
+            {instructionsDisplay && <Instructions meal={props.meal} />}
+          </section>
+
         </div>
       )}
     </div>
