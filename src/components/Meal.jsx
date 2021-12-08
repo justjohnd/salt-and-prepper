@@ -3,17 +3,6 @@ import Ingredients from "./Ingredients";
 import Instructions from './Instructions';
 
 export default function Meal(props) {
-  // Use to remove items with no instructions
-
-// if (
-  //         data.analyzedInstructions[0].steps.length === 1 ||
-  //         data.analyzedInstructions === []
-  //       ) {
-  //         console.log(
-  //           `Note: recipe with ${props.meal.id} has been removed because it does not contain recipe instructions`
-  //         );
-  //         props.deleteMeal(props.meal.id);
-  //       } else {
 
   return (
     <div className="recipe">
@@ -49,18 +38,18 @@ export default function Meal(props) {
             </li>
           </ul>
 
-          <button onClick={() => props.handleIngredientsCallback()}>
-            {!props.ingredientsDisplay ? 'Show Ingredients' : 'Hide Ingredients'}
+          <button onClick={() => props.handleIngredientsCallback(props.index)}>
+            {!props.ingredientsDisplay[props.index] ? 'Show Ingredients' : 'Hide Ingredients'}
           </button>
           <section className="ingredients-section">
-            {props.ingredientsDisplay && <Ingredients meal={props.meal} />}
+            {props.ingredientsDisplay[props.index] && <Ingredients recipes={props.recipes} meal={props.meal} />}
           </section>
 
-          <button onClick={() => props.handleInstructionsCallback()}>
-            {!props.instructionsDisplay ? 'Show Instructions' : 'Hide Instructions'}
+          <button onClick={() => props.handleInstructionsCallback(props.index)}>
+            {!props.instructionsDisplay[props.index] ? 'Show Instructions' : 'Hide Instructions'}
           </button>
           <section className="ingredients-section">
-            {props.instructionsDisplay && <Instructions meal={props.meal} />}
+            {props.instructionsDisplay[props.index] && <Instructions recipes={props.recipes} meal={props.meal} />}
           </section>
 
         </div>

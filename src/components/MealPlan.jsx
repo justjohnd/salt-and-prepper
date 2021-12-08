@@ -19,50 +19,39 @@ const rejectionReason = [];
     'Ketogenic',
   ];
   const [meals, setMeals] = useState();
+  const [recipes, setRecipes] = useState([]);
   const [diet, setDiet] = useState('vegan');
-    const [isChecked, setIsChecked] = useState(
-      new Array(DIETS.length).fill(false)
-    );
+  const [isChecked, setIsChecked] = useState(
+    new Array(DIETS.length).fill(false)
+  );
 const [totalCalories, setTotalCalories] = useState('');
 const [differenceFromTarget, setDifferenceFromTarget] = useState('');
 const [disableButton, setDisableButton] = useState(false);
 // Set the views for ingredients and instructions sections in child components
-  const [instructionsDisplay, setInstructionsDisplay] = useState(false);
-  const [ingredientsDisplay, setIngredientsDisplay] = useState(false);
+  const [instructionsDisplay, setInstructionsDisplay] = useState([false, false]);
+  const [ingredientsDisplay, setIngredientsDisplay] = useState([false, false]);
 
 
   // Handle Displays for ingredients and instructions
-     function handleInstructionsCallback() {
-       setInstructionsDisplay(prevValue => {
-         return !prevValue;
+     function handleInstructionsCallback(index) {
+       setInstructionsDisplay((prevValue) => {
+          const prevValueCopy = [...prevValue];
+          prevValueCopy.splice(index, 1, !prevValue[index]);
+          return prevValueCopy;
        });
      }
 
-     function handleIngredientsCallback() {
-       setIngredientsDisplay(prevValue => {
-         return !prevValue;
+     function handleIngredientsCallback(index) {
+       setIngredientsDisplay((prevValue) => {
+        const prevValueCopy = [...prevValue];
+        prevValueCopy.splice(index, 1, !prevValue[index]);
+        return prevValueCopy;
        });
      }
-
-  function deleteMeal(foundId) {
-    // const deleteMealCalories = meals.filter(meal => {
-    //   if (meal.id === foundId) {
-    //     console.log('Deleted meal');
-    //     return meal;
-    //   }
-    // });
-
-    // setMeals(prevVal => {
-    //   return prevVal.filter(meal => {
-    //     return meal.id !== foundId;
-    //   });
-    // });
-    // getMeals();
-  }
         
     function getMeals() {   
-      setIngredientsDisplay(false);
-      setInstructionsDisplay(false);
+      setIngredientsDisplay([false, false]);
+      setInstructionsDisplay([false, false]);
       setDisableButton(true);
 
       fetch(
@@ -138,14 +127,35 @@ const [disableButton, setDisableButton] = useState(false);
           }
           return result;
           });
-          console.log(scrubbedResults);
+          // console.log(scrubbedResults);
 
           const filteredResults = scrubbedResults.filter(result => {
             if (result.dontInclude === false) {
               return result;
             }
           });
-          console.log(filteredResults);
+          console.log(`filteredResults before being checked for instructions: ${filteredResults}`);
+
+          return filteredResults;
+        })
+        .then(filteredResults => {
+          const idArray = filteredResults.map(result => result.id);
+          const arrayString = idArray.toString();
+
+          fetch(`https://api.spoonacular.com/recipes/informationBulk?ids=${arrayString}&apiKey=cb1c464d94f142c08b156c5beddade8b&includeNutrition=false`)
+          .then((response) => response.json())
+          .then((recipes) => {
+            for (const recipe of recipes) {
+              if (recipe.analyzedInstructions === []) {
+                filteredResults.filter(result => result.id === recipe.id);
+              }
+            }
+            setRecipes(recipes);
+            console.log(`recipes from second fetch: ${recipes}`)
+          })
+          .catch(() => {
+          console.log(`Error`);
+          });
 
           return filteredResults;
         })
@@ -154,7 +164,7 @@ const [disableButton, setDisableButton] = useState(false);
           const caloriesArray = filteredResults.map(result => {
             return result.nutrition.nutrients[0].amount;
           });
-          console.log(`Array of all items' calories only: ${caloriesArray}`);
+          // console.log(`Array of all items' calories only: ${caloriesArray}`);
 
           // Find all combinations of meals
           const findCombinations = array => {
@@ -174,7 +184,7 @@ const [disableButton, setDisableButton] = useState(false);
           };
 
           const calorieComboArrays = findCombinations(caloriesArray);
-          console.log(`Array of ideal calorie pairs: ${calorieComboArrays}`);
+          // console.log(`Array of ideal calorie pairs: ${calorieComboArrays}`);
 
           const diffFromTarget = calorieComboArrays.map(array => {
             const calorieArrayTotal = array
@@ -183,16 +193,16 @@ const [disableButton, setDisableButton] = useState(false);
             array.push(Math.abs(calorieArrayTotal - target));
             return array;
           });
-          console.log(`Inclusion of difference from target for each pair: ${diffFromTarget}`);
+          // console.log(`Inclusion of difference from target for each pair: ${diffFromTarget}`);
 
           const differences = diffFromTarget.map(array => array.at(-1));
-          console.log(`Array of differences from target only: ${differences}`);
+          // console.log(`Array of differences from target only: ${differences}`);
 
           const closestToTarget = differences.indexOf(Math.min(...differences));
-          console.log(`Index number for smallest difference combo: ${closestToTarget}`);
+          // console.log(`Index number for smallest difference combo: ${closestToTarget}`);
 
           const bestCombo = diffFromTarget[closestToTarget];
-          console.log(`Best array combination: ${bestCombo}`);
+          // console.log(`Best array combination: ${bestCombo}`);
 
          let filtered = [];
          let calorieTotal = "";
@@ -268,13 +278,13 @@ const [disableButton, setDisableButton] = useState(false);
       <div>Difference from Target: {differenceFromTarget}</div>
       {meals && (
         <MealList
+          recipes={recipes}
           ingredientsDisplay={ingredientsDisplay}
           instructionsDisplay={instructionsDisplay}
           handleInstructionsCallback={handleInstructionsCallback}
           handleIngredientsCallback={handleIngredientsCallback}
           meals={meals}
           target={target}
-          deleteMeal={deleteMeal}
         />
       )}
     </div>

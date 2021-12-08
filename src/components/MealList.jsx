@@ -10,18 +10,19 @@ function MealList(props) {
       </section>
 
       <section className="meals">
-        {props.meals.map(meal => {
+        {props.meals.map((meal, index) => {
           const [calories, protein, fat, carbohydrates, sugar] =
             meal.nutrition.nutrients;
 
           return (
             <Meal
+              index={index}
+              recipes={props.recipes}
               key={meal.id}
               ingredientsDisplay={props.ingredientsDisplay}
               instructionsDisplay={props.instructionsDisplay}
               handleInstructionsCallback={props.handleInstructionsCallback}
               handleIngredientsCallback={props.handleIngredientsCallback}
-              deleteMeal={props.deleteMeal}
               meal={meal}
               calories={calories.amount.toFixed(0)}
               protein={protein.amount.toFixed(0)}

@@ -14,6 +14,7 @@ function App() {
 
   return (
     <div>
+      <h1>The Great Meal Generator!</h1>
       <UserSection addUserCal={addUserCal} />
       <MealPlan userCalAverage={userCalAverage} />
     </div>
