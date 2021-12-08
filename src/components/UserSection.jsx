@@ -12,7 +12,7 @@ function UserSection(props) {
   const [formVisibility, setFormVisibility] = useState(false);
   const [formEditVisibility, setFormEditVisibility] = useState(false);
   const [message, setMessage] = useState(
-    'Here are the current people on your meal plan:'
+    'Add family members to calculate your total nutritional requirement:'
   );
   const [editUser, setEditUser] = useState({
     id: '',
@@ -83,9 +83,14 @@ function UserSection(props) {
   }
 
   return (
-    <div>
-      <div className="form align-left">
+    <section className="user-section flex-center">
+      <div className="form">
         <H2 message={message} />
+        <div>
+          <p>
+            <a href="#">Clear contents and start over</a>
+          </p>
+        </div>
         {formVisibility && (
           <FormAddPerson
             allUsers={users}
@@ -102,7 +107,7 @@ function UserSection(props) {
             changeFormEditVisibility={changeFormEditVisibility}
           />
         )}
-        <div className="container">
+        <div className="container flex-center">
           <UserCards
             addUserCal={props.addUserCal}
             users={users}
@@ -126,7 +131,7 @@ function UserSection(props) {
           )}
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 

@@ -5,7 +5,8 @@ import KEYWORDS, {
   MUST_ADD_CALORIES,
   BAD_API_IDS,
 } from '../findWord';
-
+import TEST_MEALS from "./testMeals";
+import TEST_RECIPES from './testMeals';
 
 function MealPlan(props) {
 let target = props.userCalAverage;
@@ -18,8 +19,12 @@ const rejectionReason = [];
     'Gluten Free',
     'Ketogenic',
   ];
-  const [meals, setMeals] = useState();
-  const [recipes, setRecipes] = useState([]);
+  const [meals, setMeals] = useState(TEST_MEALS);
+
+
+
+  
+  const [recipes, setRecipes] = useState(TEST_RECIPES);
   const [diet, setDiet] = useState('vegan');
   const [isChecked, setIsChecked] = useState(
     new Array(DIETS.length).fill(false)
@@ -31,7 +36,7 @@ const [disableButton, setDisableButton] = useState(false);
   const [instructionsDisplay, setInstructionsDisplay] = useState([false, false]);
   const [ingredientsDisplay, setIngredientsDisplay] = useState([false, false]);
 
-
+  console.log(meals);
   // Handle Displays for ingredients and instructions
      function handleInstructionsCallback(index) {
        setInstructionsDisplay((prevValue) => {
@@ -241,7 +246,7 @@ const [disableButton, setDisableButton] = useState(false);
 
   return (
     <div>
-      <section className="controls">
+      <section className="controls flex-center">
         <div className="control">
           <p>Diet</p>
           <ul className="diet-options">
@@ -261,21 +266,28 @@ const [disableButton, setDisableButton] = useState(false);
           </ul>
         </div>
         <div className="control">
+          <p>Average Calorie Target</p>
           <input
-            className="d-block"
+            className="d-block calorie-field"
             type="number"
             placeholder={props.userCalAverage}
             onChange={e => e.target.value}
           />
           <button
-          disabled={disableButton}
-          className="btn-primary" onClick={getMeals}>
-            Get Daily Meal Plan
+            disabled={disableButton}
+            className="btn-primary btn-get-meal"
+            onClick={getMeals}
+          >
+            Get My Meal!
           </button>
         </div>
       </section>
-      <div>Total Calories: {totalCalories}</div>
-      <div>Difference from Target: {differenceFromTarget}</div>
+      <div>
+        <h3>{meals && `Total Calories: ${totalCalories}`}</h3>
+      </div>
+      <div>
+        <h3>{meals && `Difference from Target: ${differenceFromTarget}`}</h3>
+      </div>
       {meals && (
         <MealList
           recipes={recipes}
