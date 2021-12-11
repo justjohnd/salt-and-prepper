@@ -52,7 +52,9 @@ function MealPlan(props) {
        });
      }
         
-    function getMeals() {   
+    function getMeals() {
+      setMeals([]);
+      setRecipes([]); 
       setIngredientsDisplay([false, false]);
       setInstructionsDisplay([false, false]);
       setDisableButton(true);
@@ -257,11 +259,11 @@ function MealPlan(props) {
               let calorieTotal = '';
               if (noRecipeResults.length === 1) {
                 filtered = noRecipeResults;
-                calorieTotal = filtered[0].nutrition.nutrients[0].amount;
+                calorieTotal = (filtered[0].nutrition.nutrients[0].amount).toFixed(0);
               } else if (noRecipeResults.length > 1) {
                 filtered = noRecipeResults.filter((result, index) => {
                   if (index === bestCombo[1] || index === bestCombo[3]) {
-                    return result;
+                    return result.toFixed(0);
                   }
                 });
                 calorieTotal = (
@@ -278,31 +280,26 @@ function MealPlan(props) {
               console.log(filtered);
               
               //Capitalize all first letters in title
-              const filteredTitles = () => filtered.map(meal => {
-
-                const cleanedTitle = (title) => {
-                  let words = title.split(' ');
-                  for (let word of words) {
-                    word = word.charAt(0).toUpperCase() + word.substring(1);
-                    console.log(word);
-                  }
-                  return words.join(' ');
-                };
-                const newTitle = cleanedTitle(meal.title);
+              const filteredTitles = filtered.map(meal => {
+                let words = meal.title.split(' ');
+                let upperCaseWords = words.map((word) => word.charAt(0).toUpperCase() + word.substring(1));
+                let newTitle = upperCaseWords.join(' ');
+                console.log(meal.title);
                 console.log(newTitle);
                 let newObject = Object.assign({}, meal, {
                   title: newTitle,
                 });
+                console.log(newObject);
 
                 return newObject;
               });
 
-              console.log(filteredTitles());
-              if (filteredTitles().length === 0 ) {
+              console.log(filteredTitles);
+              if (filteredTitles.length === 0 ) {
                 setMessage('Sorry, no results were found');
               }
 
-              setMeals(filteredTitles());
+              setMeals(filteredTitles);
             })
             .catch(() => {
               console.log(`Error`);

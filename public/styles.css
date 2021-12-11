@@ -44,7 +44,8 @@ button {
   outline: none;
 }
 
-button.text-link {
+button.text-link,
+a {
   background-color: #dfe6e9;
   text-decoration: underline;
   color: var(--color-dark);
@@ -294,7 +295,7 @@ main {
 .recipe .title {
   height: 50px;
   text-align: center;
-  padding: 0 1rem 1rem 1rem;
+  /* padding: 0 1rem 1rem 1rem; */
   margin-bottom: 2.5rem;
 }
 
@@ -307,10 +308,6 @@ main {
   display: flex;
   width: 35rem;
   justify-content: space-evenly;
-}
-
-.instructions li {
-  margin-bottom: 5px;
 }
 
 .meals {
@@ -340,22 +337,12 @@ article {
 
 .instructions {
   font-size: 0.9rem;
-  margin-bottom: 1rem;
-  margin-left: 1rem;
+  margin: 2rem 0;
   text-align: left;
-}
-
-a {
-  text-decoration: none;
-  background-color: var(--color-primary);
-  color: #f3f3f3;
-  width: fit-content;
-  padding: 0.5rem 1rem;
 }
 
 a:hover {
   cursor: pointer;
-  background-color: var(--color-primary-hov);
 }
 
 @media only screen and (max-width: 550px) {
@@ -372,8 +359,12 @@ a:hover {
   }
 }
 
-.summary p {
+.summary {
   text-align: left;
+}
+
+.summary p {
+  display: inline;
   line-height: var(--font-default-lh);
   font-size: var(--font-default-size);
 }
@@ -383,10 +374,9 @@ a:hover {
   justify-content: center;
 }
 
-.ingredients,
-.instructions {
+.ingredients {
   width: 300px;
-  padding: 0 1rem;
+  padding: 0 2rem;
 }
 
 .ingredients li {
