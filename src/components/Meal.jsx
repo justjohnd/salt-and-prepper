@@ -1,10 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Ingredients from "./Ingredients";
 import Instructions from './Instructions';
 
-export default function Meal(props) {
+export default function Meal(props) { 
+  const recipe = props.recipes.find(e => e.id === props.meal.id);
+  const summary = recipe.summary;
+  const shortSummary = summary.slice(0, 300);
 
-  return (
+  const [showSummary, setShowSummary] = useState('false');
+
+  
+  function handleSummary() {
+    setShowSummary(!showSummary);
+  }
+  
+    return (
     <div className="recipe">
       {props.meal && (
         <div>
@@ -41,6 +51,9 @@ export default function Meal(props) {
               </li>
             </ul>
           </div>
+          <section className="summary">
+            <p>{showSummary ? shortSummary : summary}...<button className="text-link" onClick={handleSummary}>{showSummary ? 'Read More' : 'Read Less'}</button></p>
+          </section>
 
           <button
             className="btn-primary"

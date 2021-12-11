@@ -10,7 +10,12 @@ export default function Ingredients(props) {
           <div>
             <ul className="ingredients">
               {ingredients.map((ingredient) => {
-                return <li key={uuidv4()}>{ingredient.name} {ingredient.amount} {ingredient.unit}</li>;
+                return (
+                  <li key={uuidv4()}>
+                    <div>{ingredient.name}</div>
+                    <div>{ingredient.amount} {ingredient.unit}</div>
+                  </li>
+                );
               })}
             </ul>
           </div>

@@ -3,6 +3,9 @@
   --color-primary-hov: rgba(43, 180, 70, 0.836);
   --color-secondary: #50a3a2;
   --color-dark: #2e3639;
+
+  --font-default-lh: 1.5;
+  --font-default-size: 18px;
 }
 
 body {
@@ -14,8 +17,46 @@ body {
   padding: 3rem;
 }
 
-h2 {
+.flex-center {
+  display: flex;
+  justify-content: center;
+}
+
+h1 {
+  font-size: 3rem;
   margin-bottom: 0;
+}
+
+h2 {
+  margin-bottom: 1rem;
+  margin-bottom: 0;
+}
+
+button {
+  color: var(--color-dark);
+  border: none;
+  font-family: 'Rotobo', sans-serif;
+  font-size: 1rem;
+  padding: 10px 15px;
+  background-color: white;
+  margin: 15px 15px 0 0;
+  cursor: pointer;
+  outline: none;
+}
+
+button.text-link {
+  background-color: #dfe6e9;
+  text-decoration: underline;
+  color: var(--color-dark);
+  width: unset;
+  padding: unset;
+  margin: unset;
+}
+
+ul {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 0;
 }
 
 .d-none {
@@ -26,9 +67,9 @@ h2 {
   display: block;
 }
 
-.container {
+.flex-center {
   display: flex;
-  flex-grow: 1;
+  justify-content: center;
 }
 
 .align-center {
@@ -39,23 +80,20 @@ h2 {
   text-align: left;
 }
 
-.d-block {
-  display: block;
+.mb-0 {
+  margin-bottom: 0;
 }
 
-input {
-  text-align: center;
-  padding: 0.5rem;
-  /* margin-bottom: 1rem; */
+.mt-0 {
+  margin-top: 0;
 }
 
-.flex-center {
+.container {
   display: flex;
-  justify-content: center;
+  flex-grow: 1;
 }
 
 /* Sections */
-
 /* Card Content */
 .con-card {
   display: flex;
@@ -152,18 +190,6 @@ label {
 }
 
 /* Buttons */
-button {
-  color: var(--color-dark);
-  border: none;
-  font-family: 'Rotobo', sans-serif;
-  font-size: 1rem;
-  padding: 10px 15px;
-  background-color: white;
-  margin: 15px 15px 0 0;
-  cursor: pointer;
-  outline: none;
-}
-
 .btn-primary {
   background-color: var(--color-primary);
   appearance: none;
@@ -241,6 +267,10 @@ button {
   margin-top: 0.1rem;
 }
 
+.diet-options {
+  margin-bottom: 0;
+}
+
 /* Meal Plan Contents */
 main {
   display: flex;
@@ -264,7 +294,7 @@ main {
 .recipe .title {
   height: 50px;
   text-align: center;
-  padding: 0 2rem;
+  padding: 0 1rem 1rem 1rem;
   margin-bottom: 2.5rem;
 }
 
@@ -273,21 +303,10 @@ main {
   margin: 0 auto;
 }
 
-h2 {
-  text-align: left;
-  margin-bottom: 1rem;
-}
-
 .nutrients ul {
   display: flex;
   width: 35rem;
   justify-content: space-evenly;
-}
-
-ul {
-  list-style: none;
-  padding-left: 0;
-  margin-top: 0;
 }
 
 .instructions li {
@@ -351,4 +370,34 @@ a:hover {
     align-items: center;
     width: 100%;
   }
+}
+
+.summary p {
+  text-align: left;
+  line-height: var(--font-default-lh);
+  font-size: var(--font-default-size);
+}
+
+.ingredients-section {
+  display: flex;
+  justify-content: center;
+}
+
+.ingredients,
+.instructions {
+  width: 300px;
+  padding: 0 1rem;
+}
+
+.ingredients li {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  line-height: var(--font-default-lh);
+  font-size: var(--font-default-size);
+}
+
+.instructions li {
+  line-height: var(--font-default-lh);
+  font-size: var(--font-default-size);
 }

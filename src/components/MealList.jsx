@@ -6,7 +6,7 @@ function MealList(props) {
   return (
     <main>
       <section className="nutrients">
-        {props.meals[0] === undefined && <h1>Sorry, no results matched criteria</h1>}
+        {<h1>{props.message}</h1>}
       </section>
 
       <section className="meals">
