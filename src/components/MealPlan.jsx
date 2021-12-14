@@ -60,7 +60,7 @@ function MealPlan(props) {
       setDisableButton(true);
 
       fetch(
-        `https://api.spoonacular.com/recipes/complexSearch?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&diet=${diet}&type=main course,side dish,snack,appetizer,salad,soup,fingerfood&excludeIngredients=white chocolate,vanilla bean paste,semi sweet chocolate chips&fillIngredients=true&instructionsRequired=true&maxReadyTime=30&maxSugar=10&minProtein=1&minCarbs=1&minFat=1&minCalories=1&maxCalories=${target}&sort=random&number=2` // Ideal is 8 calls
+        `https://api.spoonacular.com/recipes/complexSearch?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&diet=${diet}&type=main course,side dish,snack,appetizer,salad,soup,fingerfood&excludeIngredients=white chocolate,vanilla bean paste,semi sweet chocolate chips&fillIngredients=true&instructionsRequired=true&maxReadyTime=30&maxSugar=10&minProtein=1&minCarbs=1&minFat=1&minCalories=1&maxCalories=10&sort=random&number=1` // Ideal is 8 calls
       )
         .then(response => response.json())
         .then(data => {
@@ -101,13 +101,13 @@ function MealPlan(props) {
 
           function addCaloriesCheck(string) {
             const words = string.split(' ');
-            console.log(`Words: ${words}`);
+            // console.log(`Words: ${words}`);
             for (const word of words) {
               if (MUST_ADD_CALORIES[word]) {
                 console.log('calories added to meal');
                 return true;
               } else {
-                console.log('no calories added to meal');
+                // console.log('no calories added to meal');
                 return false;
               }
             }
@@ -139,7 +139,7 @@ function MealPlan(props) {
               return result;
             }
           });
-          console.log("filtered results before instructions check");
+          // console.log("filtered results before instructions check");
           console.log(filteredResults);
           return filteredResults;
         })
@@ -160,6 +160,25 @@ function MealPlan(props) {
           )
             .then(response => response.json())
             .then(recipes => {
+              //Clean up recipe summaries
+              if (recipes.status !== 'failure') {
+              const recipesSummaryEdit = recipes.map(recipe => {
+                let array = recipe.summary.split(' ');
+                let slicePoint = array.indexOf('Similar');
+                array = array.slice(0, slicePoint);
+                let newSummary = array.join(' ');
+                // console.log(recipe.summary);
+                // console.log(newSummary);
+                let newObject = Object.assign({}, recipe, {
+                  summary: newSummary,
+                });
+
+                return newObject;
+              });
+
+              setRecipes(recipesSummaryEdit);
+              }
+
               console.log(recipes);
 
               //Create a hashmap of recipe id's that do not include analyzed instructions
@@ -194,112 +213,116 @@ function MealPlan(props) {
               noRecipeResults = eliminator(hashed, filteredResults);
               console.log(noRecipeResults);
 
-              //Clean up recipe summaries
-                const recipesSummaryEdit = recipes.map(recipe => {
-                  let array = recipe.summary.split(' ');
-                  let slicePoint = array.indexOf('Similar');
-                  array = array.slice(0, slicePoint);
-                  let newSummary = array.join(' ');
-                  console.log(recipe.summary);
-                  console.log(newSummary);
-                  let newObject = Object.assign({}, recipe, {summary: newSummary});
+              // Create an array of calories for each meal to pass to combinations function
+              if (noRecipeResults.length !== 0) {
+                const caloriesArray = noRecipeResults.map(result => {
+                  return result.nutrition.nutrients[0].amount;
+                });
+                console.log(
+                  `Array of all items' calories only: ${caloriesArray}`
+                );
+
+                // Find all combinations of meals
+                const findCombinations = array => {
+                  const output = [];
+                  if (array.length === 1) {
+                    output.push([array[0]]);
+                  } else {
+                    for (let i = 0; i <= array.length - 1; i++) {
+                      let firstPosition = array[i];
+                      for (let j = i + 1; j <= array.length - 1; j++) {
+                        let secondPosition = array[j];
+                        output.push([firstPosition, i, secondPosition, j]);
+                      }
+                    }
+                  }
+                  return output;
+                };
+
+                const calorieComboArrays = findCombinations(caloriesArray);
+                console.log(
+                  `Array of ideal calorie pairs: ${calorieComboArrays}`
+                );
+
+                const diffFromTarget = calorieComboArrays.map(array => {
+                  const calorieArrayTotal = array
+                    .reduce((prev, cur) => prev + cur)
+                    .toFixed(0);
+                  array.push(Math.abs(calorieArrayTotal - target));
+                  return array;
+                });
+                console.log(
+                  `Inclusion of difference from target for each pair: ${diffFromTarget}`
+                );
+
+                const differences = diffFromTarget.map(array => array.at(-1));
+                console.log(
+                  `Array of differences from target only: ${differences}`
+                );
+
+                const closestToTarget = differences.indexOf(
+                  Math.min(...differences)
+                );
+                console.log(
+                  `Index number for smallest difference combo: ${closestToTarget}`
+                );
+
+                const bestCombo = diffFromTarget[closestToTarget];
+                console.log(`Best array combination: ${bestCombo}`);
+
+                let filtered = [];
+                let calorieTotal = '';
+                console.log(noRecipeResults);
+                if (noRecipeResults.length === 1) {
+                  filtered = noRecipeResults;
+                  console.log(filtered);
+                  calorieTotal =
+                    filtered[0].nutrition.nutrients[0].amount.toFixed(0);
+                } else if (noRecipeResults.length > 1) {
+                  filtered = noRecipeResults.filter((result, index) => {
+                    if (index === bestCombo[1] || index === bestCombo[3]) {
+                      return result.toFixed(0);
+                    }
+                  });
+                  console.log(filtered);
+                  calorieTotal = (
+                    filtered[0].nutrition.nutrients[0].amount +
+                    filtered[1].nutrition.nutrients[0].amount
+                  ).toFixed(0);
+                }
+                console.log(calorieTotal);
+
+                setTotalCalories(calorieTotal);
+
+                const difference = Math.abs(calorieTotal - target).toFixed(0);
+
+                setDifferenceFromTarget(difference);
+                console.log(filtered);
+
+                //Capitalize all first letters in title
+                const filteredTitles = filtered.map(meal => {
+                  let words = meal.title.split(' ');
+                  let upperCaseWords = words.map(
+                    word => word.charAt(0).toUpperCase() + word.substring(1)
+                  );
+                  let newTitle = upperCaseWords.join(' ');
+                  console.log(meal.title);
+                  console.log(newTitle);
+                  let newObject = Object.assign({}, meal, {
+                    title: newTitle,
+                  });
+                  console.log(newObject);
 
                   return newObject;
                 });
 
-              setRecipes(recipesSummaryEdit);
-
-              // Create an array of calories for each meal to pass to combinations function
-              const caloriesArray = noRecipeResults.map(result => {
-                return result.nutrition.nutrients[0].amount;
-              });
-              console.log(`Array of all items' calories only: ${caloriesArray}`);
-
-              // Find all combinations of meals
-              const findCombinations = array => {
-                const output = [];
-                if (array.length === 1) {
-                  output.push([array[0]]);
-                } else {
-                  for (let i = 0; i <= array.length - 1; i++) {
-                    let firstPosition = array[i];
-                    for (let j = i + 1; j <= array.length - 1; j++) {
-                      let secondPosition = array[j];
-                      output.push([firstPosition, i, secondPosition, j]);
-                    }
-                  }
+                console.log(filteredTitles);
+                if (filteredTitles.length === 0) {
+                  setMessage('Sorry, no results were found');
                 }
-                return output;
-              };
 
-              const calorieComboArrays = findCombinations(caloriesArray);
-              console.log(`Array of ideal calorie pairs: ${calorieComboArrays}`);
-
-              const diffFromTarget = calorieComboArrays.map(array => {
-                const calorieArrayTotal = array
-                  .reduce((prev, cur) => prev + cur)
-                  .toFixed(0);
-                array.push(Math.abs(calorieArrayTotal - target));
-                return array;
-              });
-              console.log(`Inclusion of difference from target for each pair: ${diffFromTarget}`);
-
-              const differences = diffFromTarget.map(array => array.at(-1));
-              console.log(`Array of differences from target only: ${differences}`);
-
-              const closestToTarget = differences.indexOf(
-                Math.min(...differences)
-              );
-              console.log(`Index number for smallest difference combo: ${closestToTarget}`);
-
-              const bestCombo = diffFromTarget[closestToTarget];
-              console.log(`Best array combination: ${bestCombo}`);
-
-              let filtered = [];
-              let calorieTotal = '';
-              if (noRecipeResults.length === 1) {
-                filtered = noRecipeResults;
-                calorieTotal = (filtered[0].nutrition.nutrients[0].amount).toFixed(0);
-              } else if (noRecipeResults.length > 1) {
-                filtered = noRecipeResults.filter((result, index) => {
-                  if (index === bestCombo[1] || index === bestCombo[3]) {
-                    return result.toFixed(0);
-                  }
-                });
-                calorieTotal = (
-                  filtered[0].nutrition.nutrients[0].amount +
-                  filtered[1].nutrition.nutrients[0].amount
-                ).toFixed(0);
+                setMeals(filteredTitles);
               }
-
-              setTotalCalories(calorieTotal);
-
-              const difference = Math.abs(calorieTotal - target).toFixed(0);
-
-              setDifferenceFromTarget(difference);
-              console.log(filtered);
-              
-              //Capitalize all first letters in title
-              const filteredTitles = filtered.map(meal => {
-                let words = meal.title.split(' ');
-                let upperCaseWords = words.map((word) => word.charAt(0).toUpperCase() + word.substring(1));
-                let newTitle = upperCaseWords.join(' ');
-                console.log(meal.title);
-                console.log(newTitle);
-                let newObject = Object.assign({}, meal, {
-                  title: newTitle,
-                });
-                console.log(newObject);
-
-                return newObject;
-              });
-
-              console.log(filteredTitles);
-              if (filteredTitles.length === 0 ) {
-                setMessage('Sorry, no results were found');
-              }
-
-              setMeals(filteredTitles);
             })
             .catch(() => {
               console.log(`Error`);
