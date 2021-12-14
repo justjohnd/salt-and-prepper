@@ -60,7 +60,7 @@ function MealPlan(props) {
       setDisableButton(true);
 
       fetch(
-        `https://api.spoonacular.com/recipes/complexSearch?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&diet=${diet}&type=main course,side dish,snack,appetizer,salad,soup,fingerfood&excludeIngredients=white chocolate,vanilla bean paste,semi sweet chocolate chips&fillIngredients=true&instructionsRequired=true&maxReadyTime=30&maxSugar=10&minProtein=1&minCarbs=1&minFat=1&minCalories=1&maxCalories=10&sort=random&number=1` // Ideal is 8 calls
+        `https://api.spoonacular.com/recipes/complexSearch?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&diet=${diet}&type=main course,side dish,snack,appetizer,salad,soup,fingerfood&excludeIngredients=white chocolate,vanilla bean paste,semi sweet chocolate chips&fillIngredients=true&instructionsRequired=true&maxReadyTime=30&maxSugar=10&minProtein=1&minCarbs=1&minFat=1&minCalories=1&maxCalories=${target}&sort=random&number=2` // Ideal is 8 calls
       )
         .then(response => response.json())
         .then(data => {
@@ -281,7 +281,7 @@ function MealPlan(props) {
                 } else if (noRecipeResults.length > 1) {
                   filtered = noRecipeResults.filter((result, index) => {
                     if (index === bestCombo[1] || index === bestCombo[3]) {
-                      return result.toFixed(0);
+                      return result;
                     }
                   });
                   console.log(filtered);
@@ -332,6 +332,10 @@ function MealPlan(props) {
           console.log(`Error`);
         })
         .finally(() => setDisableButton(false));
+
+        if (meals.length === 0) {
+          setMessage('Sorry, no results were found');
+        }
   }
 
   const handleChecked = (position) => {
@@ -379,9 +383,9 @@ function MealPlan(props) {
           </button>
         </div>
       </section>
+      <h1>{message}</h1>
       {meals.length !== 0 && (
         <section className="results-summary">
-          <h1>{message}</h1>
           <h1>Here is your suggested meal!</h1>
           <h3 className="mb-0">{`Total Calories: ${totalCalories}`}</h3>
           <p className="mt-0">{`Difference from Target: ${differenceFromTarget}`}</p>
