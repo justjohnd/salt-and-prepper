@@ -20,6 +20,7 @@ body {
 .flex-center {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
 h1 {
@@ -95,6 +96,9 @@ ul {
 }
 
 /* Sections */
+.users-container {
+  flex-wrap: wrap;
+}
 /* Card Content */
 .con-card {
   display: flex;
@@ -105,7 +109,7 @@ ul {
   border-radius: 25px;
   position: relative;
   padding: 25px 15px;
-  margin: 15px 20px 15px 0;
+  margin: 15px;
   background-color: #fff;
   box-shadow: 0 2px 5px #ccc;
   text-align: left;
@@ -284,6 +288,10 @@ main {
   width: 100%;
 }
 
+.nutrition {
+  margin-left: 8px;
+}
+
 .recipe {
   padding: 0 1rem 1rem 1rem;
   margin: 1.5rem;
@@ -377,6 +385,7 @@ a:hover {
 .ingredients {
   width: 300px;
   padding: 0 2rem;
+  margin: 2rem 0;
 }
 
 .ingredients li {

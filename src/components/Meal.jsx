@@ -33,26 +33,26 @@ export default function Meal(props) {
             </div>
             <div className="img-and-nutrition">
               <img src={props.meal.image} alt="recipe" />
-              <ul className="instructions">
+              <ul className="nutrition">
                 <li>
                   <strong>Calories: </strong>
                   {props.calories}
                 </li>
                 <li>
                   <strong>Protein: </strong>
-                  {props.protein}
+                  {props.protein} g
                 </li>
                 <li>
                   <strong>Carbohydrates: </strong>
-                  {props.carbohydrates}
+                  {props.carbohydrates} g
                 </li>
                 <li>
                   <strong>Fat: </strong>
-                  {props.fat}
+                  {props.fat} g
                 </li>
                 <li>
                   <strong>Sugar: </strong>
-                  {props.sugar}
+                  {props.sugar} g
                 </li>
                 <li>
                   <strong>
