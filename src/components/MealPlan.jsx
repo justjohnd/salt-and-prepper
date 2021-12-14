@@ -322,6 +322,8 @@ function MealPlan(props) {
                 }
 
                 setMeals(filteredTitles);
+              } else {
+                setMessage('Sorry, no results were found');
               }
             })
             .catch(() => {
@@ -332,10 +334,6 @@ function MealPlan(props) {
           console.log(`Error`);
         })
         .finally(() => setDisableButton(false));
-
-        if (meals.length === 0) {
-          setMessage('Sorry, no results were found');
-        }
   }
 
   const handleChecked = (position) => {
