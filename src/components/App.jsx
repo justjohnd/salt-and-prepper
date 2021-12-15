@@ -6,9 +6,23 @@ function App() {
   const [userCalAverage, setUserCalAverage] = useState('');
 
   function addUserCal(userCalArray) {
-    const calAverage = (
-      (userCalArray.reduce((acc, cur) => acc + cur) / userCalArray.length
-    ) / 3).toFixed(0);
+
+    let length;
+    if (userCalArray.length === 0) {
+      length = 1;
+    } else {
+      length = userCalArray.length;
+    }
+
+    console.log(length);
+
+    const avgCalPerUser = userCalArray.reduce((acc, cur) => {
+        return acc + cur;
+      }, 0) / length;
+      
+// Divide by 3 to get a single meal
+    let calAverage = (avgCalPerUser / 3).toFixed(0);
+          console.log(calAverage);
     setUserCalAverage(calAverage);
   }
 

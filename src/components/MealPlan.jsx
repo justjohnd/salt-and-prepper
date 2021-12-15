@@ -7,7 +7,6 @@ import KEYWORDS, {
 } from '../findWord';
 import TEST_MEALS from "./testMeals";
 import TEST_RECIPES from './testMeals';
-import { AirlineSeatLegroomReducedTwoTone } from '@material-ui/icons';
 
 function MealPlan(props) {
   let target = props.userCalAverage;
@@ -60,7 +59,7 @@ function MealPlan(props) {
       setDisableButton(true);
 
       fetch(
-        `https://api.spoonacular.com/recipes/complexSearch?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&diet=${diet}&type=main course,side dish,snack,appetizer,salad,soup,fingerfood&excludeIngredients=white chocolate,vanilla bean paste,semi sweet chocolate chips&fillIngredients=true&instructionsRequired=true&maxReadyTime=30&maxSugar=10&minProtein=1&minCarbs=1&minFat=1&minCalories=1&maxCalories=${target}&sort=random&number=2` // Ideal is 8 calls
+        `https://api.spoonacular.com/recipes/complexSearch?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&diet=${diet}&type=main course,side dish,snack,appetizer,salad,soup,fingerfood&excludeIngredients=white chocolate,vanilla bean paste,semi sweet chocolate chips&fillIngredients=true&instructionsRequired=true&maxReadyTime=30&maxSugar=10&minProtein=1&minCarbs=1&minFat=1&minCalories=1&maxCalories=${target}&sort=random&number=7` // Ideal is 8 calls
       )
         .then(response => response.json())
         .then(data => {

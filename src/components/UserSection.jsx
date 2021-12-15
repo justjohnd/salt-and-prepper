@@ -69,6 +69,10 @@ function UserSection(props) {
     });
   }
 
+  function deleteAll() {
+    setUsers([]);
+  }
+
   function clickToEdit(user) {
     setEditUser({
       id: user.id,
@@ -99,7 +103,7 @@ function UserSection(props) {
         <H2 message={message} />
         <div>
           <p>
-            <a href="#">Clear contents and start over</a>
+            <button onClick={deleteAll} className="text-link">Clear contents and start over</button>
           </p>
         </div>
         {formVisibility && (
