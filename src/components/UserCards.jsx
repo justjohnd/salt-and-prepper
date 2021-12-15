@@ -8,7 +8,7 @@ function UserCards(props) {
   const userCalArray = []; //This array collects userCal, which will be used to calculate the average calories for all memters in the User Section
   return (
     <div>
-      <div className="container users-container">
+      <div className="users-container">
         {props.users.map(user => {
           const userAge = ageCalc(user.birthday);
           let userGender;

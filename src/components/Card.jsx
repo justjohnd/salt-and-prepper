@@ -48,7 +48,7 @@ function Card(props) {
             info={
               props.calories === 0 ? (
                 <Tooltip title="Sorry! We don't calculate calories for children under four years old">
-                  <IconButton aria-label="Sorry! We don't calculate calories for children under four years old">
+                  <IconButton className="sorry-btn" aria-label="Sorry! We don't calculate calories for children under four years old">
                     <AnnouncementIcon className="btn-small tooltip" />
                   </IconButton>
                 </Tooltip>

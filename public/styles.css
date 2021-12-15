@@ -96,9 +96,8 @@ ul {
 }
 /* Card Content */
 .con-card {
-  display: flex;
-  flex-grow: 1;
-  justify-content: center;
+  display: inline-block;
+  margin: 0 auto;
 }
 
 .card {
@@ -414,6 +413,11 @@ a:hover {
 .instructions li {
   line-height: var(--font-default-lh);
   font-size: var(--font-default-size);
+}
+
+/* Remove padding from info button */
+.info .MuiIconButton-root {
+  padding: 0px;
 }
 
 /* Adjust for non-mobile */
