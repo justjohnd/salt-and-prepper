@@ -118,17 +118,17 @@ function MealPlan(props) {
               rejectionReason.push(
                 `Rejection Reason: Based on recipe ${result.id}, this recipe is missing kinformation.`
               );
-              console.log(`Bad API reject?: ${rejectionReason}`);
+              // console.log(`Bad API reject?: ${rejectionReason}`);
           }
           if (dontIncludeCheck(result.title.toLowerCase())) {
               result.dontInclude = true;
-              console.log(`dontIncludeCheck: true: ${result.id}`);
+              // console.log(`dontIncludeCheck: true: ${result.id}`);
           }
           if (addCaloriesCheck(result.title.toLowerCase())) {
               result.addCalories = true;
               result.nutrition.nutrients[0].amount =
                 result.nutrition.nutrients[0].amount + 200;
-                console.log(`added calories: ${result.id}`)
+                // console.log(`added calories: ${result.id}`)
           }
           return result;
           });
@@ -140,7 +140,7 @@ function MealPlan(props) {
             }
           });
           // console.log("filtered results before instructions check");
-          console.log(filteredResults);
+          // console.log(filteredResults);
           return filteredResults;
         })
         .then(filteredResults => {
@@ -179,7 +179,7 @@ function MealPlan(props) {
               setRecipes(recipesSummaryEdit);
               }
 
-              console.log(recipes);
+              // console.log(recipes);
 
               //Create a hashmap of recipe id's that do not include analyzed instructions
               const noInstructionsHash = recipes => {
@@ -211,16 +211,16 @@ function MealPlan(props) {
               }
 
               noRecipeResults = eliminator(hashed, filteredResults);
-              console.log(noRecipeResults);
+              // console.log(noRecipeResults);
 
               // Create an array of calories for each meal to pass to combinations function
               if (noRecipeResults.length !== 0) {
                 const caloriesArray = noRecipeResults.map(result => {
                   return result.nutrition.nutrients[0].amount;
                 });
-                console.log(
-                  `Array of all items' calories only: ${caloriesArray}`
-                );
+                // console.log(
+                //   `Array of all items' calories only: ${caloriesArray}`
+                // );
 
                 // Find all combinations of meals
                 const findCombinations = array => {
@@ -240,9 +240,9 @@ function MealPlan(props) {
                 };
 
                 const calorieComboArrays = findCombinations(caloriesArray);
-                console.log(
-                  `Array of ideal calorie pairs: ${calorieComboArrays}`
-                );
+                // console.log(
+                //   `Array of ideal calorie pairs: ${calorieComboArrays}`
+                // );
 
                 const diffFromTarget = calorieComboArrays.map(array => {
                   const calorieArrayTotal = array
@@ -251,31 +251,31 @@ function MealPlan(props) {
                   array.push(Math.abs(calorieArrayTotal - target));
                   return array;
                 });
-                console.log(
-                  `Inclusion of difference from target for each pair: ${diffFromTarget}`
-                );
+                // console.log(
+                //   `Inclusion of difference from target for each pair: ${diffFromTarget}`
+                // );
 
                 const differences = diffFromTarget.map(array => array.at(-1));
-                console.log(
-                  `Array of differences from target only: ${differences}`
-                );
+                // console.log(
+                //   `Array of differences from target only: ${differences}`
+                // );
 
                 const closestToTarget = differences.indexOf(
                   Math.min(...differences)
                 );
-                console.log(
-                  `Index number for smallest difference combo: ${closestToTarget}`
-                );
+                // console.log(
+                //   `Index number for smallest difference combo: ${closestToTarget}`
+                // );
 
                 const bestCombo = diffFromTarget[closestToTarget];
-                console.log(`Best array combination: ${bestCombo}`);
+                // console.log(`Best array combination: ${bestCombo}`);
 
                 let filtered = [];
                 let calorieTotal = '';
-                console.log(noRecipeResults);
+                // console.log(noRecipeResults);
                 if (noRecipeResults.length === 1) {
                   filtered = noRecipeResults;
-                  console.log(filtered);
+                  // console.log(filtered);
                   calorieTotal =
                     filtered[0].nutrition.nutrients[0].amount.toFixed(0);
                 } else if (noRecipeResults.length > 1) {
@@ -284,20 +284,20 @@ function MealPlan(props) {
                       return result;
                     }
                   });
-                  console.log(filtered);
+                  // console.log(filtered);
                   calorieTotal = (
                     filtered[0].nutrition.nutrients[0].amount +
                     filtered[1].nutrition.nutrients[0].amount
                   ).toFixed(0);
                 }
-                console.log(calorieTotal);
+                // console.log(calorieTotal);
 
                 setTotalCalories(calorieTotal);
 
                 const difference = Math.abs(calorieTotal - target).toFixed(0);
 
                 setDifferenceFromTarget(difference);
-                console.log(filtered);
+                // console.log(filtered);
 
                 //Capitalize all first letters in title
                 const filteredTitles = filtered.map(meal => {
@@ -306,17 +306,17 @@ function MealPlan(props) {
                     word => word.charAt(0).toUpperCase() + word.substring(1)
                   );
                   let newTitle = upperCaseWords.join(' ');
-                  console.log(meal.title);
-                  console.log(newTitle);
+                  // console.log(meal.title);
+                  // console.log(newTitle);
                   let newObject = Object.assign({}, meal, {
                     title: newTitle,
                   });
-                  console.log(newObject);
+                  // console.log(newObject);
 
                   return newObject;
                 });
 
-                console.log(filteredTitles);
+                // console.log(filteredTitles);
                 if (filteredTitles.length === 0) {
                   setMessage('Sorry, no results were found');
                 }

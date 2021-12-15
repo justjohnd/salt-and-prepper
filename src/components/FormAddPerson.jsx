@@ -21,20 +21,17 @@ function FormAddPerson(props) {
     calTarget: '',
   };
 
-  const genderOptions = [
-    { value: 1, label: 'Unspecified' },
-    { value: 2, label: 'Male' },
-    { value: 3, label: 'Female' },
-  ];
-
-  const lifestyleOptions = [
-    { value: 2, label: 'Moderately active' },
-    { value: 1, label: 'Not very active' },
-    { value: 3, label: 'Very active' },
-  ];
-
   function handleData(event) {
-    const { name, value } = event.target;
+    let { name, value } = event.target;
+
+    if (name === 'gender' || name === 'calTarget') {
+      value = parseInt(value);
+    }
+
+    console.log(name);
+    console.log(value);
+    console.log(newUser);
+
     let maxId = props.allUsers.reduce(
       (max, cur) => (max > cur.id ? max : cur.id),
       props.allUsers[0].id
@@ -65,7 +62,7 @@ function FormAddPerson(props) {
     <div>
       <form className="form align-left">
         <Input
-          onChange={handleData}
+          onChange={e => handleData(e)}
           name="fullName"
           value={newUser.fullName}
           label="Name"
@@ -73,7 +70,7 @@ function FormAddPerson(props) {
           placeholder="Name"
         />
         <Input
-          onChange={handleData}
+          onChange={e => handleData(e)}
           name="birthday"
           value={newUser.birthday}
           label="Birthday"
@@ -83,33 +80,29 @@ function FormAddPerson(props) {
         <label>
           Gender
           <select
-            onChange={handleData}
+            onChange={e => handleData(e)}
             value={newUser.gender}
             name="gender"
             type="number"
             placeholder="Gender"
           >
-            {genderOptions.map(({ label, value }) => (
-              <option key={value} value={value}>
-                {label}
-              </option>
-            ))}
+            <option value="1">Unspecified</option>
+            <option value="2">Male</option>
+            <option value="3">Female</option>
           </select>
         </label>
         <label>
           Lifestyle
           <select
-            onChange={handleData}
+            onChange={e => handleData(e)}
             value={newUser.calTarget}
             name="calTarget"
             type="type"
             placeholder="Select or enter specific calorie target"
           >
-            {lifestyleOptions.map(({ label, value }) => (
-              <option key={value} value={value}>
-                {label}
-              </option>
-            ))}
+            <option value="1">Not Very Active</option>
+            <option value="2">Moderately Active</option>
+            <option value="3">Very Active</option>
           </select>
         </label>
 

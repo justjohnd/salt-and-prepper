@@ -23,6 +23,28 @@ function UserSection(props) {
     userCal: '',
   });
 
+  function editUserData(e) {
+    let { name, value } = e.target;
+
+    if (name === 'gender' || name === 'calTarget') {
+      value = parseInt(value);
+    }
+
+    console.log(name);
+    console.log(value);
+    console.log(editUser);
+
+    setEditUser(prevValue => {
+      return {
+        ...prevValue,
+        [name]: value,
+      };
+    });
+  }
+
+
+
+
   function changeFormVisibility() {
     setFormVisibility(prevValue => {
       return !prevValue;
@@ -54,17 +76,6 @@ function UserSection(props) {
       birthday: user.birthday,
       gender: user.gender,
       calTarget: user.calTarget,
-    });
-  }
-
-  function editUserData(e) {
-    const { name, value } = e.target;
-
-    setEditUser(prevValue => {
-      return {
-        ...prevValue,
-        [name]: value,
-      };
     });
   }
 
