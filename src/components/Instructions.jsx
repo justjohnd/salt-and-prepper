@@ -8,7 +8,7 @@ export default function Instructions(props) {
 
   return (
     <div>
-      <ul className="instructions">
+      <ul className="recipe-contents align-left">
         {instructions.map(instruction => {
           return (
             <li key={uuidv4()}>

@@ -8,7 +8,7 @@ export default function Ingredients(props) {
 
         return (
           <div>
-            <ul className="ingredients">
+            <ul className="recipe-contents">
               {ingredients.map((ingredient) => {
                 return (
                   <li key={uuidv4()}>

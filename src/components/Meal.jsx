@@ -81,21 +81,21 @@ export default function Meal(props) {
                 ? 'Show Ingredients'
                 : 'Hide Ingredients'}
             </button>
-            <section className="ingredients-section">
+            <section className="recipe-contents-wrapper">
               {props.ingredientsDisplay[props.index] && (
                 <Ingredients recipes={props.recipes} meal={props.meal} />
               )}
             </section>
 
             <button
-              className="btn-primary"
+              className="btn-primary instructions-btn"
               onClick={() => props.handleInstructionsCallback(props.index)}
             >
               {!props.instructionsDisplay[props.index]
                 ? 'Show Instructions'
                 : 'Hide Instructions'}
             </button>
-            <section className="ingredients-section">
+            <section className="recipe-contents-wrapper">
               {props.instructionsDisplay[props.index] && (
                 <Instructions recipes={props.recipes} meal={props.meal} />
               )}

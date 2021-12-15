@@ -14,13 +14,7 @@ body {
   text-align: center;
   color: var(--color-dark);
   margin: 0;
-  padding: 3rem;
-}
-
-.flex-center {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
+  padding: 1rem;
 }
 
 h1 {
@@ -72,6 +66,7 @@ ul {
 .flex-center {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
 .align-center {
@@ -103,6 +98,7 @@ ul {
 .con-card {
   display: flex;
   flex-grow: 1;
+  justify-content: center;
 }
 
 .card {
@@ -114,7 +110,7 @@ ul {
   box-shadow: 0 2px 5px #ccc;
   text-align: left;
   text-transform: capitalize;
-  width: 100%;
+  width: 220px;
 }
 
 .top {
@@ -221,7 +217,7 @@ label {
   width: 50px;
   height: 50px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-  margin: auto 5px auto 0;
+  margin: auto 10px auto 0;
   padding: 0;
 }
 
@@ -247,6 +243,7 @@ label {
 .controls {
   margin: 2rem 0 1rem 0;
   display: flex;
+  font-size: 24px;
 }
 
 .control {
@@ -264,16 +261,27 @@ label {
 }
 
 .btn-get-meal {
-  margin-top: auto;
+  margin-top: 2rem;
+  font-size: 24px;
   width: 100%;
 }
 
 .calorie-field {
-  margin-top: 0.1rem;
+  margin-top: 0;
+  text-align: center;
+  font-size: 24px;
+  line-height: 1.5;
+  border: 1px solid var(--color-dark);
 }
 
 .diet-options {
   margin-bottom: 0;
+  line-height: 1.8;
+}
+
+input[type='checkbox' i] {
+  width: 20px;
+  height: 20px;
 }
 
 /* Meal Plan Contents */
@@ -284,16 +292,18 @@ main {
 }
 
 .img-and-nutrition {
-  display: flex;
-  width: 100%;
+  display: block;
+  width: auto;
+  padding: 8px;
 }
 
 .nutrition {
-  margin-left: 8px;
+  margin-left: 0;
+  text-align: center;
 }
 
 .recipe {
-  padding: 0 1rem 1rem 1rem;
+  padding: 0;
   margin: 1.5rem;
   border: 1px solid var(--color-secondary);
   border-radius: 25px;
@@ -325,7 +335,7 @@ main {
 
 .meals img {
   object-fit: cover;
-  height: 160px;
+  height: auto;
   border-radius: 10px;
   display: flex;
 }
@@ -369,6 +379,7 @@ a:hover {
 
 .summary {
   text-align: left;
+  padding: 8px;
 }
 
 .summary p {
@@ -377,18 +388,22 @@ a:hover {
   font-size: var(--font-default-size);
 }
 
-.ingredients-section {
+.instructions-btn {
+  margin-bottom: 2rem;
+}
+
+.recipe-contents-wrapper {
   display: flex;
   justify-content: center;
 }
 
-.ingredients {
+.recipe-contents {
   width: 300px;
-  padding: 0 2rem;
+  padding: 0;
   margin: 2rem 0;
 }
 
-.ingredients li {
+.recipe-contents li {
   display: flex;
   width: 100%;
   justify-content: space-between;
@@ -399,4 +414,66 @@ a:hover {
 .instructions li {
   line-height: var(--font-default-lh);
   font-size: var(--font-default-size);
+}
+
+/* Adjust for non-mobile */
+@media (min-width: 576px) {
+  body {
+    padding: 3rem;
+  }
+
+  .controls {
+    font-size: 18px;
+  }
+
+  .diet-options {
+    line-height: unset;
+  }
+
+  input[type='checkbox' i] {
+    width: unset;
+    height: unset;
+  }
+
+  .calorie-field {
+    margin-top: 0.1rem;
+    font-size: 16px;
+    text-align: left;
+  }
+
+  .btn-get-meal {
+    margin-top: auto;
+    font-size: 18px;
+  }
+
+  .recipe {
+    padding: 0 1rem 1rem 1rem;
+  }
+
+  .img-and-nutrition {
+    display: flex;
+    padding: 0;
+    width: 100%;
+  }
+
+  .nutrition {
+    margin-left: 8px;
+    text-align: left;
+  }
+
+  .meals img {
+    height: 160px;
+  }
+
+  .summary {
+    padding: 0;
+  }
+
+  .recipe-contents {
+    padding: 0 2rem;
+  }
+
+  .instructions-btn {
+    margin-bottom: 0;
+  }
 }
