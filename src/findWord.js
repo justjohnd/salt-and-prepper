@@ -1,6 +1,4 @@
-import { TurnedInNotOutlined } from '@material-ui/icons';
-
-const BAD_API_IDS = {
+  const BAD_API_IDS = {
   624304: true,
   638790: true,
   624194: true,
@@ -9,6 +7,10 @@ const BAD_API_IDS = {
   627767: true,
   773671: true,
   629887: true,
+};
+
+const USED_INGREDIENT_COUNT = {
+  0: true
 };
 
 const DONT_INCLUDE = {
@@ -114,13 +116,12 @@ const DONT_ADD_CALORIES = {
   dumplings: true,
   fettuccine: true,
   alfredo: true,
-  652417: true,
-  157456: true,
 };
 
 const MUST_ADD_CALORIES = {
   dip: true,
   salsa: true,
+  curry: true
 };
 
 export default KEYWORDS;
@@ -128,3 +129,4 @@ export { DONT_INCLUDE };
 export { DONT_ADD_CALORIES };
 export { MUST_ADD_CALORIES };
 export { BAD_API_IDS };
+export { USED_INGREDIENT_COUNT };

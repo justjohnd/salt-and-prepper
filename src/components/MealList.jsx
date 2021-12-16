@@ -1,31 +1,41 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Meal from './Meal';
 
-export default function MealList(props) {
+function MealList(props) {
+
   return (
     <main>
       <section className="nutrients">
-        {/* Calculates TOTALS for all meals generate */}
-        <h1>Macros</h1>
-        <ul>
-          <li>Calories: {props.calories.toFixed(0)}</li>
-          <li>
-            Difference from target: {props.target - props.calories.toFixed(0)}{' '}
-          </li>
-          <li>Protein: {props.protein.toFixed(0)}</li>
-          <li>Fat: {props.fat.toFixed(0)}</li>
-          <li>Carbohydrates: {props.carbs.toFixed(0)}</li>
-          <li>Sugar: {props.sugar.toFixed(0)}</li>
-        </ul>
+        {<h1>{props.message}</h1>}
       </section>
 
       <section className="meals">
-        {props.meals.map(meal => {
+        {props.meals.map((meal, index) => {
+          const [calories, protein, fat, carbohydrates, sugar] =
+            meal.nutrition.nutrients;
+
           return (
-            <Meal key={meal.id} deleteMeal={props.deleteMeal} meal={meal} />
+            <Meal
+              index={index}
+              recipes={props.recipes}
+              key={meal.id}
+              ingredientsDisplay={props.ingredientsDisplay}
+              instructionsDisplay={props.instructionsDisplay}
+              handleInstructionsCallback={props.handleInstructionsCallback}
+              handleIngredientsCallback={props.handleIngredientsCallback}
+              meal={meal}
+              calories={calories.amount.toFixed(0)}
+              protein={protein.amount.toFixed(0)}
+              fat={fat.amount.toFixed(0)}
+              carbohydrates={carbohydrates.amount.toFixed(0)}
+              sugar={sugar.amount.toFixed(0)}
+              addCalories={meal.addCalories}
+            />
           );
         })}
       </section>
     </main>
   );
-}
+      }
+
+export default MealList;

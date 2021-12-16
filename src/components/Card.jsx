@@ -13,7 +13,7 @@ const CardColor = styled.div`
   width: 20px;
   height: 20px;
   margin-right: 5px;
-  background-color: ${props => (props.bg != '' ? props.bg : 'black')};
+  background-color: ${props => (props.bg !== '' ? props.bg : 'black')};
 `;
 
 function Card(props) {
@@ -48,7 +48,7 @@ function Card(props) {
             info={
               props.calories === 0 ? (
                 <Tooltip title="Sorry! We don't calculate calories for children under four years old">
-                  <IconButton aria-label="Sorry! We don't calculate calories for children under four years old">
+                  <IconButton className="sorry-btn" aria-label="Sorry! We don't calculate calories for children under four years old">
                     <AnnouncementIcon className="btn-small tooltip" />
                   </IconButton>
                 </Tooltip>

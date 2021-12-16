@@ -1,96 +1,107 @@
-import React, { useState, useEffect } from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import React, { useState } from 'react';
+import Ingredients from "./Ingredients";
+import Instructions from './Instructions';
 
-export default function Meal(props) {
-  const [recipeData, setRecipeData] = useState(null);
-  const [showInstructions, setShowInstructions] = useState(false);
-  const [showInstructionsButton, setShowInstructionsButton] = useState(
-    'Show Instructions'
-  );
+export default function Meal(props) { 
+  const recipe = props.recipes.find(e => e.id === props.meal.id);
+  console.log(recipe);
+  const summary = recipe.summary;
+  console.log(summary);
 
-  useEffect(() => {
-    getMealInformation().catch(() => {
-      console.log('error');
-    });
+  //Create a short summary that doesn't cut off on an html attribute
+  const summaryArray = summary.split(' ');
+  const sliceArray = summaryArray.slice(0, 100);
+  const shortSummary = sliceArray.join(' ');
 
-    async function getMealInformation() {
-      const response = await fetch(
-        `https://api.spoonacular.com/recipes/${props.meal.id}/information?apiKey=627d3d5f6ac5413fb693db5fb5a4d394&includeNutrition=false`
-      );
-      const data = await response.json();
-      // console.log(data);
-      if (
-        data.analyzedInstructions[0].steps.length === 1 ||
-        data.analyzedInstructions === []
-      ) {
-        console.log(
-          `Note: recipe with ${props.meal.id} has been removed because it does not contain recipe instructions`
-        );
-        props.deleteMeal(props.meal.id);
-      } else {
-        setRecipeData(data);
-      }
-    }
-  }, [props.meal.id]);
+  const [showSummary, setShowSummary] = useState('false');
 
-  function getInstructions() {
-    setShowInstructions(prevValue => {
-      return !prevValue;
-    });
-
-    if (getInstructions) {
-      setShowInstructionsButton('Hide Instructions');
-    } else {
-      setShowInstructionsButton('Show Instructions');
-    }
+  
+  function handleSummary() {
+    setShowSummary(!showSummary);
   }
 
-  return (
-    <div className="recipe">
-      {recipeData && (
-        <div>
-          <h2 className="title">{props.meal.title}</h2>
-          <img src={recipeData.image} alt="recipe" />
-          <ul className="instructions">
-            <li>
-              <strong>Preparation time: </strong> {recipeData.readyInMinutes}{' '}
-              minutes
-            </li>
-            <li>
-              <strong>Number of servings: </strong>
-              {recipeData.servings}
-            </li>
-            <li>
-              <strong>Calories: </strong>
-              {props.meal.adjustedCal.toFixed(0)}
-            </li>
-            <li>
-              <strong>
-                {props.meal.addCalories && 'Calories were added to this meal'}
-              </strong>
-            </li>
-          </ul>
+  function createMarkup(markup) {
+    return { __html: markup };
+  }
+  
+    return (
+      <div className="recipe">
+        {props.meal && (
+          <div>
+            <div className="container-title">
+              <h2 className="title">{props.meal.title}</h2>
+            </div>
+            <div className="img-and-nutrition">
+              <img src={props.meal.image} alt="recipe" />
+              <ul className="nutrition">
+                <li>
+                  <strong>Calories: </strong>
+                  {props.calories}
+                </li>
+                <li>
+                  <strong>Protein: </strong>
+                  {props.protein} g
+                </li>
+                <li>
+                  <strong>Carbohydrates: </strong>
+                  {props.carbohydrates} g
+                </li>
+                <li>
+                  <strong>Fat: </strong>
+                  {props.fat} g
+                </li>
+                <li>
+                  <strong>Sugar: </strong>
+                  {props.sugar} g
+                </li>
+                <li>
+                  <strong>
+                    {props.addCalories && 'Calories were added to this meal'}
+                  </strong>
+                </li>
+              </ul>
+            </div>
+            <section className="summary">
+              {showSummary ? (
+                <p dangerouslySetInnerHTML={createMarkup(shortSummary)}></p>
+              ) : (
+                <p dangerouslySetInnerHTML={createMarkup(summary)}></p>
+              )}
+              ...
+              <button className="text-link" onClick={handleSummary}>
+                {showSummary ? 'Read More' : 'Read Less'}
+              </button>
+            </section>
 
-          <button onClick={getInstructions}>{showInstructionsButton}</button>
-          {showInstructions && (
-            <ul className="instructions">
-              {recipeData.analyzedInstructions[0].steps.map(e => {
-                return <li key={uuidv4()}>{e.step}</li>;
-              })}
-            </ul>
-          )}
-
-          <button>
-            <a
-              href={recipeData.sourceUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              className="btn-primary"
+              onClick={() => props.handleIngredientsCallback(props.index)}
             >
-              Go to Recipe
-            </a>
-          </button>
-        </div>
-      )}
-    </div>
-  );
+              {!props.ingredientsDisplay[props.index]
+                ? 'Show Ingredients'
+                : 'Hide Ingredients'}
+            </button>
+            <section className="recipe-contents-wrapper">
+              {props.ingredientsDisplay[props.index] && (
+                <Ingredients recipes={props.recipes} meal={props.meal} />
+              )}
+            </section>
+
+            <button
+              className="btn-primary instructions-btn"
+              onClick={() => props.handleInstructionsCallback(props.index)}
+            >
+              {!props.instructionsDisplay[props.index]
+                ? 'Show Instructions'
+                : 'Hide Instructions'}
+            </button>
+            <section className="recipe-contents-wrapper">
+              {props.instructionsDisplay[props.index] && (
+                <Instructions recipes={props.recipes} meal={props.meal} />
+              )}
+            </section>
+          </div>
+        )}
+      </div>
+    );
 }

@@ -1,24 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Input from './Input';
 import Button from './Button';
 
 function FormEditPerson(props) {
-  const [genderOptions, setGenderOptions] = useState([
-    { value: 1, label: 'Unspecified' },
-    { value: 2, label: 'Male' },
-    { value: 3, label: 'Female' },
-  ]);
-
-  const [lifestyleOptions, setlifestyleOptions] = useState([
-    { value: 2, label: 'Moderately active' },
-    { value: 1, label: 'Not very active' },
-    { value: 3, label: 'Very active' },
-  ]);
-
-  function handleCloseSection(event) {
-    props.changeFormEditVisibility();
-    event.preventDefault();
-  }
+  // function handleCloseSection(event) {
+  //   props.changeFormEditVisibility();
+  //   event.preventDefault();
+  // }
 
   return (
     <div>
@@ -32,7 +20,7 @@ function FormEditPerson(props) {
           placeholder={props.formData.fullName}
         />
         <Input
-          onChange={props.editUserData}
+          onChange={e => props.editUserData(e)}
           name="birthday"
           value={props.formData.birthday}
           label="Birthday"
@@ -40,35 +28,32 @@ function FormEditPerson(props) {
           placeholder=""
         />
         <label>
-          Gender
           <select
-            onChange={props.editUserData}
+            onChange={e => props.editUserData(e)}
+            selected
             value={props.formData.gender}
             name="gender"
             type="number"
             placeholder="Gender"
           >
-            {genderOptions.map(({ label, value }) => (
-              <option key={value} value={value}>
-                {label}
-              </option>
-            ))}
+            <option value="1">Unspecified</option>
+            <option value="2">Male</option>
+            <option value="3">Female</option>
           </select>
         </label>
         <label>
           Lifestyle
           <select
-            onChange={props.editUserData}
+            onChange={e => props.editUserData(e)}
+            selected
             value={props.formData.calTarget}
             name="calTarget"
             type="type"
             placeholder="Select or enter specific calorie target"
           >
-            {lifestyleOptions.map(({ label, value }) => (
-              <option key={value} value={value}>
-                {label}
-              </option>
-            ))}
+            <option value="1">Not Very Active</option>
+            <option value="2">Moderately Active</option>
+            <option value="3">Very Active</option>
           </select>
         </label>
         <Button

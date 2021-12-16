@@ -12,7 +12,7 @@ function UserSection(props) {
   const [formVisibility, setFormVisibility] = useState(false);
   const [formEditVisibility, setFormEditVisibility] = useState(false);
   const [message, setMessage] = useState(
-    'Here are the current people on your meal plan:'
+    'Add family members to calculate your total nutritional requirement:'
   );
   const [editUser, setEditUser] = useState({
     id: '',
@@ -22,6 +22,28 @@ function UserSection(props) {
     calTarget: '',
     userCal: '',
   });
+
+  function editUserData(e) {
+    let { name, value } = e.target;
+
+    if (name === 'gender' || name === 'calTarget') {
+      value = parseInt(value);
+    }
+
+    console.log(name);
+    console.log(value);
+    console.log(editUser);
+
+    setEditUser(prevValue => {
+      return {
+        ...prevValue,
+        [name]: value,
+      };
+    });
+  }
+
+
+
 
   function changeFormVisibility() {
     setFormVisibility(prevValue => {
@@ -47,6 +69,10 @@ function UserSection(props) {
     });
   }
 
+  function deleteAll() {
+    setUsers([]);
+  }
+
   function clickToEdit(user) {
     setEditUser({
       id: user.id,
@@ -54,17 +80,6 @@ function UserSection(props) {
       birthday: user.birthday,
       gender: user.gender,
       calTarget: user.calTarget,
-    });
-  }
-
-  function editUserData(e) {
-    const { name, value } = e.target;
-
-    setEditUser(prevValue => {
-      return {
-        ...prevValue,
-        [name]: value,
-      };
     });
   }
 
@@ -83,9 +98,14 @@ function UserSection(props) {
   }
 
   return (
-    <div>
-      <div className="form align-left">
+    <section className="user-section flex-center">
+      <div className="form">
         <H2 message={message} />
+        <div>
+          <p>
+            <button onClick={deleteAll} className="text-link">Clear contents and start over</button>
+          </p>
+        </div>
         {formVisibility && (
           <FormAddPerson
             allUsers={users}
@@ -102,7 +122,7 @@ function UserSection(props) {
             changeFormEditVisibility={changeFormEditVisibility}
           />
         )}
-        <div className="container">
+        <div className="container flex-center">
           <UserCards
             addUserCal={props.addUserCal}
             users={users}
@@ -126,7 +146,7 @@ function UserSection(props) {
           )}
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 
